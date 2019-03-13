@@ -1,4 +1,4 @@
-import { Memory } from './memory'
+import { Memory, MemoryAddress, readByte, writeByte } from './memory'
 import { partial } from 'lodash'
 
 export type ByteValue = number
@@ -23,7 +23,7 @@ export type ByteRegister = 'a' | 'b' | 'c' | 'd' | 'e' | 'h' | 'l'
 export type GroupedWordRegister = 'bc' | 'de' | 'hl'
 
 export interface Cpu {
-  readonly registers: CpuRegisters
+  readonly registers: CpuRegisters;
 }
 
 export const create = (): Cpu => ({
@@ -43,9 +43,9 @@ export const create = (): Cpu => ({
   }
 })
 
-export const runInstruction = (cpu: Cpu, memory: Memory): void => {
+/*export const runInstruction = (cpu: Cpu, memory: Memory): void => {
 
-}
+}*/
 
 const BC_BYTE_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['b', 'c']
 const DE_BYTE_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['d', 'e']
@@ -60,6 +60,11 @@ export const groupedWordByteRegisters = (register: GroupedWordRegister): Readonl
     case 'hl':
       return HL_BYTE_REGISTERS
   }
+}
+
+const getGroupedRegister = (cpu: Cpu, register: GroupedWordRegister): number => {
+  const [byte1, byte2] = groupedWordByteRegisters(register)
+  return (cpu.registers[byte1] << 8) + cpu.registers[byte2]
 }
 
 export const setGroupedRegister = (cpu: Cpu, register: GroupedWordRegister, value: number): void => {
@@ -86,16 +91,33 @@ export const ldR1R2 = (r1: ByteRegister, r2: ByteRegister, cpu: Cpu, memory: Mem
 // TODO: Don't export, test through runInstruction
 // Not sure how to handle overflow of a 16 bit going in to 8 bit
 export const ldR1R2Word = (r1: ByteRegister, r2: GroupedWordRegister, cpu: Cpu, memory: Memory): void => {
-  const [r2Byte1, r2Byte2] = groupedWordByteRegisters(r2)
-  const wordValue = (cpu.registers[r2Byte1] << 8) + cpu.registers[r2Byte2]
+  const wordValue = getGroupedRegister(cpu, r2)
   cpu.registers[r1] = wordValue & 255
 }
 
 // TODO: Don't export, test through runInstruction
-export const ldR1WordR2 = (r1: GroupedWordRegister, r2: ByteRegister, cpu: Cpu, memory: Memory): void => {
+export const ldR1WordR2 = (r1: GroupedWordRegister, r2: ByteRegister, cpu: Cpu): void => {
   const [r1Byte1, r1Byte2] = groupedWordByteRegisters(r1)
   cpu.registers[r1Byte1] = 0x00
   cpu.registers[r1Byte2] = cpu.registers[r2]
+}
+
+// TODO: Don't export, test through runInstruction
+export const ldMemAddN = (register: ByteRegister, cpu: Cpu, memory: Memory, address: MemoryAddress): void => {
+  cpu.registers.a = readByte(memory, address) + cpu.registers[register]
+}
+
+// TODO: Don't export, test through runInstruction
+export const ldRMemAddN = (register: ByteRegister, cpu: Cpu, memory: Memory, address: MemoryAddress): void => {
+  writeByte(memory, address + cpu.registers[register], cpu.registers.a)
+}
+
+export const ldDAHl = (cpu: Cpu, memory: Memory): void => {
+  const addressRegister = 'hl'
+  const address = getGroupedRegister(cpu, addressRegister)
+  const value = readByte(memory, address)
+  cpu.registers.a = value
+  setGroupedRegister(cpu, addressRegister, value - 1)
 }
 
 type Operands = number
@@ -184,4 +206,16 @@ const INSTRUCTIONS: { [key: number]: Instruction } = {
   0x12: [partial(ldR1WordR2, 'de', 'a'), 0, 8],
   0x77: [partial(ldR1WordR2, 'hl', 'a'), 0, 8],
   0xEA: [partial(ldNnNWord, 'a'), 1, 16],
+
+  0xF2: [partial(ldMemAddN, 'c'), 1, 8],
+
+  0xE2: [partial(ldRMemAddN, 'c'), 1, 8],
+
+  0x3A: [partial(ldDAHl), 0, 8],
+  // Not sure what these are
+  /* LD A,(HLD) 3A 8
+   LD A,(HL-) 3A 8
+   LDD A,(HL) 3A 8 */
+
+  // Up to page 72
 }

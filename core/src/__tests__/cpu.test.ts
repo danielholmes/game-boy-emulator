@@ -8,10 +8,10 @@ import {
   ldNnN,
   ldR1R2,
   ldR1R2Word,
-  GroupedWordRegister, setGroupedRegister, groupedWordByteRegisters
+  GroupedWordRegister, setGroupedRegister, groupedWordByteRegisters, ldMemAddN
 } from '../cpu'
-import { Memory, create as createMemory } from '../memory'
-import { flatMap } from 'lodash'
+import { Memory, create as createMemory, writeByte } from '../memory'
+import { flatMap, toPairs } from 'lodash'
 import each from 'jest-each'
 
 const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cpu => {
@@ -25,13 +25,20 @@ const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cpu => {
   }
 }
 
+const createMemoryWithValues = (values: { [address: number]: number }): Memory => {
+  const memory = createMemory()
+  toPairs(values)
+    .forEach(([address, value]) => writeByte(memory, parseInt(address), value))
+  return memory
+}
+
 const EMPTY_MEMORY = createMemory()
 
 const BYTE_REGISTERS: ReadonlyArray<ByteRegister> = ['a', 'b', 'c', 'd', 'e', 'h', 'l']
 
 const VIRTUAL_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister> = ['bc', 'de', 'hl']
 
-const BYTE_REGISTER_PAIRS: Array<Array<ByteRegister>> =
+const BYTE_REGISTER_PAIRS: ByteRegister[][] =
   flatMap(
     BYTE_REGISTERS.map((r1) =>
       BYTE_REGISTERS.map((r2) => [r1, r2] as Readonly<[ByteRegister, ByteRegister]>)
@@ -93,6 +100,22 @@ describe('cpu', () => {
           [register1]: 0x91
         }))
         expect(memory).toEqual(EMPTY_MEMORY)
+      }
+    )
+
+    each(BYTE_REGISTERS.map((r) => [r])).test.only(
+      'LD Mem + N with %s',
+      (register: ByteRegister) => {
+        cpu.registers[register] = 0x43
+        writeByte(memory, 0x1234, 0x12)
+
+        ldMemAddN(register, cpu, memory, 0x1234)
+
+        expect(cpu).toEqual(createCpuWithRegisters({
+          [register]: 0x43,
+          a: 0x55
+        }))
+        expect(memory).toEqual(createMemoryWithValues({ 0x1234: 0x12 }))
       }
     )
   })
