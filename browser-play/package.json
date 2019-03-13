@@ -1,0 +1,6 @@
+{
+  "name": "@gebby/browser-play",
+  "version": "0.0.1",
+  "description": "Browser based ui for playing the game boy",
+  "license": "MIT"
+}

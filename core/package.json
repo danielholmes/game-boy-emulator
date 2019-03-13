@@ -1,0 +1,48 @@
+{
+  "name": "@gebby/core",
+  "version": "0.0.1",
+  "description": "Core Game Boy Emulator",
+  "license": "MIT",
+  "scripts": {
+    "ts": "tsc -p tsconfig.json",
+    "lint": "eslint --fix './src/**/*.ts'",
+    "lint:check": "eslint './src/**/*.ts'",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "clean": "rimraf ./dist/**",
+    "compile": "babel src --out-dir ./dist/ --source-maps --ignore '**/__tests__/**/*' --extensions '.ts'",
+    "compile:defs": "tsc -p tsconfig.json",
+    "build": "yarn ts && yarn lint:check && yarn test && yarn compile && yarn compile:defs"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/jest": "^24.0.11",
+    "@types/lodash": "^4.14.123",
+    "@typescript-eslint/eslint-plugin": "^1.4.2",
+    "@typescript-eslint/parser": "^1.4.2",
+    "eslint": "^5.15.1",
+    "jest": "^24.4.0",
+    "jest-each": "^24.5.0",
+    "ts-jest": "^24.0.0",
+    "typescript": "^3.3.3333"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
+  },
+  "dependencies": {
+    "lodash": "^4.17.11"
+  }
+}

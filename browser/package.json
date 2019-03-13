@@ -1,0 +1,6 @@
+{
+  "name": "@gebby/browser",
+  "version": "0.0.1",
+  "description": "Utilities for running the emulator in a browser",
+  "license": "MIT"
+}

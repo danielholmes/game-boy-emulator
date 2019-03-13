@@ -22,7 +22,8 @@ yarn
  - https://www.cl.cam.ac.uk/~pv273/slides/emulation.pdf
  - http://problemkaputt.de/pandocs.htm
  - https://www.youtube.com/watch?v=t0V-D2YMhrs&index=2&list=PLu3xpmdUP-GRDp8tknpXC_Y4RUQtMMqEu
- - https://www.youtube.com/watch?v=GBYwjch6oEE&t=0s&list=WL&index=155
+ - https://www.youtube.com/watch?v=GBYwjch6oEE
+ - See blarg's test ROM https://github.com/taisel/GameBoy-Online
  
  - http://imrannazar.com/GameBoy-Emulation-in-JavaScript
  - https://media.ccc.de/v/33c3-8029-the_ultimate_game_boy_talk
@@ -30,7 +31,6 @@ yarn
  - https://github.com/trekawek/coffee-gb/
  - https://github.com/gbdev/awesome-gbdev
  - https://www.youtube.com/watch?v=RZUDEaLa5Nw
- - https://www.youtube.com/watch?v=GBYwjch6oEE
  - see source: http://gb.alexaladren.net/
  - https://github.com/juchi/gameboy.js
  - https://github.com/nakardo/node-gameboy
