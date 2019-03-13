@@ -1,8 +1,6 @@
-import { Memory, MemoryAddress, readByte, writeByte } from './memory'
+import { Memory, MemoryAddress, readByte, writeByte, writeWord } from './memory'
 import { partial } from 'lodash'
-
-export type ByteValue = number
-export type WordValue = number
+import { ByteValue, WordValue } from './types'
 
 export interface CpuRegisters {
   a: ByteValue;
@@ -43,9 +41,27 @@ export const create = (): Cpu => ({
   }
 })
 
-/*export const runInstruction = (cpu: Cpu, memory: Memory): void => {
+export const runInstruction = (cpu: Cpu, memory: Memory): void => {
+  const opCode = readByte(memory, cpu.registers.pc)
+  const instruction = INSTRUCTIONS[opCode]
+  if (!instruction) {
+    throw new Error(`No instruction for opCode 0x${opCode.toString(16)}`)
+  }
 
-}*/
+  switch (instruction[1]) {
+    case 0:
+      instruction[0](cpu, memory)
+      break;
+    case 1:
+      instruction[0](cpu, memory, readByte(memory, cpu.registers.pc + 1))
+      break;
+  }
+  cpu.registers.pc = (cpu.registers.pc + 1 + instruction[1]) & 0xFFFF // Mask to 16 bits
+
+  // TODO: Add cycles
+  //Z80._clock.m += Z80._r.m;                  // Add time to CPU clock
+  //Z80._clock.t += Z80._r.t;
+}
 
 const BC_BYTE_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['b', 'c']
 const DE_BYTE_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['d', 'e']
@@ -62,12 +78,12 @@ export const groupedWordByteRegisters = (register: GroupedWordRegister): Readonl
   }
 }
 
-const getGroupedRegister = (cpu: Cpu, register: GroupedWordRegister): number => {
+const getGroupedRegister = (cpu: Cpu, register: GroupedWordRegister): WordValue => {
   const [byte1, byte2] = groupedWordByteRegisters(register)
   return (cpu.registers[byte1] << 8) + cpu.registers[byte2]
 }
 
-export const setGroupedRegister = (cpu: Cpu, register: GroupedWordRegister, value: number): void => {
+export const setGroupedRegister = (cpu: Cpu, register: GroupedWordRegister, value: WordValue): void => {
   const [byteRegister1, byteRegister2] = groupedWordByteRegisters(register)
   cpu.registers[byteRegister1] = (value >> 8) & 255
   cpu.registers[byteRegister2] = value & 255
@@ -76,6 +92,15 @@ export const setGroupedRegister = (cpu: Cpu, register: GroupedWordRegister, valu
 // TODO: Don't export, test through runInstruction
 export const ldNnN = (nn: ByteRegister, cpu: Cpu, memory: Memory, n: ByteValue): void => {
   cpu.registers[nn] = n
+}
+
+// TODO: Don't export, test through runInstruction
+export const ldWordNnN = (n: GroupedWordRegister | 'sp', cpu: Cpu, memory: Memory, nn: WordValue): void => {
+  if (n === 'sp') {
+    cpu.registers[n] = nn
+  } else {
+    setGroupedRegister(cpu, n, nn)
+  }
 }
 
 // TODO: Don't export, test through runInstruction
@@ -120,9 +145,45 @@ export const ldDAHl = (cpu: Cpu, memory: Memory): void => {
   setGroupedRegister(cpu, addressRegister, value - 1)
 }
 
-type Operands = number
+export const ldIHl = (cpu: Cpu, memory: Memory): void => {
+  // Put A into memory address HL. Increment HL.
+  const hl = getGroupedRegister(cpu, 'hl')
+  writeByte(memory, hl, cpu.registers.a)
+  setGroupedRegister(cpu, 'hl', hl + 1)
+}
+
+export const incWord = (register: GroupedWordRegister | 'sp', cpu: Cpu, memory: Memory): void => {
+  if (register === 'sp') {
+    cpu.registers.sp = (cpu.registers.sp + 1) & 65535
+  } else {
+    const [rByte1, rByte2] = groupedWordByteRegisters(register)
+    cpu.registers[rByte2] = (cpu.registers[rByte2] + 1) & 255
+    if (!cpu.registers[rByte2]) {
+      cpu.registers[rByte1] = (cpu.registers[rByte1] + 1) & 255
+    }
+  }
+}
+
+const nop = (): void => {}
+
+// Internal
+const rsv = (cpu: Cpu): void => {
+  /*Z80._rsv.a = Z80._r.a; Z80._rsv.b = Z80._r.b;
+  Z80._rsv.c = Z80._r.c; Z80._rsv.d = Z80._r.d;
+  Z80._rsv.e = Z80._r.e; Z80._rsv.f = Z80._r.f;
+  Z80._rsv.h = Z80._r.h; Z80._rsv.l = Z80._r.l;*/
+}
+
+const rst = (cpu: Cpu, memory: Memory): void => {
+  rsv(cpu)
+  cpu.registers.sp -= 2
+  writeWord(memory, cpu.registers.sp, cpu.registers.pc)
+  cpu.registers.pc = 0x38
+}
+
 type Cycles = number
-type Instruction = Readonly<[(...args: any[]) => void, Operands, Cycles]>
+type Instruction = Readonly<[(cpu: Cpu, memory: Memory) => void, 0, Cycles]> |
+  Readonly<[(cpu: Cpu, memory: Memory, value: number) => void, 1, Cycles]>
 
 const INSTRUCTIONS: { [key: number]: Instruction } = {
   0x06: [partial(ldNnN, 'b'), 1, 8],
@@ -211,11 +272,29 @@ const INSTRUCTIONS: { [key: number]: Instruction } = {
 
   0xE2: [partial(ldRMemAddN, 'c'), 1, 8],
 
-  0x3A: [partial(ldDAHl), 0, 8],
+  0x3A: [ldDAHl, 0, 8],
   // Not sure what these are
   /* LD A,(HLD) 3A 8
    LD A,(HL-) 3A 8
    LDD A,(HL) 3A 8 */
 
   // Up to page 72
+
+  // Started again at page 76
+  0x01: [partial(ldWordNnN, 'bc'), 1, 12],
+  0x11: [partial(ldWordNnN, 'de'), 1, 12],
+  0x21: [partial(ldWordNnN, 'hl'), 1, 12],
+  0x31: [partial(ldWordNnN, 'sp'), 1, 12],
+
+  // Put A into memory address HL. Increment HL.
+  0x22: [ldIHl, 0, 8],
+
+  0x03: [partial(incWord, 'bc'), 0, 8],
+  0x13: [partial(incWord, 'de'), 0, 8],
+  0x23: [partial(incWord, 'hl'), 0, 8],
+  0x33: [partial(incWord, 'sp'), 0, 8],
+
+  0x00: [nop, 0, 4],
+
+  0xFF: [partial(rst), 1, 32]
 }
