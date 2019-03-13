@@ -185,6 +185,8 @@ type Cycles = number
 type Instruction = Readonly<[(cpu: Cpu, memory: Memory) => void, 0, Cycles]> |
   Readonly<[(cpu: Cpu, memory: Memory, value: number) => void, 1, Cycles]>
 
+// NOTE:!! Word operands should maybe take 2 bytes/operands
+// See how cinoop deals with it. If all single operands then maybe it's operandSize we're dealing with
 const INSTRUCTIONS: { [key: number]: Instruction } = {
   0x06: [partial(ldNnN, 'b'), 1, 8],
   0x0E: [partial(ldNnN, 'c'), 1, 8],
