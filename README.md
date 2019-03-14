@@ -39,3 +39,11 @@ yarn
  - http://nnarain.github.io/2016/07/21/Gameboy-Specs.html
  - https://github.com/nnarain/gameboycore
  
+## Making games
+
+ - http://www.loirak.com/gameboy/
+ - http://www.loirak.com/gameboy/gbprog.php
+ - http://gbdev.gg8.se/wiki/articles/GBDK
+ - https://videlais.com/2016/07/03/programming-game-boy-games-using-gbdk-part-1-configuring-programming-and-compiling/
+ - https://github.com/hschmitt/gbdk
+ - For the C side of things: https://www.youtube.com/watch?v=hE7l6Adoiiw&list=PL6B940F08B9773B9F
