@@ -4,12 +4,11 @@ import { ByteRegister } from './registers'
 import { sum } from 'lodash'
 import {
   LoadGroupedRegister, WriteMemoryFromGroupedRegisterAddress,
-  LoadProgramByte,
   LoadRegister,
   LowLevelOperation,
   LowLevelState,
   ReadMemory,
-  StoreInRegister
+  StoreInRegister, LoadProgramWord, LoadProgramByte, WriteMemoryFromProgramWordAddress
 } from './lowLevel'
 import { GroupedWordRegister } from './groupedRegisters'
 
@@ -22,6 +21,8 @@ interface Instruction
   readonly cycles: Cycles;
   readonly execute: (cpu: Cpu, memory: Memory) => void;
 }
+
+// TODO: Definition to generate label?
 
 // TODO: A chained instruction definition that only allows valid
 // e.g. not allow loadFromRegister.loadFromRegister
@@ -42,10 +43,14 @@ class InstructionDefinition implements Instruction
   }
 
   public execute(cpu: Cpu, memory: Memory): void {
-    let result: LowLevelState = undefined
-    this.operations.forEach((op) => {
-      result = op.execute(cpu, memory, result)
-    })
+    this.operations
+      .reduce(
+        (value: LowLevelState, op: LowLevelOperation): LowLevelState => {
+          const newResult = op.execute(cpu, memory, value)
+          return newResult ? newResult : undefined
+        },
+        undefined
+      )
   }
 
   public loadRegister(register: ByteRegister): InstructionDefinition {
@@ -64,12 +69,20 @@ class InstructionDefinition implements Instruction
     return this.withOperation(new LoadProgramByte())
   }
 
+  public loadProgramWord(): InstructionDefinition {
+    return this.withOperation(new LoadProgramWord())
+  }
+
   public storeInRegister(register: ByteRegister): InstructionDefinition {
     return this.withOperation(new StoreInRegister(register))
   }
 
   public readMemory(): InstructionDefinition {
     return this.withOperation(new ReadMemory())
+  }
+
+  public writeMemoryFromProgramWord(): InstructionDefinition {
+    return this.withOperation(new WriteMemoryFromProgramWordAddress())
   }
 
   private withOperation(operation: LowLevelOperation): InstructionDefinition {
@@ -91,13 +104,40 @@ export const createLdRN = (opCode: OpCode, register: ByteRegister): Instruction 
     .loadProgramByte()
     .storeInRegister(register)
 
-export const createLdRHl = (opCode: OpCode, register: ByteRegister): Instruction =>
-  new InstructionDefinition(opCode, `LD ${register},HL`)
+export const createLdRHlM = (opCode: OpCode, register: ByteRegister): Instruction =>
+  new InstructionDefinition(opCode, `LD ${register},(hl)`)
     .loadGroupedRegister('hl')
     .readMemory()
     .storeInRegister(register)
 
-export const createLdHlR = (opCode: OpCode, register: ByteRegister): Instruction =>
-  new InstructionDefinition(opCode, `LD HL,${register}`)
+export const createLdHlMR = (opCode: OpCode, register: ByteRegister): Instruction =>
+  new InstructionDefinition(opCode, `LD (hl),${register}`)
     .loadRegister(register)
     .writeMemoryFromGroupedRegisterAddress('hl')
+
+export const createLdHlMN = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LD (hl),n`)
+    .loadProgramByte()
+    .writeMemoryFromGroupedRegisterAddress('hl')
+
+export const createLdGrM = (opCode: OpCode, register: GroupedWordRegister): Instruction =>
+  new InstructionDefinition(opCode, `LD a,${register}`)
+    .loadGroupedRegister(register)
+    .readMemory()
+    .storeInRegister('a')
+
+export const createLdAMNn = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LD a,(nn)`)
+    .loadProgramWord()
+    .readMemory()
+    .storeInRegister('a')
+
+export const createLdMRA = (opCode: OpCode, register: GroupedWordRegister): Instruction =>
+  new InstructionDefinition(opCode, `LD (r),a`)
+    .loadRegister('a')
+    .writeMemoryFromGroupedRegisterAddress(register)
+
+export const createLdMNnA = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LD (nn),a`)
+    .loadRegister('a')
+    .writeMemoryFromProgramWord()

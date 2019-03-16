@@ -1,5 +1,4 @@
 import { ByteValue, WordValue } from './types'
-import { constant, range } from 'lodash'
 
 export interface Memory {
   readonly raw: Array<number>;
@@ -25,3 +24,7 @@ export const writeWord = (memory: Memory, address: MemoryAddress, value: WordVal
   writeByte(memory, address, value & 255)
   writeByte(memory, address + 1, value >> 8)
 }
+
+export const copyMemory = (memory: Memory): Memory => ({
+  raw: memory.raw.slice()
+})

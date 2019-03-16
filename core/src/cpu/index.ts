@@ -22,6 +22,8 @@ export const create = (): Cpu => ({
   }
 })
 
+export const copyCpu = (cpu: Cpu): Cpu => ({ ...cpu })
+
 export const runInstruction = (cpu: Cpu, memory: Memory): void => {
   const opCode = readByte(memory, cpu.registers.pc)
   const instruction = INSTRUCTIONS[opCode]
