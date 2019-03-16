@@ -1,7 +1,7 @@
 import { CpuRegisters } from '../cpu/registers'
 import { Cpu } from '../cpu/types'
 import { create as createCpu } from '../cpu'
-import { create as createMemory, Memory, writeByte } from '../memory'
+import { Memory } from '../memory'
 import { toPairs } from 'lodash'
 
 export const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cpu => {
@@ -16,8 +16,8 @@ export const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cp
 }
 
 export const createMemoryWithValues = (values: { [address: number]: number }): Memory => {
-  const memory = createMemory()
+  const memory = new Memory()
   toPairs(values)
-    .forEach(([address, value]) => writeByte(memory, parseInt(address), value))
+    .forEach(([address, value]) => memory.writeByte(parseInt(address), value))
   return memory
 }

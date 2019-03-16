@@ -6,7 +6,7 @@ import {
   setGroupedRegister
 } from './groupedRegisters'
 import { ByteRegister } from './registers'
-import { Memory, MemoryAddress, readByte, writeByte } from '../memory'
+import { Memory, MemoryAddress } from '../memory'
 import { ByteValue, WordValue } from '../types'
 import { Cpu } from './types'
 
@@ -49,18 +49,18 @@ export const ldR1WordR2 = (r1: GroupedWordRegister, r2: ByteRegister, cpu: Cpu):
 
 // TODO: Don't export, test through runInstruction
 export const ldMemAddN = (register: ByteRegister, cpu: Cpu, memory: Memory, address: MemoryAddress): void => {
-  cpu.registers.a = readByte(memory, address) + cpu.registers[register]
+  cpu.registers.a = memory.readByte(address) + cpu.registers[register]
 }
 
 // TODO: Don't export, test through runInstruction
 export const ldRMemAddN = (register: ByteRegister, cpu: Cpu, memory: Memory, address: MemoryAddress): void => {
-  writeByte(memory, address + cpu.registers[register], cpu.registers.a)
+  memory.writeByte(address + cpu.registers[register], cpu.registers.a)
 }
 
 export const ldDAHl = (cpu: Cpu, memory: Memory): void => {
   const addressRegister = 'hl'
   const address = getGroupedRegister(cpu, addressRegister)
-  const value = readByte(memory, address)
+  const value = memory.readByte(address)
   cpu.registers.a = value
   setGroupedRegister(cpu, addressRegister, value - 1)
 }
@@ -68,6 +68,6 @@ export const ldDAHl = (cpu: Cpu, memory: Memory): void => {
 export const ldIHl = (cpu: Cpu, memory: Memory): void => {
   // Put A into memory address HL. Increment HL.
   const hl = getGroupedRegister(cpu, 'hl')
-  writeByte(memory, hl, cpu.registers.a)
+  memory.writeByte(hl, cpu.registers.a)
   setGroupedRegister(cpu, 'hl', hl + 1)
 }

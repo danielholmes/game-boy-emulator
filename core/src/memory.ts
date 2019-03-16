@@ -1,30 +1,35 @@
 import { ByteValue, WordValue } from './types'
 
-export interface Memory {
-  readonly raw: Array<number>;
-}
-
 export type MemoryAddress = number
 
-export const create = (): Memory => ({
-  raw: [] // range(0, 0xFFFF).map(constant(0x00))
-})
+export class Memory {
+  private readonly raw: Array<ByteValue>
 
-export const writeByte = (memory: Memory, address: MemoryAddress, value: ByteValue): void => {
-  memory.raw[address] = value
+  public constructor(raw: Array<ByteValue> = [])
+  {
+    this.raw = raw
+  }
+
+  public readByte(address: MemoryAddress): ByteValue {
+    return this.raw[address]
+  }
+
+  public readWord(address: MemoryAddress): WordValue {
+    return this.readByte(address) + (this.readByte(address + 1) << 8)
+  }
+
+  public writeByte(address: MemoryAddress, value: ByteValue): void {
+    this.raw[address] = value
+  }
+
+  public writeWord(address: MemoryAddress, value: WordValue): void {
+    this.writeByte(address, value & 255)
+    this.writeByte(address + 1, value >> 8)
+  }
+
+  public copy(): Memory {
+    return new Memory(this.raw.slice())
+  }
 }
 
-export const readByte = (memory: Memory, address: MemoryAddress): ByteValue =>
-  memory.raw[address]
-
-export const readWord = (memory: Memory, address: MemoryAddress): WordValue =>
-  readByte(memory, address) + (readByte(memory, address + 1) << 8)
-
-export const writeWord = (memory: Memory, address: MemoryAddress, value: WordValue): void => {
-  writeByte(memory, address, value & 255)
-  writeByte(memory, address + 1, value >> 8)
-}
-
-export const copyMemory = (memory: Memory): Memory => ({
-  raw: memory.raw.slice()
-})
+// range(0, 0xFFFF).map(constant(0x00))

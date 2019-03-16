@@ -51,7 +51,7 @@ describe('ld', () => {
       'LD %s,n',
       (register: ByteRegister) => {
         cpu.registers.pc = 0x22
-        writeByte(memory, 0x22, 0x77)
+        memory.writeByte(0x22, 0x77)
 
         const instruction = createLdRN(0x3D, register)
 
@@ -70,7 +70,7 @@ describe('ld', () => {
       (register: ByteRegister) => {
         cpu.registers.h = 0xF1
         cpu.registers.l = 0x08
-        writeByte(memory, 0xF108, 0x77)
+        memory.writeByte(0xF108, 0x77)
 
         const instruction = createLdRHlM(0x3D, register)
 
@@ -109,7 +109,7 @@ describe('ld', () => {
         cpu.registers.h = 0xF1
         cpu.registers.l = 0x08
         cpu.registers.pc = 0xCC
-        writeByte(memory, 0xCC, 0xB1)
+        memory.writeByte(0xCC, 0xB1)
 
         const instruction = createLdHlMN(0x3D)
 
@@ -129,8 +129,8 @@ describe('ld', () => {
         const [byte1, byte2] = groupedWordByteRegisters(register)
         cpu.registers[byte1] = 0xF1
         cpu.registers[byte2] = 0x08
-        writeByte(memory, 0xF108, 0x2D)
-        const memorySnapshot = copyMemory(memory)
+        memory.writeByte(0xF108, 0x2D)
+        const memorySnapshot = memory.copy()
 
         const instruction = createLdGrM(0x3D, register)
 
@@ -146,10 +146,10 @@ describe('ld', () => {
   describe('createLdAMNn', () => {
     test('LD a,(nn)', () => {
       cpu.registers.pc = 0xCC
-      writeWord(memory, 0xCC, 0xB116)
-      writeWord(memory, 0xB116, 0xAA21)
+      memory.writeWord(0xCC, 0xB116)
+      memory.writeWord(0xB116, 0xAA21)
 
-      const memorySnapshot = copyMemory(memory)
+      const memorySnapshot = memory.copy()
       const instruction = createLdAMNn(0x3D)
 
       instruction.execute(cpu, memory)
@@ -185,7 +185,7 @@ describe('ld', () => {
     test('LD (nn),a', () => {
       cpu.registers.a = 0x32
       cpu.registers.pc = 0xCC
-      writeWord(memory, 0xCC, 0xB116)
+      memory.writeWord(0xCC, 0xB116)
 
       const cpuSnapshot = copyCpu(cpu)
       const instruction = createLdMNnA(0x3D)

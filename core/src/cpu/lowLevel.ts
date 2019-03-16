@@ -1,5 +1,5 @@
 import { Cpu, Cycles } from './types'
-import { Memory, readByte, readWord, writeByte } from '../memory'
+import { Memory } from '../memory'
 import { ByteRegister } from './registers'
 import { getGroupedRegister, GroupedWordRegister } from './groupedRegisters'
 import { ByteValue, WordValue } from '../types'
@@ -36,7 +36,7 @@ export class ReadMemory implements LowLevelOperation
     if (value === undefined) {
       throw new Error('value undefined')
     }
-    return readByte(memory, value)
+    return memory.readByte(value)
   }
 }
 
@@ -70,7 +70,7 @@ export class WriteMemoryFromGroupedRegisterAddress implements LowLevelOperation
       throw new Error('value undefined')
     }
     const address = getGroupedRegister(cpu, this.register)
-    writeByte(memory, address, value)
+    memory.writeByte(address, value)
   }
 }
 
@@ -83,7 +83,7 @@ export class WriteMemoryFromProgramWordAddress implements LowLevelOperation
       throw new Error('value undefined')
     }
     const address = cpu.registers.pc
-    writeByte(memory, address, value)
+    memory.writeByte(address, value)
     cpu.registers.pc += 2
   }
 }
@@ -111,8 +111,8 @@ export class LoadProgramByte implements LowLevelOperation
   public readonly cycles: Cycles = 4
 
   public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
-    const byte = readByte(memory, cpu.registers.pc)
-    cpu.registers.pc++
+    const byte = memory.readByte(cpu.registers.pc)
+    cpu.registers.pc = (cpu.registers.pc + 1) & 0xFFFF // Mask to 16 bits
     return byte
   }
 }
@@ -122,8 +122,8 @@ export class LoadProgramWord implements LowLevelOperation
   public readonly cycles: Cycles = 8
 
   public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
-    const byte = readWord(memory, cpu.registers.pc)
-    cpu.registers.pc += 2
+    const byte = memory.readWord(cpu.registers.pc)
+    cpu.registers.pc = (cpu.registers.pc + 2) & 0xFFFF // Mask to 16 bits
     return byte
   }
 }

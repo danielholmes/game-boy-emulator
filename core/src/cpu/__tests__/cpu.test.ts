@@ -21,7 +21,7 @@ const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cpu => {
 const createMemoryWithValues = (values: { [address: number]: number }): Memory => {
   const memory = createMemory()
   toPairs(values)
-    .forEach(([address, value]) => writeByte(memory, parseInt(address), value))
+    .forEach(([address, value]) => memory.writeByte(parseInt(address), value))
   return memory
 }
 
@@ -36,7 +36,7 @@ describe('cpu', () => {
 
   describe('runInstruction', () => {
     test('runs NOP', () => {
-      writeByte(memory, 0x10, 0x00)
+      memory.writeByte(0x10, 0x00)
       cpu.registers.pc = 0x10
 
       runInstruction(cpu, memory)
@@ -46,8 +46,8 @@ describe('cpu', () => {
     })
 
     test('runs single operand', () => {
-      writeByte(memory, 0x10, 0x06)
-      writeByte(memory, 0x11, 0x66)
+      memory.writeByte(0x10, 0x06)
+      memory.writeByte(0x11, 0x66)
       cpu.registers.pc = 0x10
 
       runInstruction(cpu, memory)
@@ -58,7 +58,7 @@ describe('cpu', () => {
 
     test('runs smoke test on bios', () => {
       bios.forEach((value, address) => {
-        writeByte(memory, address, value)
+        memory.writeByte(address, value)
       })
 
       while (cpu.registers.pc < bios.length) {

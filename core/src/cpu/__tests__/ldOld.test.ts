@@ -23,7 +23,7 @@ const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cpu => {
 const createMemoryWithValues = (values: { [address: number]: number }): Memory => {
   const memory = createMemory()
   toPairs(values)
-    .forEach(([address, value]) => writeByte(memory, parseInt(address), value))
+    .forEach(([address, value]) => memory.writeByte(parseInt(address), value))
   return memory
 }
 
@@ -100,7 +100,7 @@ describe('cpu', () => {
       'LD Mem + N with %s',
       (register: ByteRegister) => {
         cpu.registers[register] = 0x43
-        writeByte(memory, 0x1234, 0x12)
+        memory.writeByte(0x1234, 0x12)
 
         ldMemAddN(register, cpu, memory, 0x1234)
 

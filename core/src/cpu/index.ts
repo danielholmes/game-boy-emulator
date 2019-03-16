@@ -1,4 +1,4 @@
-import { Memory, readByte, writeWord } from '../memory'
+import { Memory } from '../memory'
 import { partial, mapValues } from 'lodash'
 import { ByteValue, WordValue } from '../types'
 import { ldDAHl, ldIHl, ldMemAddN, ldNnN, ldNnNWord, ldR1R2, ldR1R2Word, ldR1WordR2, ldRMemAddN, ldWordNnN } from './ldOld'
@@ -25,7 +25,7 @@ export const create = (): Cpu => ({
 export const copyCpu = (cpu: Cpu): Cpu => ({ ...cpu })
 
 export const runInstruction = (cpu: Cpu, memory: Memory): void => {
-  const opCode = readByte(memory, cpu.registers.pc)
+  const opCode = memory.readByte(cpu.registers.pc)
   const instruction = INSTRUCTIONS[opCode]
   if (!instruction) {
     throw new Error(`No instruction for opCode 0x${opCode.toString(16)}`)
@@ -34,7 +34,7 @@ export const runInstruction = (cpu: Cpu, memory: Memory): void => {
   if (instruction.operandLength === 0) {
     instruction.execute(cpu, memory)
   } else {
-    instruction.execute(cpu, memory, readByte(memory, cpu.registers.pc + instruction.operandLength))
+    instruction.execute(cpu, memory, memory.readByte(cpu.registers.pc + instruction.operandLength))
   }
   cpu.registers.pc = (cpu.registers.pc + 1 + instruction.operandLength) & 0xFFFF // Mask to 16 bits
 
@@ -56,7 +56,7 @@ const rsv = (cpu: Cpu): void => {
 const rst = (cpu: Cpu, memory: Memory): void => {
   rsv(cpu)
   cpu.registers.sp -= 2
-  writeWord(memory, cpu.registers.sp, cpu.registers.pc)
+  memory.writeWord(cpu.registers.sp, cpu.registers.pc)
   cpu.registers.pc = 0x38
 }
 
