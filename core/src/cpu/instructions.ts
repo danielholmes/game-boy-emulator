@@ -1,0 +1,94 @@
+import { Cpu, Cycles } from './types'
+import { Memory } from '../memory'
+import {
+  LoadGroupedRegister, LoadProgramByte, LoadProgramWord,
+  LoadRegister,
+  LowLevelOperation,
+  LowLevelState, ReadMemory, StoreInRegister,
+  WriteMemoryFromGroupedRegisterAddress, WriteMemoryFromProgramWordAddress
+} from './lowLevel'
+import { ByteRegister } from './registers'
+import { GroupedWordRegister } from './groupedRegisters'
+import { sum } from 'lodash'
+
+export type OpCode = number
+
+export interface Instruction
+{
+  readonly opCode: OpCode;
+  readonly label: string;
+  readonly cycles: Cycles;
+  readonly execute: (cpu: Cpu, memory: Memory) => void;
+}
+
+// TODO: Definition to generate label?
+
+// TODO: A chained instruction definition that only allows valid
+// e.g. not allow loadFromRegister.loadFromRegister
+// if even relevant, see how other instructions pan out
+export class InstructionDefinition implements Instruction
+{
+  public readonly opCode: OpCode
+  public readonly label: string
+  public readonly cycles: Cycles
+  private readonly operations: ReadonlyArray<LowLevelOperation>
+
+  public constructor(opCode: OpCode, label: string, operations: ReadonlyArray<LowLevelOperation> = [])
+  {
+    this.opCode = opCode
+    this.label = label
+    this.operations = operations
+    this.cycles = sum(operations.map((op) => op.cycles))
+  }
+
+  public execute(cpu: Cpu, memory: Memory): void {
+    this.operations
+      .reduce(
+        (value: LowLevelState, op: LowLevelOperation): LowLevelState => {
+          const newResult = op.execute(cpu, memory, value)
+          return newResult ? newResult : undefined
+        },
+        undefined
+      )
+  }
+
+  public loadRegister(register: ByteRegister): InstructionDefinition {
+    return this.withOperation(new LoadRegister(register))
+  }
+
+  public loadGroupedRegister(register: GroupedWordRegister): InstructionDefinition {
+    return this.withOperation(new LoadGroupedRegister(register))
+  }
+
+  public writeMemoryFromGroupedRegisterAddress(register: GroupedWordRegister): InstructionDefinition {
+    return this.withOperation(new WriteMemoryFromGroupedRegisterAddress(register))
+  }
+
+  public loadProgramByte(): InstructionDefinition {
+    return this.withOperation(new LoadProgramByte())
+  }
+
+  public loadProgramWord(): InstructionDefinition {
+    return this.withOperation(new LoadProgramWord())
+  }
+
+  public storeInRegister(register: ByteRegister): InstructionDefinition {
+    return this.withOperation(new StoreInRegister(register))
+  }
+
+  public readMemory(): InstructionDefinition {
+    return this.withOperation(new ReadMemory())
+  }
+
+  public writeMemoryFromProgramWord(): InstructionDefinition {
+    return this.withOperation(new WriteMemoryFromProgramWordAddress())
+  }
+
+  private withOperation(operation: LowLevelOperation): InstructionDefinition {
+    return new InstructionDefinition(
+      this.opCode,
+      this.label,
+      [...this.operations, operation]
+    )
+  }
+}

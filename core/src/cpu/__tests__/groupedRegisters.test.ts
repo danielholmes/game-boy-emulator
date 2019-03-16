@@ -1,21 +1,10 @@
 /* global describe, test, expect */
 
-import { Memory, create as createMemory } from '../../memory'
-import { CpuRegisters } from '../registers'
+import { Memory } from '../../memory'
 import { Cpu } from '../types'
 import { create as createCpu } from '../'
 import { setGroupedRegister } from '../groupedRegisters'
-
-const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cpu => {
-  const cpu = createCpu()
-  return {
-    ...cpu,
-    registers: {
-      ...cpu.registers,
-      ...withRegisters
-    }
-  }
-}
+import { createCpuWithRegisters } from '../../test/help'
 
 describe('cpu', () => {
   let cpu: Cpu
@@ -23,7 +12,7 @@ describe('cpu', () => {
 
   beforeEach(() => {
     cpu = createCpu()
-    memory = createMemory()
+    memory = new Memory()
   })
 
   describe('setGroupedRegister', () => {

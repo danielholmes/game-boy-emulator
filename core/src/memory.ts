@@ -5,9 +5,9 @@ export type MemoryAddress = number
 export class Memory {
   private readonly raw: Array<ByteValue>
 
-  public constructor(raw: Array<ByteValue> = [])
+  public constructor(raw?: Array<ByteValue>)
   {
-    this.raw = raw
+    this.raw = raw ? raw : []
   }
 
   public readByte(address: MemoryAddress): ByteValue {
@@ -15,7 +15,7 @@ export class Memory {
   }
 
   public readWord(address: MemoryAddress): WordValue {
-    return this.readByte(address) + (this.readByte(address + 1) << 8)
+    return (this.readByte(address) << 8) + this.readByte(address + 1)
   }
 
   public writeByte(address: MemoryAddress, value: ByteValue): void {
@@ -23,8 +23,8 @@ export class Memory {
   }
 
   public writeWord(address: MemoryAddress, value: WordValue): void {
-    this.writeByte(address, value & 255)
-    this.writeByte(address + 1, value >> 8)
+    this.writeByte(address, value >> 8)
+    this.writeByte(address + 1, value & 255)
   }
 
   public copy(): Memory {

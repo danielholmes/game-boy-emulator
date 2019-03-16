@@ -1,6 +1,6 @@
 /* global describe, test, expect */
 
-import { Memory, create as createMemory, writeByte, writeWord, copyMemory } from '../../memory'
+import { Memory } from '../../memory'
 import each from 'jest-each'
 import { BYTE_REGISTER_PAIR_PERMUTATIONS, BYTE_REGISTERS, ByteRegister } from '../registers'
 import { Cpu } from '../types'
@@ -18,7 +18,7 @@ import {
 import { createCpuWithRegisters, createMemoryWithValues } from '../../test/help'
 import { groupedWordByteRegisters, GroupedWordRegister } from '../groupedRegisters'
 
-const EMPTY_MEMORY = createMemory()
+const EMPTY_MEMORY = new Memory()
 
 describe('ld', () => {
   let cpu: Cpu
@@ -26,7 +26,7 @@ describe('ld', () => {
 
   beforeEach(() => {
     cpu = createCpu()
-    memory = createMemory()
+    memory = new Memory()
   })
 
   describe('createLdRR', () => {
@@ -155,7 +155,7 @@ describe('ld', () => {
       instruction.execute(cpu, memory)
 
       expect(instruction.cycles).toBe(16)
-      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0xCE, a: 0x21 }))
+      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0xCE, a: 0xAA }))
       expect(memory).toEqual(memorySnapshot)
       }
     )
@@ -195,7 +195,6 @@ describe('ld', () => {
       expect(instruction.cycles).toBe(16)
       expect(cpu).toEqual(cpuSnapshot)
       expect(memory).toEqual(createMemoryWithValues({ 0xCC: 0xB1, 0xCD: 0x16, 0xB116: 0x32 }))
-      }
-    )
+    })
   })
 })

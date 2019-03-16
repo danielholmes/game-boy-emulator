@@ -1,29 +1,10 @@
 /* global describe, test, expect */
 
-import { Memory, create as createMemory, writeByte } from '../../memory'
-import { toPairs } from 'lodash'
+import { Memory } from '../../memory'
 import bios from '../../bios'
 import { create as createCpu, runInstruction } from '../'
-import { CpuRegisters } from '../registers'
 import { Cpu } from '../types'
-
-const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cpu => {
-  const cpu = createCpu()
-  return {
-    ...cpu,
-    registers: {
-      ...cpu.registers,
-      ...withRegisters
-    }
-  }
-}
-
-const createMemoryWithValues = (values: { [address: number]: number }): Memory => {
-  const memory = createMemory()
-  toPairs(values)
-    .forEach(([address, value]) => memory.writeByte(parseInt(address), value))
-  return memory
-}
+import { createCpuWithRegisters, createMemoryWithValues } from '../../test/help'
 
 describe('cpu', () => {
   let cpu: Cpu
@@ -31,7 +12,7 @@ describe('cpu', () => {
 
   beforeEach(() => {
     cpu = createCpu()
-    memory = createMemory()
+    memory = new Memory()
   })
 
   describe('runInstruction', () => {

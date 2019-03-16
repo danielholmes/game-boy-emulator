@@ -82,7 +82,7 @@ export class WriteMemoryFromProgramWordAddress implements LowLevelOperation
     if (value === undefined) {
       throw new Error('value undefined')
     }
-    const address = cpu.registers.pc
+    const address = memory.readWord(cpu.registers.pc)
     memory.writeByte(address, value)
     cpu.registers.pc += 2
   }
@@ -102,7 +102,7 @@ export class StoreInRegister implements LowLevelOperation
     if (value === undefined) {
       throw new Error('value not defined')
     }
-    cpu.registers[this.register] = value
+    cpu.registers[this.register] = value & 255
   }
 }
 
