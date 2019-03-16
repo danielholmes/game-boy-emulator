@@ -1,13 +1,14 @@
 import { ByteValue, WordValue } from './types'
+import { constant, range } from 'lodash'
 
 export interface Memory {
-  raw: number[];
+  readonly raw: Array<number>;
 }
 
 export type MemoryAddress = number
 
 export const create = (): Memory => ({
-  raw: [] // TODO: Fill with 0?
+  raw: [] // range(0, 0xFFFF).map(constant(0x00))
 })
 
 export const writeByte = (memory: Memory, address: MemoryAddress, value: ByteValue): void => {

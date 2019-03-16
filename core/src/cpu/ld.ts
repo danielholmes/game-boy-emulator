@@ -1,73 +1,103 @@
-// TODO: Don't export, test through runInstruction
-import {
-  getGroupedRegister,
-  groupedWordByteRegisters,
-  GroupedWordRegister,
-  setGroupedRegister
-} from './groupedRegisters'
+import { Cpu, Cycles } from './types'
+import { Memory } from '../memory'
 import { ByteRegister } from './registers'
-import { Memory, MemoryAddress, readByte, writeByte } from '../memory'
-import { ByteValue, WordValue } from '../types'
-import { Cpu } from './types'
+import { sum } from 'lodash'
+import {
+  LoadGroupedRegister, WriteMemoryFromGroupedRegisterAddress,
+  LoadProgramByte,
+  LoadRegister,
+  LowLevelOperation,
+  LowLevelState,
+  ReadMemory,
+  StoreInRegister
+} from './lowLevel'
+import { GroupedWordRegister } from './groupedRegisters'
 
-export const ldNnN = (nn: ByteRegister, cpu: Cpu, memory: Memory, n: ByteValue): void => {
-  cpu.registers[nn] = n
+type OpCode = number
+
+interface Instruction
+{
+  readonly opCode: OpCode;
+  readonly label: string;
+  readonly cycles: Cycles;
+  readonly execute: (cpu: Cpu, memory: Memory) => void;
 }
 
-// TODO: Don't export, test through runInstruction
-export const ldWordNnN = (n: GroupedWordRegister | 'sp', cpu: Cpu, memory: Memory, nn: WordValue): void => {
-  if (n === 'sp') {
-    cpu.registers[n] = nn
-  } else {
-    setGroupedRegister(cpu, n, nn)
+// TODO: A chained instruction definition that only allows valid
+// e.g. not allow loadFromRegister.loadFromRegister
+// if even relevant, see how other instructions pan out
+class InstructionDefinition implements Instruction
+{
+  public readonly opCode: OpCode
+  public readonly label: string
+  public readonly cycles: Cycles
+  private readonly operations: ReadonlyArray<LowLevelOperation>
+
+  public constructor(opCode: OpCode, label: string, operations: ReadonlyArray<LowLevelOperation> = [])
+  {
+    this.opCode = opCode
+    this.label = label
+    this.operations = operations
+    this.cycles = sum(operations.map((op) => op.cycles))
+  }
+
+  public execute(cpu: Cpu, memory: Memory): void {
+    let result: LowLevelState = undefined
+    this.operations.forEach((op) => {
+      result = op.execute(cpu, memory, result)
+    })
+  }
+
+  public loadRegister(register: ByteRegister): InstructionDefinition {
+    return this.withOperation(new LoadRegister(register))
+  }
+
+  public loadGroupedRegister(register: GroupedWordRegister): InstructionDefinition {
+    return this.withOperation(new LoadGroupedRegister(register))
+  }
+
+  public writeMemoryFromGroupedRegisterAddress(register: GroupedWordRegister): InstructionDefinition {
+    return this.withOperation(new WriteMemoryFromGroupedRegisterAddress(register))
+  }
+
+  public loadProgramByte(): InstructionDefinition {
+    return this.withOperation(new LoadProgramByte())
+  }
+
+  public storeInRegister(register: ByteRegister): InstructionDefinition {
+    return this.withOperation(new StoreInRegister(register))
+  }
+
+  public readMemory(): InstructionDefinition {
+    return this.withOperation(new ReadMemory())
+  }
+
+  private withOperation(operation: LowLevelOperation): InstructionDefinition {
+    return new InstructionDefinition(
+      this.opCode,
+      this.label,
+      [...this.operations, operation]
+    )
   }
 }
 
-// TODO: Don't export, test through runInstruction
-export const ldNnNWord = (nn: ByteRegister, cpu: Cpu, memory: Memory, n: WordValue): void => {
-  cpu.registers[nn] = n & 255
-}
+export const createLdRR = (opCode: OpCode, register1: ByteRegister, register2: ByteRegister): Instruction =>
+  new InstructionDefinition(opCode, `LD ${register1},${register2}`)
+    .loadRegister(register2)
+    .storeInRegister(register1)
 
-// TODO: Don't export, test through runInstruction
-export const ldR1R2 = (r1: ByteRegister, r2: ByteRegister, cpu: Cpu, memory: Memory): void => {
-  cpu.registers[r1] = cpu.registers[r2]
-}
+export const createLdRN = (opCode: OpCode, register: ByteRegister): Instruction =>
+  new InstructionDefinition(opCode, `LD ${register},n`)
+    .loadProgramByte()
+    .storeInRegister(register)
 
-// TODO: Don't export, test through runInstruction
-// Not sure how to handle overflow of a 16 bit going in to 8 bit
-export const ldR1R2Word = (r1: ByteRegister, r2: GroupedWordRegister, cpu: Cpu, memory: Memory): void => {
-  const wordValue = getGroupedRegister(cpu, r2)
-  cpu.registers[r1] = wordValue & 255
-}
+export const createLdRHl = (opCode: OpCode, register: ByteRegister): Instruction =>
+  new InstructionDefinition(opCode, `LD ${register},HL`)
+    .loadGroupedRegister('hl')
+    .readMemory()
+    .storeInRegister(register)
 
-// TODO: Don't export, test through runInstruction
-export const ldR1WordR2 = (r1: GroupedWordRegister, r2: ByteRegister, cpu: Cpu): void => {
-  const [r1Byte1, r1Byte2] = groupedWordByteRegisters(r1)
-  cpu.registers[r1Byte1] = 0x00
-  cpu.registers[r1Byte2] = cpu.registers[r2]
-}
-
-// TODO: Don't export, test through runInstruction
-export const ldMemAddN = (register: ByteRegister, cpu: Cpu, memory: Memory, address: MemoryAddress): void => {
-  cpu.registers.a = readByte(memory, address) + cpu.registers[register]
-}
-
-// TODO: Don't export, test through runInstruction
-export const ldRMemAddN = (register: ByteRegister, cpu: Cpu, memory: Memory, address: MemoryAddress): void => {
-  writeByte(memory, address + cpu.registers[register], cpu.registers.a)
-}
-
-export const ldDAHl = (cpu: Cpu, memory: Memory): void => {
-  const addressRegister = 'hl'
-  const address = getGroupedRegister(cpu, addressRegister)
-  const value = readByte(memory, address)
-  cpu.registers.a = value
-  setGroupedRegister(cpu, addressRegister, value - 1)
-}
-
-export const ldIHl = (cpu: Cpu, memory: Memory): void => {
-  // Put A into memory address HL. Increment HL.
-  const hl = getGroupedRegister(cpu, 'hl')
-  writeByte(memory, hl, cpu.registers.a)
-  setGroupedRegister(cpu, 'hl', hl + 1)
-}
+export const createLdHlR = (opCode: OpCode, register: ByteRegister): Instruction =>
+  new InstructionDefinition(opCode, `LD HL,${register}`)
+    .loadRegister(register)
+    .writeMemoryFromGroupedRegisterAddress('hl')
