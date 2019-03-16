@@ -42,7 +42,7 @@ describe('cpu', () => {
         memory.writeByte(address, value)
       })
 
-      while (cpu.registers.pc < bios.length) {
+      while (cpu.registers.pc <= bios.length) {
         console.log(cpu.registers.pc, bios.length)
         runInstruction(cpu, memory)
       }

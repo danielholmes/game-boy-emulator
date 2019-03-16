@@ -1,4 +1,4 @@
-import { Memory, MemoryAddress } from '../memory'
+import { Memory } from '../memory'
 import { fromPairs } from 'lodash'
 import { Cpu } from './types'
 import { Instruction, OpCode } from './instructions'
@@ -6,6 +6,8 @@ import { createLdGrNn, createLdMNnSp, createLdRR, createLdSpNn } from './ld'
 import { ByteRegister } from './registers'
 import { GroupedWordRegister } from './groupedRegisters'
 import { createRst, RstAddress } from './rst'
+import { createDecR } from './dec'
+import { createIncRr } from './inc'
 
 export const create = (): Cpu => ({
   registers: {
@@ -51,6 +53,8 @@ export const runInstruction = (cpu: Cpu, memory: Memory): void => {
 // LD (HL),H 74 8
 // LD (HL),L 75 8
 // LD (HL),n 36 12
+
+// DEC (HL) 35 12
 
 const INSTRUCTIONS: { [opCode: number]: Instruction } =
   fromPairs(
@@ -123,10 +127,33 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } =
       ] as ReadonlyArray<[OpCode, RstAddress]>)
         .map(([opCode, value]) => createRst(opCode, value)),
 
-      createLdMNnSp(0x08)
+      createLdMNnSp(0x08),
+
+      ...([
+        [0x3D, 'a'],
+        [0x05, 'b'],
+        [0x0D, 'c'],
+        [0x15, 'd'],
+        [0x1D, 'e'],
+        [0x25, 'h'],
+        [0x2D, 'l']
+      ] as ReadonlyArray<[OpCode, ByteRegister]>)
+        .map(([opCode, register]) => createDecR(opCode, register)),
+
+      ...([
+        [0x03, 'bc'],
+        [0x13, 'de'],
+        [0x23, 'hl']
+      ] as ReadonlyArray<[OpCode, GroupedWordRegister]>)
+        .map(([opCode, register]) => createIncRr(opCode, register)),
     ]
       .map((i: Instruction) => [i.opCode, i])
   )
+
+// INC BC 03 8
+// INC DE 13 8
+// INC HL 23 8
+// INC SP 33 8
 
 // const nop = (): void => {}
 //

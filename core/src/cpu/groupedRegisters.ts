@@ -4,6 +4,8 @@ import { Cpu } from './types'
 
 export type GroupedWordRegister = 'bc' | 'de' | 'hl'
 
+export const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister> = ['bc', 'de', 'hl']
+
 const BC_BYTE_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['b', 'c']
 const DE_BYTE_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['d', 'e']
 const HL_BYTE_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['h', 'l']

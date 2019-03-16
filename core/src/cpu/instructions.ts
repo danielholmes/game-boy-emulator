@@ -1,7 +1,8 @@
 import { Cpu, Cycles } from './types'
 import { Memory, MemoryAddress } from '../memory'
 import {
-  DecrementStackPointer,
+  DecrementRegister,
+  DecrementStackPointer, IncrementGroupedRegister,
   LoadGroupedRegister, LoadProgramByte, LoadProgramCounter, LoadProgramWord,
   LoadRegister, LoadStackPointer,
   LowLevelOperation,
@@ -76,6 +77,14 @@ export class InstructionDefinition implements Instruction
 
   public loadStackPointer(): InstructionDefinition {
     return this.withOperation(new LoadStackPointer())
+  }
+
+  public decrementRegister(register: ByteRegister): InstructionDefinition {
+    return this.withOperation(new DecrementRegister(register))
+  }
+
+  public incrementGroupedRegister(register: GroupedWordRegister): InstructionDefinition {
+    return this.withOperation(new IncrementGroupedRegister(register))
   }
 
   public storeInRegister(register: ByteRegister): InstructionDefinition {

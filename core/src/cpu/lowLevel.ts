@@ -205,10 +205,38 @@ export class LoadProgramWord implements LowLevelOperation
   }
 }
 
+export class IncrementGroupedRegister implements LowLevelOperation
+{
+  public readonly cycles: Cycles = 4
+  private readonly register: GroupedWordRegister
+
+  public constructor(register: GroupedWordRegister) {
+    this.register = register
+  }
+
+  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+    setGroupedRegister(cpu, this.register, getGroupedRegister(cpu, this.register) + 1)
+  }
+}
+
 export class LoadStackPointer {
   public readonly cycles: Cycles = 4
 
   public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
     return cpu.registers.sp
+  }
+}
+
+export class DecrementRegister {
+  public readonly cycles: Cycles = 4
+  private readonly register: ByteRegister
+
+  public constructor(register: ByteRegister)
+  {
+    this.register = register
+  }
+
+  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+    cpu.registers[this.register]--
   }
 }
