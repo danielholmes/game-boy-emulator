@@ -7,13 +7,13 @@ import { Cpu } from '../types'
 import { copyCpu, create as createCpu } from '../'
 import {
   createLdAMNn,
-  createLdGrM,
+  createLdGrM, createLdGrNn,
   createLdHlMN,
-  createLdHlMR, createLdMNnA,
+  createLdHlMR, createLdMNnA, createLdMNnSp,
   createLdMRA,
   createLdRHlM,
   createLdRN,
-  createLdRR
+  createLdRR, createLdSpNn
 } from '../ld'
 import { createCpuWithRegisters, createMemoryWithValues } from '../../test/help'
 import { groupedWordByteRegisters, GroupedWordRegister } from '../groupedRegisters'
@@ -195,6 +195,58 @@ describe('ld', () => {
       expect(instruction.cycles).toBe(16)
       expect(cpu).toEqual(cpuSnapshot)
       expect(memory).toEqual(createMemoryWithValues({ 0xCC: 0xB1, 0xCD: 0x16, 0xB116: 0x32 }))
+    })
+  })
+
+  describe('createLdGrNn', () => {
+    each([['bc'], ['de'], ['hl']]).test(
+      'LD %s,nn',
+      (register: GroupedWordRegister) => {
+        const [byte1, byte2] = groupedWordByteRegisters(register)
+        cpu.registers.pc = 0x5601
+        memory.writeWord(0x5601, 0x7654)
+
+        const memorySnapshot = memory.copy()
+        const instruction = createLdGrNn(0x3D, register)
+
+        instruction.execute(cpu, memory)
+
+        expect(instruction.cycles).toBe(12)
+        expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x5603, [byte1]: 0x76, [byte2]: 0x54 }))
+        expect(memory).toEqual(memorySnapshot)
+      }
+    )
+  })
+
+  describe('createLdSpNn', () => {
+    test('LD sp,nn', () => {
+      cpu.registers.pc = 0x5601
+      memory.writeWord(0x5601, 0x7654)
+
+      const memorySnapshot = memory.copy()
+      const instruction = createLdSpNn(0x3D)
+
+      instruction.execute(cpu, memory)
+
+      expect(instruction.cycles).toBe(12)
+      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x5603, sp: 0x7654 }))
+      expect(memory).toEqual(memorySnapshot)
+    })
+  })
+
+  describe('createLdMNnSp', () => {
+    test('LD (nn),sp', () => {
+      cpu.registers.pc = 0x5601
+      cpu.registers.sp = 0x1712
+      memory.writeWord(0x5601, 0x7654)
+
+      const instruction = createLdMNnSp(0x3D)
+
+      instruction.execute(cpu, memory)
+
+      expect(instruction.cycles).toBe(20)
+      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x5603, sp: 0x1712 }))
+      expect(memory).toEqual(createMemoryWithValues({ 0x7654: 0x1712, 0x5601: 0x76, 0x5602: 0x54 }))
     })
   })
 })

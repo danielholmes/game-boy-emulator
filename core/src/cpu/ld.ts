@@ -49,3 +49,18 @@ export const createLdMNnA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (nn),a`)
     .loadRegister('a')
     .writeMemoryFromProgramWord()
+
+export const createLdGrNn = (opCode: OpCode, register: GroupedWordRegister): Instruction =>
+  new InstructionDefinition(opCode, `LD ${register},nn`)
+    .loadProgramWord()
+    .storeInGroupedRegister(register)
+
+export const createLdSpNn = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LD sp,nn`)
+    .loadProgramWord()
+    .storeInStackPointer()
+
+export const createLdMNnSp = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LD nn,sp`)
+    .loadStackPointer()
+    .writeMemoryFromProgramWord()

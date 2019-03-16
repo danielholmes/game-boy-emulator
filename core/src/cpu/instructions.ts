@@ -1,15 +1,17 @@
 import { Cpu, Cycles } from './types'
-import { Memory } from '../memory'
+import { Memory, MemoryAddress } from '../memory'
 import {
-  LoadGroupedRegister, LoadProgramByte, LoadProgramWord,
-  LoadRegister,
+  DecrementStackPointer,
+  LoadGroupedRegister, LoadProgramByte, LoadProgramCounter, LoadProgramWord,
+  LoadRegister, LoadStackPointer,
   LowLevelOperation,
-  LowLevelState, ReadMemory, StoreInRegister,
-  WriteMemoryFromGroupedRegisterAddress, WriteMemoryFromProgramWordAddress
+  LowLevelState, ReadMemory, SetProgramCounter, StoreInGroupedRegister, StoreInRegister, StoreInStackPointer,
+  WriteMemoryFromGroupedRegisterAddress, WriteMemoryFromProgramWordAddress, WriteMemoryFromStackPointer
 } from './lowLevel'
 import { ByteRegister } from './registers'
 import { GroupedWordRegister } from './groupedRegisters'
 import { sum } from 'lodash'
+import { WordValue } from '../types'
 
 export type OpCode = number
 
@@ -72,8 +74,20 @@ export class InstructionDefinition implements Instruction
     return this.withOperation(new LoadProgramWord())
   }
 
+  public loadStackPointer(): InstructionDefinition {
+    return this.withOperation(new LoadStackPointer())
+  }
+
   public storeInRegister(register: ByteRegister): InstructionDefinition {
     return this.withOperation(new StoreInRegister(register))
+  }
+
+  public storeInGroupedRegister(register: GroupedWordRegister): InstructionDefinition {
+    return this.withOperation(new StoreInGroupedRegister(register))
+  }
+
+  public storeInStackPointer(): InstructionDefinition {
+    return this.withOperation(new StoreInStackPointer())
   }
 
   public readMemory(): InstructionDefinition {
@@ -82,6 +96,22 @@ export class InstructionDefinition implements Instruction
 
   public writeMemoryFromProgramWord(): InstructionDefinition {
     return this.withOperation(new WriteMemoryFromProgramWordAddress())
+  }
+
+  public decrementStackPointer(amount: WordValue): InstructionDefinition {
+    return this.withOperation(new DecrementStackPointer(amount))
+  }
+
+  public setProgramCounter(address: MemoryAddress): InstructionDefinition {
+    return this.withOperation(new SetProgramCounter(address))
+  }
+
+  public loadProgramCounter(): InstructionDefinition {
+    return this.withOperation(new LoadProgramCounter())
+  }
+
+  public writeMemoryFromStackPointer(): InstructionDefinition {
+    return this.withOperation(new WriteMemoryFromStackPointer())
   }
 
   private withOperation(operation: LowLevelOperation): InstructionDefinition {
