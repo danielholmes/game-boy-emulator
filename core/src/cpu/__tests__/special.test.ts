@@ -15,7 +15,7 @@ describe('special', () => {
     memory = new Memory()
   })
 
-  describe('createIncSp', () => {
+  describe('createNop', () => {
     test('success', () => {
       const instruction = createNop(0x00)
 

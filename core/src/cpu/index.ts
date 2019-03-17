@@ -3,8 +3,7 @@ import { fromPairs } from 'lodash'
 import { Cpu } from './types'
 import { Instruction, OpCode } from './instructions'
 import { createLddMHlA, createLdGrNn, createLdMNnSp, createLdRN, createLdRR, createLdSpNn } from './ld'
-import { ByteRegister } from './registers'
-import { GroupedWordRegister } from './groupedRegisters'
+import { ByteRegister, CpuRegistersImpl, GroupedWordRegister } from './registers'
 import { createRst, RstAddress } from './rst'
 import { createDecR } from './dec'
 import { createIncRr, createIncSp } from './inc'
@@ -16,20 +15,7 @@ import { createJrNzN } from './jr'
 import { createSbcAR } from './sbc'
 
 export const create = (): Cpu => ({
-  registers: {
-    a: 0,
-    b: 0,
-    c: 0,
-    d: 0,
-    e: 0,
-    h: 0,
-    l: 0,
-
-    f: 0,
-
-    pc: 0,
-    sp: 0
-  }
+  registers: new CpuRegistersImpl()
 })
 
 export const copyCpu = (cpu: Cpu): Cpu => ({ ...cpu })

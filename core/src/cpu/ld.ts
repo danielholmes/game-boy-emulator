@@ -1,5 +1,4 @@
-import { ByteRegister } from './registers'
-import { GroupedWordRegister } from './groupedRegisters'
+import { ByteRegister, GroupedWordRegister } from './registers'
 import { Instruction, InstructionDefinition, OpCode } from './instructions'
 
 export const createLdRR = (opCode: OpCode, register1: ByteRegister, register2: ByteRegister): Instruction =>

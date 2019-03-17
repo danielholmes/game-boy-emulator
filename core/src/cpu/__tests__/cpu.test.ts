@@ -1,12 +1,10 @@
 /* global describe, test, expect */
 
-import { Memory, MemoryAddress } from '../../memory'
+import { Memory } from '../../memory'
 import bios from '../../bios'
 import { create as createCpu, runInstruction } from '../'
 import { Cpu } from '../types'
 import { createCpuWithRegisters, createMemoryWithValues } from '../../test/help'
-import { toPairs, sortBy } from 'lodash'
-import { ByteValue, formatByte, formatWord } from '../../types'
 
 describe('cpu', () => {
   let cpu: Cpu
@@ -15,6 +13,14 @@ describe('cpu', () => {
   beforeEach(() => {
     cpu = createCpu()
     memory = new Memory()
+  })
+
+  describe('setGroupedRegister', () => {
+    test('set hl', () => {
+      cpu.registers.hl = 0xFE12
+
+      expect(cpu).toEqual(createCpuWithRegisters({ h: 0xFE, l: 0x12 }))
+    })
   })
 
   describe('runInstruction', () => {

@@ -2,7 +2,12 @@
 
 import { Memory } from '../../memory'
 import each from 'jest-each'
-import { BYTE_REGISTER_PAIR_PERMUTATIONS, BYTE_REGISTERS, ByteRegister } from '../registers'
+import {
+  BYTE_REGISTER_PAIR_PERMUTATIONS,
+  BYTE_REGISTERS,
+  ByteRegister,
+  GroupedWordRegister
+} from '../registers'
 import { Cpu } from '../types'
 import { copyCpu, create as createCpu } from '../'
 import {
@@ -16,7 +21,6 @@ import {
   createLdRR, createLdSpNn
 } from '../ld'
 import { createCpuWithRegisters, createMemoryWithValues } from '../../test/help'
-import { groupedWordByteRegisters, GroupedWordRegister } from '../groupedRegisters'
 
 const EMPTY_MEMORY = new Memory()
 
@@ -50,8 +54,8 @@ describe('ld', () => {
     each(BYTE_REGISTERS.map((r) => [r])).test(
       'LD %s,n',
       (register: ByteRegister) => {
-        cpu.registers.pc = 0x22
-        memory.writeByte(0x22, 0x77)
+        cpu.registers.pc = 0x0022
+        memory.writeByte(0x0022, 0x77)
 
         const instruction = createLdRN(0x3D, register)
 
@@ -126,9 +130,7 @@ describe('ld', () => {
     each([['bc'], ['de']]).test(
       'LD a,(%s)',
       (register: GroupedWordRegister) => {
-        const [byte1, byte2] = groupedWordByteRegisters(register)
-        cpu.registers[byte1] = 0xF1
-        cpu.registers[byte2] = 0x08
+        cpu.registers[register] = 0xF108
         memory.writeByte(0xF108, 0x2D)
         const memorySnapshot = memory.copy()
 
@@ -137,7 +139,7 @@ describe('ld', () => {
         instruction.execute(cpu, memory)
 
         expect(instruction.cycles).toBe(8)
-        expect(cpu).toEqual(createCpuWithRegisters({ a: 0x2D, [byte1]: 0xF1, [byte2]: 0x08 }))
+        expect(cpu).toEqual(createCpuWithRegisters({ a: 0x2D, [register]: 0xF108 }))
         expect(memory).toEqual(memorySnapshot)
       }
     )
@@ -165,9 +167,7 @@ describe('ld', () => {
     each([['bc'], ['de']]).test(
       'LD (%s),a',
       (register: GroupedWordRegister) => {
-        const [byte1, byte2] = groupedWordByteRegisters(register)
-        cpu.registers[byte1] = 0xF1
-        cpu.registers[byte2] = 0x08
+        cpu.registers[register] = 0xF108
         cpu.registers.a = 0x56
 
         const instruction = createLdMRA(0x3D, register)
@@ -175,7 +175,7 @@ describe('ld', () => {
         instruction.execute(cpu, memory)
 
         expect(instruction.cycles).toBe(8)
-        expect(cpu).toEqual(createCpuWithRegisters({ a: 0x56, [byte1]: 0xF1, [byte2]: 0x08 }))
+        expect(cpu).toEqual(createCpuWithRegisters({ a: 0x56, [register]: 0xF108 }))
         expect(memory).toEqual(createMemoryWithValues({ 0xF108: 0x56 }))
       }
     )
@@ -202,7 +202,6 @@ describe('ld', () => {
     each([['bc'], ['de'], ['hl']]).test(
       'LD %s,nn',
       (register: GroupedWordRegister) => {
-        const [byte1, byte2] = groupedWordByteRegisters(register)
         cpu.registers.pc = 0x5601
         memory.writeWord(0x5601, 0x7654)
 
@@ -212,7 +211,7 @@ describe('ld', () => {
         instruction.execute(cpu, memory)
 
         expect(instruction.cycles).toBe(12)
-        expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x5603, [byte1]: 0x76, [byte2]: 0x54 }))
+        expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x5603, [register]: 0x7654 }))
         expect(memory).toEqual(memorySnapshot)
       }
     )
@@ -252,8 +251,7 @@ describe('ld', () => {
 
   describe('createLddMHlA', () => {
     test('LDD (HL),A', () => {
-      cpu.registers.h = 0x56
-      cpu.registers.l = 0x12
+      cpu.registers.hl = 0x5612
       cpu.registers.a = 0xAF
 
       const instruction = createLddMHlA(0x3D)
@@ -261,7 +259,7 @@ describe('ld', () => {
       instruction.execute(cpu, memory)
 
       expect(instruction.cycles).toBe(8)
-      expect(cpu).toEqual(createCpuWithRegisters({ a: 0xAF, h: 0x56, l: 0x11 }))
+      expect(cpu).toEqual(createCpuWithRegisters({ a: 0xAF, hl: 0x5611 }))
       expect(memory).toEqual(createMemoryWithValues({ 0x5612: 0xAF }))
     })
   })

@@ -17,6 +17,8 @@ yarn
 
 ## References
 
+ - https://realboyemulator.wordpress.com/posts/
+ - https://gekkio.fi/files/gb-docs/gbctr.pdf
  - https://cturt.github.io/cinoop.html
  - https://blog.rekawek.eu/2017/02/09/coffee-gb/
  - https://www.cl.cam.ac.uk/~pv273/slides/emulation.pdf

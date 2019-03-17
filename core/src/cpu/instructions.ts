@@ -9,10 +9,9 @@ import {
   LoadRegister, LoadStackPointer,
   LowLevelOperation,
   LowLevelState, Nop, ReadMemory, SetProgramCounter, StoreInGroupedRegister, StoreInRegister, StoreInStackPointer,
-  WriteMemoryFromGroupedRegisterAddress, WriteMemoryFromProgramWordAddress, WriteMemoryFromStackPointer, XOrRegister
+  WriteMemoryFromGroupedRegisterAddress, WriteMemoryFromOperandAddress, WriteMemoryFromStackPointer, XOrRegister
 } from './lowLevel'
-import { ByteRegister } from './registers'
-import { GroupedWordRegister } from './groupedRegisters'
+import { ByteRegister, GroupedWordRegister } from './registers'
 import { sum } from 'lodash'
 import { ByteValue, WordValue } from '../types'
 
@@ -43,7 +42,8 @@ export class InstructionDefinition implements Instruction
     this.opCode = opCode
     this.label = label
     this.operations = operations
-    this.cycles = sum(operations.map((op) => op.cycles))
+    this.cycles = sum(operations.map((op) => op.cycles)) + 4
+    // 4 are the cycles from reading the instruction. Perhaps shouldnt actually go here
   }
 
   public execute(cpu: Cpu, memory: Memory): void {
@@ -134,7 +134,7 @@ export class InstructionDefinition implements Instruction
   }
 
   public writeMemoryFromProgramWord(): InstructionDefinition {
-    return this.withOperation(new WriteMemoryFromProgramWordAddress())
+    return this.withOperation(new WriteMemoryFromOperandAddress())
   }
 
   public decrementStackPointer(amount: WordValue): InstructionDefinition {
