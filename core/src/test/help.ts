@@ -4,6 +4,8 @@ import { create as createCpu } from '../cpu'
 import { Memory } from '../memory'
 import { toPairs } from 'lodash'
 
+export const EMPTY_MEMORY = new Memory()
+
 export const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cpu => {
   const cpu = createCpu()
   return {

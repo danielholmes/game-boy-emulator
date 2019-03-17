@@ -219,6 +219,37 @@ export class IncrementGroupedRegister implements LowLevelOperation
   }
 }
 
+export class XOrRegister implements LowLevelOperation {
+  public readonly cycles: Cycles = 4
+  private readonly register: ByteRegister
+
+  public constructor(register: ByteRegister)
+  {
+    this.register = register
+  }
+
+  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+    cpu.registers.a = cpu.registers[this.register] & 0xFF
+    cpu.registers.f = cpu.registers.a ? 0x00 : 0x80
+  }
+}
+
+export class Nop implements LowLevelOperation {
+  public readonly cycles: Cycles = 4
+
+  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  }
+}
+
+export class IncrementStackPointer implements LowLevelOperation
+{
+  public readonly cycles: Cycles = 8
+
+  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+    cpu.registers.sp++
+  }
+}
+
 export class LoadStackPointer {
   public readonly cycles: Cycles = 4
 

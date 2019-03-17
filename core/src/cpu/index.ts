@@ -7,7 +7,9 @@ import { ByteRegister } from './registers'
 import { GroupedWordRegister } from './groupedRegisters'
 import { createRst, RstAddress } from './rst'
 import { createDecR } from './dec'
-import { createIncRr } from './inc'
+import { createIncRr, createIncSp } from './inc'
+import { createNop } from './special'
+import { createXorR } from './xor'
 
 export const create = (): Cpu => ({
   registers: {
@@ -34,6 +36,7 @@ export const runInstruction = (cpu: Cpu, memory: Memory): void => {
   if (!instruction) {
     throw new Error(`No instruction for opCode 0x${opCode.toString(16)}`)
   }
+  cpu.registers.pc++
 
   instruction.execute(cpu, memory)
 }
@@ -59,6 +62,8 @@ export const runInstruction = (cpu: Cpu, memory: Memory): void => {
 const INSTRUCTIONS: { [opCode: number]: Instruction } =
   fromPairs(
     [
+      createNop(0x00),
+
       ...([
         [0x7F, 'a', 'a'],
         [0x78, 'a', 'b'],
@@ -146,14 +151,22 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } =
         [0x23, 'hl']
       ] as ReadonlyArray<[OpCode, GroupedWordRegister]>)
         .map(([opCode, register]) => createIncRr(opCode, register)),
+
+      createIncSp(0x33),
+
+      ...([
+        [0xAF, 'a'],
+        [0xA8, 'b'],
+        [0xA9, 'c'],
+        [0xAA, 'd'],
+        [0xAB, 'e'],
+        [0xAC, 'h'],
+        [0xAD, 'l']
+      ] as ReadonlyArray<[OpCode, ByteRegister]>)
+        .map(([opCode, register]) => createXorR(opCode, register)),
     ]
       .map((i: Instruction) => [i.opCode, i])
   )
-
-// INC BC 03 8
-// INC DE 13 8
-// INC HL 23 8
-// INC SP 33 8
 
 // const nop = (): void => {}
 //

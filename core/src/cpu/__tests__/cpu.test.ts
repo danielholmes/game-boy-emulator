@@ -42,9 +42,14 @@ describe('cpu', () => {
         memory.writeByte(address, value)
       })
 
+      let num = 0
       while (cpu.registers.pc <= bios.length) {
         console.log(cpu.registers.pc, bios.length)
         runInstruction(cpu, memory)
+        num++
+        if (num > 100) {
+          break;
+        }
       }
 
       // expect(cpu).toEqual(createCpuWithRegisters({ b: 0x66, pc: 0x12 }))

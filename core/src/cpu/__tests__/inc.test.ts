@@ -11,7 +11,7 @@ import {
   GroupedWordRegister,
   setGroupedRegister
 } from '../groupedRegisters'
-import { createIncRr } from '../inc'
+import { createIncRr, createIncSp } from '../inc'
 
 describe('inc', () => {
   let cpu: Cpu
@@ -38,5 +38,19 @@ describe('inc', () => {
         expect(memory).toEqual(new Memory())
       }
     )
+  })
+
+  describe('createIncSp', () => {
+    test('success', () => {
+      cpu.registers.sp = 0x1234
+
+      const instruction = createIncSp(0x3D)
+
+      instruction.execute(cpu, memory)
+
+      expect(instruction.cycles).toBe(8)
+      expect(cpu).toEqual(createCpuWithRegisters({ sp: 0x1235 }))
+      expect(memory).toEqual(new Memory())
+    })
   })
 })

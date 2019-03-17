@@ -2,12 +2,12 @@ import { Cpu, Cycles } from './types'
 import { Memory, MemoryAddress } from '../memory'
 import {
   DecrementRegister,
-  DecrementStackPointer, IncrementGroupedRegister,
+  DecrementStackPointer, IncrementGroupedRegister, IncrementStackPointer,
   LoadGroupedRegister, LoadProgramByte, LoadProgramCounter, LoadProgramWord,
   LoadRegister, LoadStackPointer,
   LowLevelOperation,
-  LowLevelState, ReadMemory, SetProgramCounter, StoreInGroupedRegister, StoreInRegister, StoreInStackPointer,
-  WriteMemoryFromGroupedRegisterAddress, WriteMemoryFromProgramWordAddress, WriteMemoryFromStackPointer
+  LowLevelState, Nop, ReadMemory, SetProgramCounter, StoreInGroupedRegister, StoreInRegister, StoreInStackPointer,
+  WriteMemoryFromGroupedRegisterAddress, WriteMemoryFromProgramWordAddress, WriteMemoryFromStackPointer, XOrRegister
 } from './lowLevel'
 import { ByteRegister } from './registers'
 import { GroupedWordRegister } from './groupedRegisters'
@@ -55,6 +55,14 @@ export class InstructionDefinition implements Instruction
       )
   }
 
+  public xOr(register: ByteRegister): InstructionDefinition {
+    return this.withOperation(new XOrRegister(register))
+  }
+
+  public nop(): InstructionDefinition {
+    return this.withOperation(new Nop())
+  }
+
   public loadRegister(register: ByteRegister): InstructionDefinition {
     return this.withOperation(new LoadRegister(register))
   }
@@ -85,6 +93,10 @@ export class InstructionDefinition implements Instruction
 
   public incrementGroupedRegister(register: GroupedWordRegister): InstructionDefinition {
     return this.withOperation(new IncrementGroupedRegister(register))
+  }
+
+  public incrementStackPointer(): InstructionDefinition {
+    return this.withOperation(new IncrementStackPointer())
   }
 
   public storeInRegister(register: ByteRegister): InstructionDefinition {
