@@ -1,10 +1,12 @@
 /* global describe, test, expect */
 
-import { Memory } from '../../memory'
+import { Memory, MemoryAddress } from '../../memory'
 import bios from '../../bios'
 import { create as createCpu, runInstruction } from '../'
 import { Cpu } from '../types'
 import { createCpuWithRegisters, createMemoryWithValues } from '../../test/help'
+import { toPairs, sortBy } from 'lodash'
+import { ByteValue, formatByte, formatWord } from '../../types'
 
 describe('cpu', () => {
   let cpu: Cpu
@@ -42,14 +44,24 @@ describe('cpu', () => {
         memory.writeByte(address, value)
       })
 
-      let num = 0
       while (cpu.registers.pc <= bios.length) {
-        console.log(cpu.registers.pc, bios.length)
+        console.log(
+          'PC 0x' + cpu.registers.pc.toString(16).toUpperCase(),
+          'OP 0x' + memory.readByte(cpu.registers.pc).toString(16),
+          'Bios length: ' + bios.length
+        )
+        /*console.log(
+          sortBy(
+            toPairs(memory.getValues())
+              .filter(([, value]) => value !== undefined),
+            ([address, ]) => address
+          )
+            .filter(([address,]) => parseInt(address) >= 0xFF)
+            .map(([address, value]) =>
+              `${formatWord(parseInt(address))}: ${formatByte(value)}`
+            )
+        )*/
         runInstruction(cpu, memory)
-        num++
-        if (num > 100) {
-          break;
-        }
       }
 
       // expect(cpu).toEqual(createCpuWithRegisters({ b: 0x66, pc: 0x12 }))

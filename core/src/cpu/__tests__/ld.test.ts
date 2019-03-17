@@ -6,7 +6,7 @@ import { BYTE_REGISTER_PAIR_PERMUTATIONS, BYTE_REGISTERS, ByteRegister } from '.
 import { Cpu } from '../types'
 import { copyCpu, create as createCpu } from '../'
 import {
-  createLdAMNn,
+  createLdAMNn, createLddMHlA,
   createLdGrM, createLdGrNn,
   createLdHlMN,
   createLdHlMR, createLdMNnA, createLdMNnSp,
@@ -247,6 +247,22 @@ describe('ld', () => {
       expect(instruction.cycles).toBe(20)
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x5603, sp: 0x1712 }))
       expect(memory).toEqual(createMemoryWithValues({ 0x7654: 0x1712, 0x5601: 0x76, 0x5602: 0x54 }))
+    })
+  })
+
+  describe('createLddMHlA', () => {
+    test('LDD (HL),A', () => {
+      cpu.registers.h = 0x56
+      cpu.registers.l = 0x12
+      cpu.registers.a = 0xAF
+
+      const instruction = createLddMHlA(0x3D)
+
+      instruction.execute(cpu, memory)
+
+      expect(instruction.cycles).toBe(8)
+      expect(cpu).toEqual(createCpuWithRegisters({ a: 0xAF, h: 0x56, l: 0x11 }))
+      expect(memory).toEqual(createMemoryWithValues({ 0x5612: 0xAF }))
     })
   })
 })

@@ -1,4 +1,5 @@
 import { ByteValue, WordValue } from './types'
+import { fromPairs } from 'lodash'
 
 export type MemoryAddress = number
 
@@ -25,6 +26,11 @@ export class Memory {
   public writeWord(address: MemoryAddress, value: WordValue): void {
     this.writeByte(address, value >> 8)
     this.writeByte(address + 1, value & 255)
+  }
+
+  public getValues(): { [address: number]: number } {
+    // console.log('getValues', typeof this.raw, Array.isArray(this.raw), this.raw.map((value, address) => [address, value]))
+    return fromPairs(this.raw.map((value, address) => [address, value]))
   }
 
   public copy(): Memory {

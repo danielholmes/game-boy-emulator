@@ -64,3 +64,9 @@ export const createLdMNnSp = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD nn,sp`)
     .loadStackPointer()
     .writeMemoryFromProgramWord()
+
+export const createLddMHlA = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LDD (hl),a`)
+    .loadRegister('a')
+    .writeMemoryFromGroupedRegisterAddress('hl')
+    .decrementGroupedRegister('hl')

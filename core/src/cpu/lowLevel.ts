@@ -1,8 +1,8 @@
 import { Cpu, Cycles } from './types'
-import { Memory, MemoryAddress } from '../memory'
+import { Memory } from '../memory'
 import { ByteRegister } from './registers'
 import { getGroupedRegister, GroupedWordRegister, setGroupedRegister } from './groupedRegisters'
-import { ByteValue, WordValue } from '../types'
+import { ByteValue, formatByte, formatWord, WordValue } from '../types'
 
 export type LowLevelState = ByteValue | WordValue | undefined
 export type LowLevelStateReturn = ByteValue | WordValue | void
@@ -71,6 +71,26 @@ export class WriteMemoryFromGroupedRegisterAddress implements LowLevelOperation
     }
     const address = getGroupedRegister(cpu, this.register)
     memory.writeByte(address, value)
+  }
+}
+
+const FLAG_Z = 7
+
+export class BitFlags implements LowLevelOperation
+{
+  public readonly cycles: Cycles = 4
+  private readonly register: ByteRegister
+
+  public constructor(register: ByteRegister)
+  {
+    this.register = register
+  }
+
+  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+    const t = cpu.registers[this.register] & (1 << 7)
+    const flag = 0x0010 + (((t & 0xFF) === 0 ? 1 : 0) << FLAG_Z)
+    cpu.registers.f &= 0x0001
+    cpu.registers.f |= flag
   }
 }
 
@@ -250,7 +270,7 @@ export class IncrementStackPointer implements LowLevelOperation
   }
 }
 
-export class LoadStackPointer {
+export class LoadStackPointer implements LowLevelOperation {
   public readonly cycles: Cycles = 4
 
   public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
@@ -258,7 +278,7 @@ export class LoadStackPointer {
   }
 }
 
-export class DecrementRegister {
+export class DecrementRegister implements LowLevelOperation {
   public readonly cycles: Cycles = 4
   private readonly register: ByteRegister
 
@@ -269,5 +289,19 @@ export class DecrementRegister {
 
   public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
     cpu.registers[this.register]--
+  }
+}
+
+export class DecrementGroupedRegister implements LowLevelOperation {
+  public readonly cycles: Cycles = 0
+  private readonly register: GroupedWordRegister
+
+  public constructor(register: GroupedWordRegister)
+  {
+    this.register = register
+  }
+
+  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+    setGroupedRegister(cpu, this.register, getGroupedRegister(cpu, this.register) - 1)
   }
 }

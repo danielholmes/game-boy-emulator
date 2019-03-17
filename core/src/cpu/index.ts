@@ -2,7 +2,7 @@ import { Memory } from '../memory'
 import { fromPairs } from 'lodash'
 import { Cpu } from './types'
 import { Instruction, OpCode } from './instructions'
-import { createLdGrNn, createLdMNnSp, createLdRR, createLdSpNn } from './ld'
+import { createLddMHlA, createLdGrNn, createLdMNnSp, createLdRN, createLdRR, createLdSpNn } from './ld'
 import { ByteRegister } from './registers'
 import { GroupedWordRegister } from './groupedRegisters'
 import { createRst, RstAddress } from './rst'
@@ -10,6 +10,8 @@ import { createDecR } from './dec'
 import { createIncRr, createIncSp } from './inc'
 import { createNop } from './special'
 import { createXorR } from './xor'
+import { formatByte } from '../types'
+import { createCb } from './cb'
 
 export const create = (): Cpu => ({
   registers: {
@@ -34,7 +36,7 @@ export const runInstruction = (cpu: Cpu, memory: Memory): void => {
   const opCode = memory.readByte(cpu.registers.pc)
   const instruction = INSTRUCTIONS[opCode]
   if (!instruction) {
-    throw new Error(`No instruction for opCode 0x${opCode.toString(16)}`)
+    throw new Error(`No instruction for opCode ${formatByte(opCode)}`)
   }
   cpu.registers.pc++
 
@@ -112,6 +114,17 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } =
         .map(([opCode, register1, register2]) => createLdRR(opCode, register1, register2)),
 
       ...([
+        [0x06, 'b'],
+        [0x0E, 'c'],
+        [0x16, 'd'],
+        [0x1E, 'e'],
+        [0x26, 'h'],
+        [0x2E, 'l'],
+        [0x3E, 'a']
+      ] as ReadonlyArray<[OpCode, ByteRegister]>)
+        .map(([opCode, register]) => createLdRN(opCode, register)),
+
+      ...([
         [0x01, 'bc'],
         [0x11, 'de'],
         [0x21, 'hl']
@@ -164,6 +177,10 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } =
         [0xAD, 'l']
       ] as ReadonlyArray<[OpCode, ByteRegister]>)
         .map(([opCode, register]) => createXorR(opCode, register)),
+
+      createLddMHlA(0x32),
+
+      createCb(0xCB)
     ]
       .map((i: Instruction) => [i.opCode, i])
   )

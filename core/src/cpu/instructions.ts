@@ -1,6 +1,8 @@
 import { Cpu, Cycles } from './types'
 import { Memory, MemoryAddress } from '../memory'
 import {
+  BitFlags,
+  DecrementGroupedRegister,
   DecrementRegister,
   DecrementStackPointer, IncrementGroupedRegister, IncrementStackPointer,
   LoadGroupedRegister, LoadProgramByte, LoadProgramCounter, LoadProgramWord,
@@ -49,7 +51,7 @@ export class InstructionDefinition implements Instruction
       .reduce(
         (value: LowLevelState, op: LowLevelOperation): LowLevelState => {
           const newResult = op.execute(cpu, memory, value)
-          return newResult ? newResult : undefined
+          return typeof newResult === 'undefined' ? undefined : newResult
         },
         undefined
       )
@@ -57,6 +59,14 @@ export class InstructionDefinition implements Instruction
 
   public xOr(register: ByteRegister): InstructionDefinition {
     return this.withOperation(new XOrRegister(register))
+  }
+
+  public decrementGroupedRegister(register: GroupedWordRegister): InstructionDefinition {
+    return this.withOperation(new DecrementGroupedRegister(register))
+  }
+
+  public bitFlags(register: ByteRegister): InstructionDefinition {
+    return this.withOperation(new BitFlags(register))
   }
 
   public nop(): InstructionDefinition {
