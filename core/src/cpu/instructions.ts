@@ -4,7 +4,7 @@ import {
   BitFlags,
   DecrementGroupedRegister,
   DecrementRegister,
-  DecrementStackPointer, IncrementGroupedRegister, IncrementStackPointer,
+  DecrementStackPointer, IncrementGroupedRegister, IncrementProgramCounterFlagCheck, IncrementStackPointer, JrCheck,
   LoadGroupedRegister, LoadProgramByte, LoadProgramCounter, LoadProgramWord,
   LoadRegister, LoadStackPointer,
   LowLevelOperation,
@@ -14,7 +14,7 @@ import {
 import { ByteRegister } from './registers'
 import { GroupedWordRegister } from './groupedRegisters'
 import { sum } from 'lodash'
-import { WordValue } from '../types'
+import { ByteValue, WordValue } from '../types'
 
 export type OpCode = number
 
@@ -63,6 +63,14 @@ export class InstructionDefinition implements Instruction
 
   public decrementGroupedRegister(register: GroupedWordRegister): InstructionDefinition {
     return this.withOperation(new DecrementGroupedRegister(register))
+  }
+
+  public jrCheck(): InstructionDefinition {
+    return this.withOperation(new JrCheck())
+  }
+
+  public incrementProgramCounterFlagCheck(mask: ByteValue, comparison: ByteValue): InstructionDefinition {
+    return this.withOperation(new IncrementProgramCounterFlagCheck(mask, comparison))
   }
 
   public bitFlags(register: ByteRegister): InstructionDefinition {

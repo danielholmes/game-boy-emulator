@@ -94,6 +94,46 @@ export class BitFlags implements LowLevelOperation
   }
 }
 
+export class JrCheck implements LowLevelOperation
+{
+  public readonly cycles: Cycles = 4
+
+  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error('value undefined')
+    }
+
+    if (value > 127) {
+      return -((~value + 1) & 255)
+    }
+    return value
+  }
+}
+
+export class IncrementProgramCounterFlagCheck implements LowLevelOperation
+{
+  public readonly cycles: Cycles = 4
+  private readonly mask: ByteValue
+  private readonly comparison: ByteValue
+
+  public constructor(mask: ByteValue, comparison: ByteValue)
+  {
+    this.mask = mask
+    this.comparison = comparison
+  }
+
+  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error('value undefined')
+    }
+
+    if ((cpu.registers.f & this.mask) === this.comparison) {
+      cpu.registers.pc += value
+      // TODO: Becomes a longer cycle operation
+    }
+  }
+}
+
 export class WriteMemoryFromProgramWordAddress implements LowLevelOperation
 {
   public readonly cycles: Cycles = 16

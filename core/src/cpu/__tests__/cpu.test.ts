@@ -44,7 +44,9 @@ describe('cpu', () => {
         memory.writeByte(address, value)
       })
 
-      while (cpu.registers.pc <= bios.length) {
+      let num = 0
+      while (cpu.registers.pc <= bios.length && num < 100) {
+        num++
         console.log(
           'PC 0x' + cpu.registers.pc.toString(16).toUpperCase(),
           'OP 0x' + memory.readByte(cpu.registers.pc).toString(16),

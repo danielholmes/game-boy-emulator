@@ -12,6 +12,8 @@ import { createNop } from './special'
 import { createXorR } from './xor'
 import { formatByte } from '../types'
 import { createCb } from './cb'
+import { createJrNzN } from './jr'
+import { createSbcAR } from './sbc'
 
 export const create = (): Cpu => ({
   registers: {
@@ -180,7 +182,20 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } =
 
       createLddMHlA(0x32),
 
-      createCb(0xCB)
+      createCb(0xCB),
+
+      createJrNzN(0x20),
+
+      ...([
+        [0x9F, 'a'],
+        [0x98, 'b'],
+        [0x99, 'c'],
+        [0x9A, 'd'],
+        [0x9B, 'e'],
+        [0x9C, 'h'],
+        [0x9D, 'l']
+      ] as ReadonlyArray<[OpCode, ByteRegister]>)
+        .map(([opCode, register]) => createSbcAR(opCode, register))
     ]
       .map((i: Instruction) => [i.opCode, i])
   )
