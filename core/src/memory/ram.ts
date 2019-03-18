@@ -64,26 +64,26 @@ export class WorkingRam extends Ram {
   }
 }
 
-export class VRam {
-  private readonly ram: Ram;
-
+export class VRam extends Ram {
   public constructor() {
-    this.ram = new Ram(0x02000);
+    super(0x02000);
+  }
+}
+
+// https://fms.komkon.org/GameBoy/Tech/Software.html
+export class IOMemory extends Ram {
+  public constructor() {
+    super(0x7f);
   }
 
-  public readByte(address: MemoryAddress): ByteValue {
-    return this.ram.readByte(address);
+  public readByte (address: MemoryAddress): ByteValue {
+    return super.readByte(address)
   }
 
-  public readWord(address: MemoryAddress): WordValue {
-    return this.ram.readWord(address);
-  }
-
-  public writeByte(address: MemoryAddress, value: ByteValue): void {
-    this.ram.writeByte(address, value);
-  }
-
-  public writeWord(address: MemoryAddress, value: WordValue): void {
-    this.ram.writeWord(address, value);
+  public writeByte (address: MemoryAddress, value: ByteValue): void {
+    if (address === 0x0044) {
+      throw new Error('Current scan line Read-only')
+    }
+    super.writeByte(address, value)
   }
 }

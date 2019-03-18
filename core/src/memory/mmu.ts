@@ -1,11 +1,12 @@
 import { ByteValue, MemoryAddress, numberToWordHex, WordValue } from "../types";
-import { WorkingRam, VRam, ZeroPageRam } from "./ram";
+import { WorkingRam, VRam, ZeroPageRam, IOMemory } from './ram'
 import { Bios } from "../bios";
 
 export class Mmu {
   private readonly bios: Bios;
   private readonly workingRam: WorkingRam;
   private readonly vRam: VRam;
+  private readonly io: IOMemory;
   private readonly zeroPage: ZeroPageRam;
   private cartridge?: ReadonlyArray<ByteValue>;
 
@@ -13,11 +14,13 @@ export class Mmu {
     bios: Bios,
     ram: WorkingRam,
     vRam: VRam,
+    io: IOMemory,
     zeroPage: ZeroPageRam
   ) {
     this.bios = bios;
     this.workingRam = ram;
     this.vRam = vRam;
+    this.io = io;
     this.zeroPage = zeroPage;
   }
 
@@ -60,8 +63,8 @@ export class Mmu {
       // sprites' positions and attributes.
       throw new Error("graphics mem not yet implemented");
     }
-    if (address >= 0xff00 && address <= 0xff7f) {
-      throw new Error("TODO: Memory-mapped I/O");
+    if (address >= 0xFF00 && address <= 0xFF7F) {
+      return this.io.readByte(address - 0xFF00);
     }
 
     throw new Error("Address not readable");
@@ -73,19 +76,23 @@ export class Mmu {
 
   public writeByte(address: MemoryAddress, value: ByteValue): void {
     if (address >= 0x8000 && address <= 0x9fff) {
-      return this.vRam.writeByte(address - 0x8000, value);
+      this.vRam.writeByte(address - 0x8000, value);
     }
-    if (address >= 0xc000 && address <= 0xdfff) {
-      return this.workingRam.writeByte(address - 0xc000, value);
+    else if (address >= 0xc000 && address <= 0xdfff) {
+      this.workingRam.writeByte(address - 0xc000, value);
     }
-    if (address >= 0xe000 && address <= 0xfdff) {
-      return this.workingRam.writeByte(address - 0xe000, value);
+    else if (address >= 0xe000 && address <= 0xfdff) {
+      this.workingRam.writeByte(address - 0xe000, value);
     }
-    if (address >= 0xff80 && address <= 0xffff) {
-      return this.zeroPage.writeByte(address - 0xff80, value);
+    else if (address >= 0xff80 && address <= 0xffff) {
+      this.zeroPage.writeByte(address - 0xff80, value);
     }
-
-    throw new Error(`Can't write address ${numberToWordHex(address)}`);
+    else if (address >= 0xFF00 && address <= 0xFF7F) {
+      this.io.writeByte(address - 0xFF00, value);
+    }
+    else {
+      throw new Error(`Can't write address ${numberToWordHex(address)}`);
+    }
   }
 
   public writeWord(address: MemoryAddress, value: WordValue): void {

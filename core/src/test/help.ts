@@ -5,10 +5,10 @@ import { toPairs } from "lodash";
 import { ByteValue } from "../types";
 import { Mmu } from "../memory/mmu";
 import bios from "../bios";
-import { VRam, WorkingRam, ZeroPageRam } from "../memory/ram";
+import { IOMemory, VRam, WorkingRam, ZeroPageRam } from '../memory/ram'
 
 export const createMmu = (): Mmu =>
-  new Mmu(bios, new WorkingRam(), new VRam(), new ZeroPageRam());
+  new Mmu(bios, new WorkingRam(), new VRam(), new IOMemory(), new ZeroPageRam());
 
 export const EMPTY_MEMORY = createMmu();
 
