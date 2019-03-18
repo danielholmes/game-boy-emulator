@@ -1,4 +1,4 @@
-/* global describe, test, expect */
+/* global describe, expect */
 
 import { Memory } from '../../memory'
 import each from 'jest-each'
@@ -28,7 +28,7 @@ describe('cb', () => {
         instruction.execute(cpu, memory)
 
         expect(instruction.cycles).toBe(4)
-        expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x14, f: 0x80 }))
+        expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x14, f: 0xA0 }))
         expect(memory).toEqual(EMPTY_MEMORY)
       }
     )

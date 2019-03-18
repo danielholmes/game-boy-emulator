@@ -110,19 +110,19 @@ describe('ld', () => {
 
   describe('createLdHlMN', () => {
     test('LD (hl),n', () => {
-        cpu.registers.h = 0xF1
-        cpu.registers.l = 0x08
-        cpu.registers.pc = 0xCC
-        memory.writeByte(0xCC, 0xB1)
+      cpu.registers.h = 0xF1
+      cpu.registers.l = 0x08
+      cpu.registers.pc = 0xCC
+      memory.writeByte(0xCC, 0xB1)
 
-        const instruction = createLdHlMN(0x3D)
+      const instruction = createLdHlMN(0x3D)
 
-        instruction.execute(cpu, memory)
+      instruction.execute(cpu, memory)
 
-        expect(instruction.cycles).toBe(12)
-        expect(cpu).toEqual(createCpuWithRegisters({ pc: 0xCD, h: 0xF1, l: 0x08 }))
-        expect(memory).toEqual(createMemoryWithValues({ 0xF108: 0xB1, 0xCC: 0xB1 }))
-      }
+      expect(instruction.cycles).toBe(12)
+      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0xCD, h: 0xF1, l: 0x08 }))
+      expect(memory).toEqual(createMemoryWithValues({ 0xF108: 0xB1, 0xCC: 0xB1 }))
+    }
     )
   })
 
@@ -159,7 +159,7 @@ describe('ld', () => {
       expect(instruction.cycles).toBe(16)
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0xCE, a: 0xAA }))
       expect(memory).toEqual(memorySnapshot)
-      }
+    }
     )
   })
 

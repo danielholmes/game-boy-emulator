@@ -1,7 +1,7 @@
 import { Cpu, Cycles } from './types'
 import { Memory } from '../memory'
-import { ByteRegister, FLAG_Z, GroupedWordRegister } from './registers'
-import { ByteValue, numberToByteHex, numberToWordHex, WordValue, byteValueToSignedByte } from '../types'
+import { ByteRegister, FLAG_Z, FLAG_Z_MASK, GroupedWordRegister } from './registers'
+import { ByteValue, WordValue, byteValueToSignedByte } from '../types'
 
 export type LowLevelState = ByteValue | WordValue | undefined
 export type LowLevelStateReturn = ByteValue | WordValue | void
@@ -26,7 +26,7 @@ export class LoadRegister implements LowLevelOperation
     this.register = register
   }
 
-  public execute(cpu: Cpu, memory: Memory, state: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     return cpu.registers[this.register]
   }
 }
@@ -53,7 +53,7 @@ export class LoadGroupedRegister implements LowLevelOperation
     this.register = register
   }
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     return cpu.registers[this.register]
   }
 }
@@ -88,17 +88,10 @@ export class BitFlags implements LowLevelOperation
   }
 
   public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
-    const t = cpu.registers[this.register] & (1 << 7) // get 8th bit
-    const flag = 0x00100000 + (((t & 0xFF) === 0 ? 1 : 0) << FLAG_Z)
-    cpu.registers.f &= 0x00010000
+    const t = cpu.registers[this.register] & FLAG_Z_MASK
+    const flag = 0x20 + (((t & 0xFF) === 0 ? 1 : 0) << FLAG_Z)
+    cpu.registers.f &= 0x10
     cpu.registers.f |= flag
-
-    // t = self.H & (1 << 7)
-    // flag = 0b00100000
-    // flag += ((t & 0xFF) == 0) << flagZ
-    // self.F &= 0b00010000
-    // self.F |= flag
-    // self.PC += 2
   }
 }
 

@@ -3,7 +3,6 @@
 import { Memory } from '../../memory'
 import { Cpu } from '../types'
 import { create as createCpu } from '../'
-import { createIncSp } from '../inc'
 import { createNop } from '../special'
 
 describe('special', () => {

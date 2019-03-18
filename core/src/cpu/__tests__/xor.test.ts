@@ -1,4 +1,4 @@
-/* global describe, test, expect */
+/* global describe, expect */
 
 import { Memory } from '../../memory'
 import each from 'jest-each'

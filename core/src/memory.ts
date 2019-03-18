@@ -4,9 +4,9 @@ import { fromPairs } from 'lodash'
 export type MemoryAddress = number
 
 export class Memory {
-  private readonly raw: Array<ByteValue>
+  private readonly raw: ByteValue[]
 
-  public constructor(raw?: Array<ByteValue>)
+  public constructor(raw?: ByteValue[])
   {
     this.raw = raw ? raw : []
   }

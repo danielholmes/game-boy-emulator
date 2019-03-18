@@ -1,8 +1,7 @@
 import { Instruction, InstructionDefinition, OpCode } from './instructions'
 import { ByteRegister } from './registers'
-import { LowLevelOperation, LowLevelState, LowLevelStateReturn } from './lowLevel'
+import { LowLevelOperation, LowLevelStateReturn } from './lowLevel'
 import { Cpu, Cycles } from './types'
-import { Memory } from '../memory'
 
 class SbcAR implements LowLevelOperation
 {
@@ -14,7 +13,7 @@ class SbcAR implements LowLevelOperation
     this.register = register
   }
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     const oldA = cpu.registers.a
     cpu.registers.a -= cpu.registers[this.register]
     cpu.registers.a -= (cpu.registers.f & 0x10) ? 1 : 0

@@ -30,7 +30,7 @@ import {
 } from './lowLevel'
 import { ByteRegister, GroupedWordRegister } from './registers'
 import { sum } from 'lodash'
-import { ByteValue, WordValue } from '../types'
+import { WordValue } from '../types'
 
 export type OpCode = number
 

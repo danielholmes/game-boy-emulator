@@ -8,7 +8,7 @@ import { ByteValue } from '../types'
 export const EMPTY_MEMORY = new Memory()
 
 // Dummy to get around typing
-const isRegister = (name: string): name is Register => true
+const isRegister = (name: string): name is Register => !!name
 
 export const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cpu => {
   const cpu = createCpu()
