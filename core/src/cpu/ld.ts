@@ -8,7 +8,7 @@ export const createLdRR = (opCode: OpCode, register1: ByteRegister, register2: B
 
 export const createLdRN = (opCode: OpCode, register: ByteRegister): Instruction =>
   new InstructionDefinition(opCode, `LD ${register},n`)
-    .loadProgramByte()
+    .loadByteOperand()
     .storeInRegister(register)
 
 export const createLdRHlM = (opCode: OpCode, register: ByteRegister): Instruction =>
@@ -24,7 +24,7 @@ export const createLdHlMR = (opCode: OpCode, register: ByteRegister): Instructio
 
 export const createLdHlMN = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (hl),n`)
-    .loadProgramByte()
+    .loadByteOperand()
     .writeMemoryFromGroupedRegisterAddress('hl')
 
 export const createLdGrM = (opCode: OpCode, register: GroupedWordRegister): Instruction =>
@@ -35,7 +35,7 @@ export const createLdGrM = (opCode: OpCode, register: GroupedWordRegister): Inst
 
 export const createLdAMNn = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD a,(nn)`)
-    .loadProgramWord()
+    .loadWordOperand()
     .readMemory()
     .storeInRegister('a')
 
@@ -51,12 +51,12 @@ export const createLdMNnA = (opCode: OpCode): Instruction =>
 
 export const createLdGrNn = (opCode: OpCode, register: GroupedWordRegister): Instruction =>
   new InstructionDefinition(opCode, `LD ${register},nn`)
-    .loadProgramWord()
+    .loadWordOperand()
     .storeInGroupedRegister(register)
 
 export const createLdSpNn = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD sp,nn`)
-    .loadProgramWord()
+    .loadWordOperand()
     .storeInStackPointer()
 
 export const createLdMNnSp = (opCode: OpCode): Instruction =>

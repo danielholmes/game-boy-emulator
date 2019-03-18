@@ -1,7 +1,7 @@
 import { Cpu, Cycles } from './types'
 import { Memory } from '../memory'
-import { ByteRegister, GroupedWordRegister } from './registers'
-import { ByteValue, WordValue } from '../types'
+import { ByteRegister, FLAG_Z, GroupedWordRegister } from './registers'
+import { ByteValue, numberToByteHex, numberToWordHex, WordValue, byteValueToSignedByte } from '../types'
 
 export type LowLevelState = ByteValue | WordValue | undefined
 export type LowLevelStateReturn = ByteValue | WordValue | void
@@ -77,8 +77,6 @@ export class WriteMemoryFromGroupedRegisterAddress implements LowLevelOperation
   }
 }
 
-const FLAG_Z = 7
-
 export class BitFlags implements LowLevelOperation
 {
   public readonly cycles: Cycles = 0
@@ -90,50 +88,46 @@ export class BitFlags implements LowLevelOperation
   }
 
   public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
-    const t = cpu.registers[this.register] & (1 << 7)
-    const flag = 0x0010 + (((t & 0xFF) === 0 ? 1 : 0) << FLAG_Z)
-    cpu.registers.f &= 0x0001
+    const t = cpu.registers[this.register] & (1 << 7) // get 8th bit
+    const flag = 0x00100000 + (((t & 0xFF) === 0 ? 1 : 0) << FLAG_Z)
+    cpu.registers.f &= 0x00010000
     cpu.registers.f |= flag
+
+    // t = self.H & (1 << 7)
+    // flag = 0b00100000
+    // flag += ((t & 0xFF) == 0) << flagZ
+    // self.F &= 0b00010000
+    // self.F |= flag
+    // self.PC += 2
   }
 }
 
 export class JrCheck implements LowLevelOperation
 {
-  public readonly cycles: Cycles = 4
+  public readonly cycles: Cycles = 0
 
   public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
     if (value === undefined) {
       throw new Error('value undefined')
     }
 
-    if (value > 127) {
-      return -((~value + 1) & 255)
+    if (!cpu.registers.fNz) {
+      // TODO: Becomes a longer cycle operation
+      cpu.registers.pc += value
     }
-    return value
   }
 }
 
-export class IncrementProgramCounterFlagCheck implements LowLevelOperation
+export class WordValueToSignedByte implements LowLevelOperation
 {
-  public readonly cycles: Cycles = 4
-  private readonly mask: ByteValue
-  private readonly comparison: ByteValue
-
-  public constructor(mask: ByteValue, comparison: ByteValue)
-  {
-    this.mask = mask
-    this.comparison = comparison
-  }
+  public readonly cycles: Cycles = 0
 
   public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
     if (value === undefined) {
       throw new Error('value undefined')
     }
 
-    if ((cpu.registers.f & this.mask) === this.comparison) {
-      cpu.registers.pc += value
-      // TODO: Becomes a longer cycle operation
-    }
+    return byteValueToSignedByte(value)
   }
 }
 
@@ -246,7 +240,8 @@ export class SetProgramCounter implements LowLevelOperation
   }
 }
 
-export class LoadProgramByte implements LowLevelOperation
+// TODO: Can be done in terms of lower level ops
+export class LoadOperand implements LowLevelOperation
 {
   public readonly cycles: Cycles = 4
 
@@ -257,7 +252,7 @@ export class LoadProgramByte implements LowLevelOperation
   }
 }
 
-export class LoadProgramWord implements LowLevelOperation
+export class LoadWordOperand implements LowLevelOperation
 {
   public readonly cycles: Cycles = 8
 

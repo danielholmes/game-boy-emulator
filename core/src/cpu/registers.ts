@@ -1,4 +1,4 @@
-import { ByteValue, WordValue } from '../types'
+import { BitValue, ByteValue, WordValue } from '../types'
 import { flatMap } from 'lodash'
 
 export type ByteRegister = 'a' | 'b' | 'c' | 'd' | 'e' | 'h' | 'l'
@@ -34,6 +34,10 @@ export const groupedWordByteRegisters = (register: GroupedWordRegister): Readonl
   }
 }*/
 
+// TODO: Shouldn't be exported, find a way to encapsulate this
+export const FLAG_Z = 7
+export const FLAG_Z_MASK = 1 << 7
+
 export interface CpuRegisters {
   a: ByteValue;
   b: ByteValue;
@@ -51,6 +55,8 @@ export interface CpuRegisters {
   bc: WordValue;
   de: WordValue;
   hl: WordValue;
+
+  readonly fNz: BitValue;
 }
 
 export class CpuRegistersImpl implements CpuRegisters
@@ -82,6 +88,10 @@ export class CpuRegistersImpl implements CpuRegisters
 
     this._pc = 0x0000
     this._sp = 0xFFFF
+  }
+
+  public get fNz(): BitValue {
+    return (this.f & FLAG_Z_MASK) !== 0 ? 1 : 0
   }
 
   public set a(value: ByteValue) {

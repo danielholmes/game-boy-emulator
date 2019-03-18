@@ -28,7 +28,7 @@ describe('cb', () => {
         instruction.execute(cpu, memory)
 
         expect(instruction.cycles).toBe(4)
-        expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x14, f: 0x0090 }))
+        expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x14, f: 0x80 }))
         expect(memory).toEqual(EMPTY_MEMORY)
       }
     )

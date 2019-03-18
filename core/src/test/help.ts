@@ -21,6 +21,10 @@ export const createCpuWithRegisters = (withRegisters: Partial<CpuRegisters>): Cp
   return cpu
 }
 
+export const createCpuRegistersWithRegisters = (withRegisters: Partial<CpuRegisters>): CpuRegisters => {
+  return createCpuWithRegisters(withRegisters).registers
+}
+
 export const createMemoryWithValues = (values: { [address: number]: ByteValue }): Memory => {
   const memory = new Memory()
   toPairs(values)

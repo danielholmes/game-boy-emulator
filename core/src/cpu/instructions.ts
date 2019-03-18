@@ -4,12 +4,29 @@ import {
   BitFlags,
   DecrementGroupedRegister,
   DecrementRegister,
-  DecrementStackPointer, IncrementGroupedRegister, IncrementProgramCounterFlagCheck, IncrementStackPointer, JrCheck,
-  LoadGroupedRegister, LoadProgramByte, LoadProgramCounter, LoadProgramWord,
-  LoadRegister, LoadStackPointer,
+  DecrementStackPointer,
+  IncrementGroupedRegister,
+  IncrementStackPointer,
+  JrCheck,
+  LoadGroupedRegister,
+  LoadOperand,
+  LoadProgramCounter,
+  LoadWordOperand,
+  LoadRegister,
+  LoadStackPointer,
   LowLevelOperation,
-  LowLevelState, Nop, ReadMemory, SetProgramCounter, StoreInGroupedRegister, StoreInRegister, StoreInStackPointer,
-  WriteMemoryFromGroupedRegisterAddress, WriteMemoryFromOperandAddress, WriteMemoryFromStackPointer, XOrRegister
+  LowLevelState,
+  Nop,
+  ReadMemory,
+  SetProgramCounter,
+  StoreInGroupedRegister,
+  StoreInRegister,
+  StoreInStackPointer,
+  WriteMemoryFromGroupedRegisterAddress,
+  WriteMemoryFromOperandAddress,
+  WriteMemoryFromStackPointer,
+  XOrRegister,
+  WordValueToSignedByte
 } from './lowLevel'
 import { ByteRegister, GroupedWordRegister } from './registers'
 import { sum } from 'lodash'
@@ -69,10 +86,6 @@ export class InstructionDefinition implements Instruction
     return this.withOperation(new JrCheck())
   }
 
-  public incrementProgramCounterFlagCheck(mask: ByteValue, comparison: ByteValue): InstructionDefinition {
-    return this.withOperation(new IncrementProgramCounterFlagCheck(mask, comparison))
-  }
-
   public bitFlags(register: ByteRegister): InstructionDefinition {
     return this.withOperation(new BitFlags(register))
   }
@@ -93,12 +106,17 @@ export class InstructionDefinition implements Instruction
     return this.withOperation(new WriteMemoryFromGroupedRegisterAddress(register))
   }
 
-  public loadProgramByte(): InstructionDefinition {
-    return this.withOperation(new LoadProgramByte())
+  public loadByteOperand(): InstructionDefinition {
+    return this.withOperation(new LoadOperand())
   }
 
-  public loadProgramWord(): InstructionDefinition {
-    return this.withOperation(new LoadProgramWord())
+  public loadSignedByteOperand(): InstructionDefinition {
+    return this.loadByteOperand()
+      .withOperation(new WordValueToSignedByte())
+  }
+
+  public loadWordOperand(): InstructionDefinition {
+    return this.withOperation(new LoadWordOperand())
   }
 
   public loadStackPointer(): InstructionDefinition {

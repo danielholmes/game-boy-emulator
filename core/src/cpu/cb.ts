@@ -2,7 +2,7 @@ import { Instruction, InstructionDefinition, OpCode } from './instructions'
 import { Cpu, Cycles } from './types'
 import { Memory } from '../memory'
 import { fromPairs } from 'lodash'
-import { formatByte } from '../types'
+import { numberToByteHex } from '../types'
 import { ByteRegister } from './registers'
 
 class CbInstruction implements Instruction {
@@ -18,7 +18,7 @@ class CbInstruction implements Instruction {
     const operand = memory.readByte(cpu.registers.pc)
     const subInstruction = CB_INSTRUCTIONS[operand]
     if (!subInstruction) {
-      throw new Error(`No instruction for opCode ${formatByte(operand)}`)
+      throw new Error(`No instruction for opCode ${numberToByteHex(operand)}`)
     }
     cpu.registers.pc++
     subInstruction.execute(cpu, memory)

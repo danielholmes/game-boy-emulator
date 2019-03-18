@@ -9,7 +9,7 @@ import { createDecR } from './dec'
 import { createIncRr, createIncSp } from './inc'
 import { createNop } from './special'
 import { createXorR } from './xor'
-import { formatByte } from '../types'
+import { numberToByteHex } from '../types'
 import { createCb } from './cb'
 import { createJrNzN } from './jr'
 import { createSbcAR } from './sbc'
@@ -24,7 +24,7 @@ export const runInstruction = (cpu: Cpu, memory: Memory): void => {
   const opCode = memory.readByte(cpu.registers.pc)
   const instruction = INSTRUCTIONS[opCode]
   if (!instruction) {
-    throw new Error(`No instruction for opCode ${formatByte(opCode)}`)
+    throw new Error(`No instruction for opCode ${numberToByteHex(opCode)}`)
   }
   cpu.registers.pc++
 

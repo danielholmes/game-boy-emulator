@@ -5,6 +5,7 @@ import bios from '../../bios'
 import { create as createCpu, runInstruction } from '../'
 import { Cpu } from '../types'
 import { createCpuWithRegisters, createMemoryWithValues } from '../../test/help'
+import { numberToByteHex, numberToWordHex } from '../../types'
 
 describe('cpu', () => {
   let cpu: Cpu
@@ -13,14 +14,6 @@ describe('cpu', () => {
   beforeEach(() => {
     cpu = createCpu()
     memory = new Memory()
-  })
-
-  describe('setGroupedRegister', () => {
-    test('set hl', () => {
-      cpu.registers.hl = 0xFE12
-
-      expect(cpu).toEqual(createCpuWithRegisters({ h: 0xFE, l: 0x12 }))
-    })
   })
 
   describe('runInstruction', () => {
@@ -54,8 +47,9 @@ describe('cpu', () => {
       while (cpu.registers.pc <= bios.length && num < 100) {
         num++
         console.log(
-          'PC 0x' + cpu.registers.pc.toString(16).toUpperCase(),
-          'OP 0x' + memory.readByte(cpu.registers.pc).toString(16),
+          'PC ' + numberToWordHex(cpu.registers.pc),
+          'OP ' + numberToByteHex(memory.readByte(cpu.registers.pc)) +
+          (memory.readByte(cpu.registers.pc) === 0xCB ? ' ' + numberToByteHex(memory.readByte(cpu.registers.pc + 1)) : ''),
           'Bios length: ' + bios.length
         )
         /*console.log(
@@ -66,7 +60,7 @@ describe('cpu', () => {
           )
             .filter(([address,]) => parseInt(address) >= 0xFF)
             .map(([address, value]) =>
-              `${formatWord(parseInt(address))}: ${formatByte(value)}`
+              `${numberToWordHex(parseInt(address))}: ${numberToByteHex(value)}`
             )
         )*/
         runInstruction(cpu, memory)
