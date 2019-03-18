@@ -66,7 +66,7 @@ export const createLdMRA = (
 export const createLdMNnA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (nn),a`)
     .loadRegister("a")
-    .writeMemoryFromProgramWord();
+    .writeByteFromProgramWord();
 
 export const createLdGrNn = (
   opCode: OpCode,
@@ -82,9 +82,9 @@ export const createLdSpNn = (opCode: OpCode): Instruction =>
     .storeInStackPointer();
 
 export const createLdMNnSp = (opCode: OpCode): Instruction =>
-  new InstructionDefinition(opCode, `LD nn,sp`)
+  new InstructionDefinition(opCode, `LD (nn),sp`)
     .loadStackPointer()
-    .writeMemoryFromProgramWord();
+    .writeWordFromProgramWord();
 
 export const createLddMHlA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LDD (hl),a`)

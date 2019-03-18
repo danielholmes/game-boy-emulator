@@ -137,7 +137,7 @@ export class WordValueToSignedByte implements LowLevelOperation {
   }
 }
 
-export class WriteMemoryFromOperandAddress implements LowLevelOperation {
+export class WriteByteFromOperandAddress implements LowLevelOperation {
   public readonly cycles: Cycles = 12;
 
   public execute(
@@ -150,6 +150,23 @@ export class WriteMemoryFromOperandAddress implements LowLevelOperation {
     }
     const address = memory.readWord(cpu.registers.pc);
     memory.writeByte(address, value);
+    cpu.registers.pc += 2;
+  }
+}
+
+export class WriteWordFromOperandAddress implements LowLevelOperation {
+  public readonly cycles: Cycles = 12;
+
+  public execute(
+    cpu: Cpu,
+    memory: Memory,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error("value undefined");
+    }
+    const address = memory.readWord(cpu.registers.pc);
+    memory.writeWord(address, value);
     cpu.registers.pc += 2;
   }
 }

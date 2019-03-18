@@ -23,11 +23,11 @@ import {
   StoreInRegister,
   StoreInStackPointer,
   WriteWordFromGroupedRegisterAddress,
-  WriteMemoryFromOperandAddress,
+  WriteByteFromOperandAddress,
   WriteMemoryFromStackPointer,
   XOrRegister,
-  WordValueToSignedByte
-} from "./lowLevel";
+  WordValueToSignedByte, WriteWordFromOperandAddress
+} from './lowLevel'
 import { ByteRegister, GroupedWordRegister } from "./registers";
 import { sum } from "lodash";
 import { WordValue } from "../types";
@@ -160,8 +160,12 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new ReadMemory());
   }
 
-  public writeMemoryFromProgramWord(): InstructionDefinition {
-    return this.withOperation(new WriteMemoryFromOperandAddress());
+  public writeByteFromProgramWord(): InstructionDefinition {
+    return this.withOperation(new WriteByteFromOperandAddress());
+  }
+
+  public writeWordFromProgramWord(): InstructionDefinition {
+    return this.withOperation(new WriteWordFromOperandAddress());
   }
 
   public decrementStackPointer(amount: WordValue): InstructionDefinition {

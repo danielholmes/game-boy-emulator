@@ -266,6 +266,10 @@ describe("ld", () => {
       cpu.registers.sp = 0x1712;
       memory.writeWord(0x5601, 0x7654);
 
+      // self.mb[v] = self.SP & 0xFF
+      // self.mb[v+1] = self.SP >> 8
+      // self.PC += 3
+
       const instruction = createLdMNnSp(0x3d);
 
       const cycles = instruction.execute(cpu, memory);
@@ -273,7 +277,7 @@ describe("ld", () => {
       expect(cycles).toBe(20);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x5603, sp: 0x1712 }));
       expect(memory).toEqual(
-        createMemoryWithValues({ 0x7654: 0x1712, 0x5601: 0x76, 0x5602: 0x54 })
+        createMemoryWithValues({ 0x7654: 0x17, 0x7655: 0x12, 0x5601: 0x76, 0x5602: 0x54 })
       );
     });
   });
