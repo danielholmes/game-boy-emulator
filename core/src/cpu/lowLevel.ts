@@ -17,11 +17,7 @@ export type LowLevelStateReturn = ByteValue | WordValue | void;
 
 export interface LowLevelOperation {
   readonly cycles: Cycles;
-  readonly execute: (
-    cpu: Cpu,
-    mmu: Mmu,
-    value: LowLevelState
-  ) => LowLevelStateReturn;
+  execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 
 export class LoadRegister implements LowLevelOperation {

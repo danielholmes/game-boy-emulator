@@ -1,17 +1,22 @@
 import { ByteValue, MemoryAddress, numberToWordHex, WordValue } from "../types";
-import { Ram, VRam, ZeroPageRam } from "./ram";
+import { WorkingRam, VRam, ZeroPageRam } from "./ram";
 import { Bios } from "../bios";
 
 export class Mmu {
   private readonly bios: Bios;
-  private readonly ram: Ram;
+  private readonly workingRam: WorkingRam;
   private readonly vRam: VRam;
   private readonly zeroPage: ZeroPageRam;
   private cartridge?: ReadonlyArray<ByteValue>;
 
-  public constructor(bios: Bios, ram: Ram, vRam: VRam, zeroPage: ZeroPageRam) {
+  public constructor(
+    bios: Bios,
+    ram: WorkingRam,
+    vRam: VRam,
+    zeroPage: ZeroPageRam
+  ) {
     this.bios = bios;
-    this.ram = ram;
+    this.workingRam = ram;
     this.vRam = vRam;
     this.zeroPage = zeroPage;
   }
@@ -39,24 +44,24 @@ export class Mmu {
       return this.vRam.readByte(address - 0x8000);
     }
     if (address >= 0xc000 && address <= 0xdfff) {
-      return this.ram.readByte(address - 0xc000);
+      return this.workingRam.readByte(address - 0xc000);
     }
     if (address >= 0xa000 && address <= 0xbfff) {
-      throw new Error('TODO: Access memory on cartridge')
+      throw new Error("TODO: Access memory on cartridge");
     }
     if (address >= 0xe000 && address <= 0xfdff) {
-      return this.ram.readByte(address - 0xe000);
+      return this.workingRam.readByte(address - 0xe000);
     }
     if (address >= 0xff80 && address <= 0xffff) {
       return this.zeroPage.readByte(address - 0xff80);
     }
-    if (address >= 0xFE00 && address <= 0xFE9F) {
+    if (address >= 0xfe00 && address <= 0xfe9f) {
       // Graphics: sprite information: Data about the sprites rendered by the graphics chip are held here, including the
       // sprites' positions and attributes.
-      throw new Error('graphics mem not yet implemented')
+      throw new Error("graphics mem not yet implemented");
     }
-    if (address >= 0xFF00 && address <= 0xFF7F) {
-      throw new Error('TODO: Memory-mapped I/O')
+    if (address >= 0xff00 && address <= 0xff7f) {
+      throw new Error("TODO: Memory-mapped I/O");
     }
 
     throw new Error("Address not readable");
@@ -71,10 +76,10 @@ export class Mmu {
       return this.vRam.writeByte(address - 0x8000, value);
     }
     if (address >= 0xc000 && address <= 0xdfff) {
-      return this.ram.writeByte(address - 0xc000, value);
+      return this.workingRam.writeByte(address - 0xc000, value);
     }
     if (address >= 0xe000 && address <= 0xfdff) {
-      return this.ram.writeByte(address - 0xe000, value);
+      return this.workingRam.writeByte(address - 0xe000, value);
     }
     if (address >= 0xff80 && address <= 0xffff) {
       return this.zeroPage.writeByte(address - 0xff80, value);
@@ -86,20 +91,6 @@ export class Mmu {
   public writeWord(address: MemoryAddress, value: WordValue): void {
     this.writeByte(address, value >> 8);
     this.writeByte(address + 1, value & 255);
-  }
-
-  // TODO: Shouldn't be using this, should be testing against underlying memory
-  public copy(): Mmu {
-    const mmu = new Mmu(
-      this.bios,
-      this.ram.copy(),
-      this.vRam.copy(),
-      this.zeroPage.copy()
-    );
-    if (this.cartridge) {
-      mmu.loadCartridge(this.cartridge.slice());
-    }
-    return mmu;
   }
 }
 

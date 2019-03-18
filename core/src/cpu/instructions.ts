@@ -38,7 +38,7 @@ export type OpCode = number;
 export interface Instruction {
   readonly opCode: OpCode;
   readonly label: string;
-  readonly execute: (cpu: Cpu, mmu: Mmu) => Cycles;
+  execute(cpu: Cpu, mmu: Mmu): Cycles;
 }
 
 // TODO: Definition to generate label?

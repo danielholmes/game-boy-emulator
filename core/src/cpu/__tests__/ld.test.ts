@@ -1,6 +1,5 @@
 /* global describe, test, expect */
 
-import { Mmu } from "../../memory";
 import each from "jest-each";
 import {
   BYTE_REGISTER_PAIR_PERMUTATIONS,
@@ -27,11 +26,13 @@ import {
 } from "../ld";
 import {
   createCpuWithRegisters,
+  createMemorySnapshot,
   createMmu,
   createMmuWithRomAndValues,
   createMmuWithValues,
   EMPTY_MEMORY
 } from "../../test/help";
+import { Mmu } from "../../memory/mmu";
 
 describe("ld", () => {
   let cpu: Cpu;
@@ -146,7 +147,7 @@ describe("ld", () => {
       (register: GroupedWordRegister) => {
         cpu.registers[register] = 0xf108;
         mmu.writeByte(0xf108, 0x2d);
-        const memorySnapshot = mmu.copy();
+        const memorySnapshot = createMemorySnapshot(mmu);
 
         const instruction = createLdGrM(0x3d, register);
 
@@ -156,7 +157,7 @@ describe("ld", () => {
         expect(cpu).toEqual(
           createCpuWithRegisters({ a: 0x2d, [register]: 0xf108 })
         );
-        expect(mmu).toEqual(memorySnapshot);
+        expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
       }
     );
   });
@@ -167,14 +168,14 @@ describe("ld", () => {
       mmu.loadCartridge([0xd1, 0x16]);
       mmu.writeWord(0xd116, 0xaa21);
 
-      const memorySnapshot = mmu.copy();
+      const memorySnapshot = createMemorySnapshot(mmu);
       const instruction = createLdAMNn(0x3d);
 
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(16);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, a: 0xaa }));
-      expect(mmu).toEqual(memorySnapshot);
+      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
     });
   });
 
@@ -224,7 +225,7 @@ describe("ld", () => {
         cpu.registers.pc = 0x0001;
         mmu.loadCartridge([0x00, 0x76, 0x54]);
 
-        const memorySnapshot = mmu.copy();
+        const memorySnapshot = createMemorySnapshot(mmu);
         const instruction = createLdGrNn(0x3d, register);
 
         const cycles = instruction.execute(cpu, mmu);
@@ -233,7 +234,7 @@ describe("ld", () => {
         expect(cpu).toEqual(
           createCpuWithRegisters({ pc: 0x0003, [register]: 0x7654 })
         );
-        expect(mmu).toEqual(memorySnapshot);
+        expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
       }
     );
   });
@@ -243,14 +244,14 @@ describe("ld", () => {
       cpu.registers.pc = 0x0000;
       mmu.loadCartridge([0x76, 0x54]);
 
-      const memorySnapshot = mmu.copy();
+      const memorySnapshot = createMemorySnapshot(mmu);
       const instruction = createLdSpNn(0x3d);
 
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(12);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, sp: 0x7654 }));
-      expect(mmu).toEqual(memorySnapshot);
+      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
     });
   });
 

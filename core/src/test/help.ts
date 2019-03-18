@@ -3,12 +3,12 @@ import { Cpu } from "../cpu/types";
 import { create as createCpu } from "../cpu";
 import { toPairs } from "lodash";
 import { ByteValue } from "../types";
-import { Ram } from "../memory/ram";
 import { Mmu } from "../memory/mmu";
 import bios from "../bios";
+import { VRam, WorkingRam, ZeroPageRam } from "../memory/ram";
 
 export const createMmu = (): Mmu =>
-  new Mmu(bios, new Ram(0x2000), new Ram(0x2000), new Ram(0xff));
+  new Mmu(bios, new WorkingRam(), new VRam(), new ZeroPageRam());
 
 export const EMPTY_MEMORY = createMmu();
 
@@ -50,4 +50,9 @@ export const createMmuWithRomAndValues = (
   const mmu = createMmuWithValues(values || {});
   mmu.loadCartridge(rom);
   return mmu;
+};
+
+// TODO:
+export const createMemorySnapshot = (mmu: Mmu): string => {
+  return typeof mmu;
 };

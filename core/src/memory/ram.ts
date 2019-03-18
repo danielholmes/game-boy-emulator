@@ -1,15 +1,12 @@
 import { ByteValue, MemoryAddress, numberToHex, WordValue } from "../types";
 
-export class Ram {
-  private readonly raw: ByteValue[];
+class Ram {
+  protected readonly raw: ByteValue[];
   private readonly size: number;
 
-  public constructor(size: number, raw?: ByteValue[]) {
-    if (raw && raw.length > size) {
-      throw new Error("bytes provided longer than size");
-    }
+  public constructor(size: number) {
     this.size = size;
-    this.raw = raw ? raw : [];
+    this.raw = [];
   }
 
   private assertValidAddress(value: MemoryAddress): void {
@@ -53,11 +50,40 @@ export class Ram {
     this.writeByte(address, value >> 8);
     this.writeByte(address + 1, value & 255);
   }
+}
 
-  public copy(): Ram {
-    return new Ram(this.size, this.raw.slice());
+export class ZeroPageRam extends Ram {
+  public constructor() {
+    super(0xff);
   }
 }
 
-export type VRam = Ram;
-export type ZeroPageRam = Ram;
+export class WorkingRam extends Ram {
+  public constructor() {
+    super(0x2000);
+  }
+}
+
+export class VRam {
+  private readonly ram: Ram;
+
+  public constructor() {
+    this.ram = new Ram(0x02000);
+  }
+
+  public readByte(address: MemoryAddress): ByteValue {
+    return this.ram.readByte(address);
+  }
+
+  public readWord(address: MemoryAddress): WordValue {
+    return this.ram.readWord(address);
+  }
+
+  public writeByte(address: MemoryAddress, value: ByteValue): void {
+    this.ram.writeByte(address, value);
+  }
+
+  public writeWord(address: MemoryAddress, value: WordValue): void {
+    this.ram.writeWord(address, value);
+  }
+}
