@@ -1,10 +1,10 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
 import { ByteRegister } from "./registers";
 import { LowLevelOperation, LowLevelStateReturn } from "./lowLevel";
-import { Cpu, Cycles } from "./index";
+import { Cpu, ClockCycles } from "./index";
 
 class SbcAR implements LowLevelOperation {
-  public readonly cycles: Cycles = 4;
+  public readonly cycles: ClockCycles = 4;
   private readonly register: ByteRegister;
 
   public constructor(register: ByteRegister) {

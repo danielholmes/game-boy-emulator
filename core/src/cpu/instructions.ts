@@ -34,14 +34,14 @@ import {
 import { ByteRegister, GroupedWordRegister, Register } from "./registers";
 import { sum } from "lodash";
 import { MemoryAddress, WordValue } from "../types";
-import { Cpu, Cycles } from "./index";
+import { Cpu, ClockCycles } from "./index";
 
 export type OpCode = number;
 
 export interface Instruction {
   readonly opCode: OpCode;
   readonly label: string;
-  execute(cpu: Cpu, mmu: Mmu): Cycles;
+  execute(cpu: Cpu, mmu: Mmu): ClockCycles;
 }
 
 // TODO: Definition to generate label?
@@ -64,7 +64,7 @@ export class InstructionDefinition implements Instruction {
     this.operations = operations;
   }
 
-  public execute(cpu: Cpu, mmu: Mmu): Cycles {
+  public execute(cpu: Cpu, mmu: Mmu): ClockCycles {
     this.operations.reduce(
       (value: LowLevelState, op: LowLevelOperation): LowLevelState => {
         const newResult = op.execute(cpu, mmu, value);

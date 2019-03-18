@@ -1,7 +1,6 @@
 /* global describe, expect */
 
 import { Mmu } from "../../memory/mmu";
-import each from "jest-each";
 import {
   createCpuWithRegisters,
   createMmu,
@@ -21,7 +20,7 @@ describe("cb", () => {
   });
 
   describe("createCb", () => {
-    each(BYTE_REGISTERS.map(r => [r])).test(
+    test.each(BYTE_REGISTERS.map(r => [r]))(
       "CB %s",
       (register: ByteRegister) => {
         cpu.registers[register] = 0x14;

@@ -16,10 +16,11 @@ var screen = {
 };
 var cpu = new _core.Cpu();
 var device = new _core.Device(cpu, new _core.Gpu(mmu, screen), mmu);
+device.turnOn();
 
 for (var i = 0; i < 1000000; i++) {
   console.log(i.toString() + ') 0x' + cpu.registers.pc.toString(16) + ' 0x' + mmu.readByte(cpu.registers.pc).toString(16));
-  device.tick();
+  device.tickCycle();
 
   if (i % 200 === 0) {
     var values = vRam.getValues();

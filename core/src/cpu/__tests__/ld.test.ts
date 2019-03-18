@@ -1,6 +1,5 @@
 /* global describe, test, expect */
 
-import each from "jest-each";
 import {
   BYTE_REGISTER_PAIR_PERMUTATIONS,
   BYTE_REGISTERS,
@@ -48,25 +47,26 @@ describe("ld", () => {
   });
 
   describe("createLdRR", () => {
-    each(
-      BYTE_REGISTER_PAIR_PERMUTATIONS.map(p => p as ReadonlyArray<ByteRegister>)
-    ).test("LD %s,%s", (register1: ByteRegister, register2: ByteRegister) => {
-      cpu.registers[register2] = 0x72;
+    test.each(BYTE_REGISTER_PAIR_PERMUTATIONS)(
+      "LD %s,%s",
+      (register1: ByteRegister, register2: ByteRegister) => {
+        cpu.registers[register2] = 0x72;
 
-      const instruction = createLdRR(0x3d, register1, register2);
+        const instruction = createLdRR(0x3d, register1, register2);
 
-      const cycles = instruction.execute(cpu, mmu);
+        const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(4);
-      expect(cpu).toEqual(
-        createCpuWithRegisters({ [register1]: 0x72, [register2]: 0x72 })
-      );
-      expect(mmu).toEqual(EMPTY_MEMORY);
-    });
+        expect(cycles).toBe(4);
+        expect(cpu).toEqual(
+          createCpuWithRegisters({ [register1]: 0x72, [register2]: 0x72 })
+        );
+        expect(mmu).toEqual(EMPTY_MEMORY);
+      }
+    );
   });
 
   describe("createLdRN", () => {
-    each(BYTE_REGISTERS.map(r => [r])).test(
+    test.each(BYTE_REGISTERS.map(r => [r]))(
       "LD %s,n",
       (register: ByteRegister) => {
         cpu.registers.pc = 0x0002;
@@ -87,7 +87,7 @@ describe("ld", () => {
   });
 
   describe("createLdRHlM", () => {
-    each(BYTE_REGISTERS.map(r => [r])).test(
+    test.each(BYTE_REGISTERS.map(r => [r]))(
       "LD %s,(hl)",
       (register: ByteRegister) => {
         cpu.registers.hl = 0xf108;
@@ -107,7 +107,7 @@ describe("ld", () => {
   });
 
   describe("createLdHlMR", () => {
-    each(BYTE_REGISTERS.map(r => [r])).test(
+    test.each(BYTE_REGISTERS.map(r => [r]))(
       "LD (hl),%s",
       (register: ByteRegister) => {
         cpu.registers.hl = 0xf108;
@@ -150,7 +150,7 @@ describe("ld", () => {
   });
 
   describe("createLdGrM", () => {
-    each([["bc"], ["de"]]).test(
+    test.each([["bc"], ["de"]] as GroupedWordRegister[][])(
       "LD a,(%s)",
       (register: GroupedWordRegister) => {
         cpu.registers[register] = 0xf108;
@@ -224,7 +224,7 @@ describe("ld", () => {
   });
 
   describe("createLdMRA", () => {
-    each([["bc"], ["de"], ["hl"]]).test(
+    test.each([["bc"], ["de"], ["hl"]] as GroupedWordRegister[][])(
       "LD (%s),a",
       (register: GroupedWordRegister) => {
         cpu.registers.a = 0x72;
@@ -244,7 +244,7 @@ describe("ld", () => {
   });
 
   describe("createLdAMRr", () => {
-    each([["bc"], ["de"], ["hl"]]).test(
+    test.each([["bc"], ["de"], ["hl"]] as GroupedWordRegister[][])(
       "LD a,(%s)",
       (register: GroupedWordRegister) => {
         cpu.registers[register] = 0xf108;
@@ -285,7 +285,7 @@ describe("ld", () => {
   });
 
   describe("createLdGrNn", () => {
-    each([["bc"], ["de"], ["hl"]]).test(
+    test.each([["bc"], ["de"], ["hl"]] as GroupedWordRegister[][])(
       "LD %s,nn",
       (register: GroupedWordRegister) => {
         cpu.registers.pc = 0x0001;

@@ -7,7 +7,7 @@ import {
   Register
 } from "./registers";
 import { ByteValue, WordValue, byteValueToSignedByte } from "../types";
-import { Cpu, Cycles } from ".";
+import { Cpu, ClockCycles } from ".";
 
 export type LowLevelState = ByteValue | WordValue | undefined;
 export type LowLevelStateReturn = ByteValue | WordValue | void;
@@ -17,12 +17,12 @@ export type LowLevelStateReturn = ByteValue | WordValue | void;
 // StoreToRegister("A") // takes no extra cycles
 
 export interface LowLevelOperation {
-  readonly cycles: Cycles;
+  readonly cycles: ClockCycles;
   execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 
 export class LoadRegister implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;
 
   public constructor(register: ByteRegister) {
@@ -35,7 +35,7 @@ export class LoadRegister implements LowLevelOperation {
 }
 
 export class ReadMemory implements LowLevelOperation {
-  public readonly cycles: Cycles = 4;
+  public readonly cycles: ClockCycles = 4;
 
   public execute(
     cpu: Cpu,
@@ -50,7 +50,7 @@ export class ReadMemory implements LowLevelOperation {
 }
 
 export class LoadGroupedRegister implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: GroupedWordRegister;
 
   public constructor(register: GroupedWordRegister) {
@@ -63,7 +63,7 @@ export class LoadGroupedRegister implements LowLevelOperation {
 }
 
 export class WriteWordFromGroupedRegisterAddress implements LowLevelOperation {
-  public readonly cycles: Cycles = 4;
+  public readonly cycles: ClockCycles = 4;
   private readonly register: GroupedWordRegister;
 
   public constructor(register: GroupedWordRegister) {
@@ -84,7 +84,7 @@ export class WriteWordFromGroupedRegisterAddress implements LowLevelOperation {
 }
 
 export class BitFlags implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;
 
   public constructor(register: ByteRegister) {
@@ -100,7 +100,7 @@ export class BitFlags implements LowLevelOperation {
 }
 
 export class JrCheck implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
 
   public execute(
     cpu: Cpu,
@@ -119,7 +119,7 @@ export class JrCheck implements LowLevelOperation {
 }
 
 export class WordValueToSignedByte implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
 
   public execute(
     cpu: Cpu,
@@ -135,7 +135,7 @@ export class WordValueToSignedByte implements LowLevelOperation {
 }
 
 export class WriteByteFromOperandAddress implements LowLevelOperation {
-  public readonly cycles: Cycles = 12;
+  public readonly cycles: ClockCycles = 12;
 
   public execute(
     cpu: Cpu,
@@ -152,7 +152,7 @@ export class WriteByteFromOperandAddress implements LowLevelOperation {
 }
 
 export class WriteWordFromOperandAddress implements LowLevelOperation {
-  public readonly cycles: Cycles = 12;
+  public readonly cycles: ClockCycles = 12;
 
   public execute(
     cpu: Cpu,
@@ -169,7 +169,7 @@ export class WriteWordFromOperandAddress implements LowLevelOperation {
 }
 
 export class StoreInRegister implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;
 
   public constructor(register: ByteRegister) {
@@ -189,7 +189,7 @@ export class StoreInRegister implements LowLevelOperation {
 }
 
 export class StoreInGroupedRegister implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: GroupedWordRegister;
 
   public constructor(register: GroupedWordRegister) {
@@ -209,7 +209,7 @@ export class StoreInGroupedRegister implements LowLevelOperation {
 }
 
 export class DecrementStackPointer implements LowLevelOperation {
-  public readonly cycles: Cycles = 4;
+  public readonly cycles: ClockCycles = 4;
   private readonly amount: WordValue;
 
   public constructor(amount: WordValue) {
@@ -222,7 +222,7 @@ export class DecrementStackPointer implements LowLevelOperation {
 }
 
 export class LoadProgramCounter implements LowLevelOperation {
-  public readonly cycles: Cycles = 4;
+  public readonly cycles: ClockCycles = 4;
 
   public execute(cpu: Cpu): LowLevelStateReturn {
     return cpu.registers.pc;
@@ -230,7 +230,7 @@ export class LoadProgramCounter implements LowLevelOperation {
 }
 
 export class WriteMemoryFromOperandAddress implements LowLevelOperation {
-  public readonly cycles: Cycles = 8;
+  public readonly cycles: ClockCycles = 8;
 
   public execute(
     cpu: Cpu,
@@ -247,7 +247,7 @@ export class WriteMemoryFromOperandAddress implements LowLevelOperation {
 }
 
 export class WriteMemoryFromRegisterAddress implements LowLevelOperation {
-  public readonly cycles: Cycles = 4;
+  public readonly cycles: ClockCycles = 4;
   private readonly register: Register;
 
   public constructor(register: Register) {
@@ -267,7 +267,7 @@ export class WriteMemoryFromRegisterAddress implements LowLevelOperation {
 }
 
 export class WriteMemoryFromStackPointer implements LowLevelOperation {
-  public readonly cycles: Cycles = 16;
+  public readonly cycles: ClockCycles = 16;
 
   public execute(
     cpu: Cpu,
@@ -282,7 +282,7 @@ export class WriteMemoryFromStackPointer implements LowLevelOperation {
 }
 
 export class StoreInStackPointer implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
 
   public execute(
     cpu: Cpu,
@@ -297,7 +297,7 @@ export class StoreInStackPointer implements LowLevelOperation {
 }
 
 export class SetProgramCounter implements LowLevelOperation {
-  public readonly cycles: Cycles = 4;
+  public readonly cycles: ClockCycles = 4;
   private readonly value: WordValue;
 
   public constructor(value: WordValue) {
@@ -311,7 +311,7 @@ export class SetProgramCounter implements LowLevelOperation {
 
 // TODO: Can be done in terms of lower level ops
 export class LoadOperand implements LowLevelOperation {
-  public readonly cycles: Cycles = 4;
+  public readonly cycles: ClockCycles = 4;
 
   public execute(cpu: Cpu, mmu: Mmu): LowLevelStateReturn {
     const byte = mmu.readByte(cpu.registers.pc);
@@ -321,7 +321,7 @@ export class LoadOperand implements LowLevelOperation {
 }
 
 export class LoadWordOperand implements LowLevelOperation {
-  public readonly cycles: Cycles = 8;
+  public readonly cycles: ClockCycles = 8;
 
   public execute(cpu: Cpu, mmu: Mmu): LowLevelStateReturn {
     const byte = mmu.readBigEndianWord(cpu.registers.pc);
@@ -331,7 +331,7 @@ export class LoadWordOperand implements LowLevelOperation {
 }
 
 export class IncrementRegister implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: Register;
 
   public constructor(register: Register) {
@@ -344,7 +344,7 @@ export class IncrementRegister implements LowLevelOperation {
 }
 
 export class IncrementGroupedRegister implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: GroupedWordRegister;
 
   public constructor(register: GroupedWordRegister) {
@@ -357,7 +357,7 @@ export class IncrementGroupedRegister implements LowLevelOperation {
 }
 
 export class XOrRegister implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;
 
   public constructor(register: ByteRegister) {
@@ -371,13 +371,13 @@ export class XOrRegister implements LowLevelOperation {
 }
 
 export class Nop implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
 
   public execute(): LowLevelStateReturn {}
 }
 
 export class IncrementStackPointer implements LowLevelOperation {
-  public readonly cycles: Cycles = 4;
+  public readonly cycles: ClockCycles = 4;
 
   public execute(cpu: Cpu): LowLevelStateReturn {
     cpu.registers.sp++;
@@ -385,7 +385,7 @@ export class IncrementStackPointer implements LowLevelOperation {
 }
 
 export class LoadStackPointer implements LowLevelOperation {
-  public readonly cycles: Cycles = 4;
+  public readonly cycles: ClockCycles = 4;
 
   public execute(cpu: Cpu): LowLevelStateReturn {
     return cpu.registers.sp;
@@ -393,7 +393,7 @@ export class LoadStackPointer implements LowLevelOperation {
 }
 
 export class DecrementRegister implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;
 
   public constructor(register: ByteRegister) {
@@ -407,7 +407,7 @@ export class DecrementRegister implements LowLevelOperation {
 
 // TODO: Depending on cycles, make this WordRegister
 export class DecrementGroupedRegister implements LowLevelOperation {
-  public readonly cycles: Cycles = 0;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: GroupedWordRegister;
 
   public constructor(register: GroupedWordRegister) {

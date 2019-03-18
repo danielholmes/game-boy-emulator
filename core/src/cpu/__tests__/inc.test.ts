@@ -1,7 +1,6 @@
 /* global describe, test, expect */
 
 import { Mmu } from "../../memory/mmu";
-import each from "jest-each";
 import {
   createCpuWithRegisters,
   createMmu,
@@ -26,7 +25,7 @@ describe("inc", () => {
   });
 
   describe("createIncRr", () => {
-    each(GROUPED_WORD_REGISTERS.map(r => [r])).test(
+    test.each(GROUPED_WORD_REGISTERS.map(r => [r]))(
       "INC %s",
       (register: GroupedWordRegister) => {
         cpu.registers[register] = 0x2314;
@@ -43,7 +42,7 @@ describe("inc", () => {
   });
 
   describe("createIncR", () => {
-    each(BYTE_REGISTERS.map(r => [r])).test("INC %s", (register: Register) => {
+    test.each(BYTE_REGISTERS.map(r => [r]))("INC %s", (register: Register) => {
       cpu.registers[register] = 0x14;
 
       const instruction = createIncR(0x3d, register);

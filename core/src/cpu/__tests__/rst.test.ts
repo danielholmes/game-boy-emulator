@@ -1,7 +1,6 @@
 /* global describe, expect */
 
 import { Mmu } from "../../memory/mmu";
-import each from "jest-each";
 import {
   createCpuWithRegisters,
   createMmu,
@@ -20,7 +19,7 @@ describe("rst", () => {
   });
 
   describe("createRst", () => {
-    each(RST_ADDRESSES.map(a => [a])).test("RST %s", (address: RstAddress) => {
+    test.each(RST_ADDRESSES.map(a => [a]))("RST %s", (address: RstAddress) => {
       cpu.registers.sp = 0x8814;
       cpu.registers.pc = 0xabcd;
 

@@ -3,7 +3,7 @@ import { Mmu } from "../memory/mmu";
 import { fromPairs } from "lodash";
 import { numberToByteHex } from "../types";
 import { ByteRegister } from "./registers";
-import { Cpu, Cycles } from "./index";
+import { Cpu, ClockCycles } from "./index";
 
 class CbInstruction implements Instruction {
   public readonly opCode: OpCode;
@@ -13,7 +13,7 @@ class CbInstruction implements Instruction {
     this.opCode = opCode;
   }
 
-  public execute(cpu: Cpu, mmu: Mmu): Cycles {
+  public execute(cpu: Cpu, mmu: Mmu): ClockCycles {
     const operand = mmu.readByte(cpu.registers.pc);
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const subInstruction = CB_INSTRUCTIONS[operand];

@@ -1,61 +1,71 @@
-import { Device, Cpu, Gpu, Mmu, bios, IOMemory, VRam, WorkingRam, ZeroPageRam, OamMemory, Cartridge } from "@gebby/core";
-import { toPairs, sortBy } from "lodash";
+import {
+  Device,
+  Cpu,
+  Gpu,
+  Mmu,
+  bios,
+  IOMemory,
+  VRam,
+  WorkingRam,
+  ZeroPageRam,
+  OamMemory
+} from "@gebby/core";
 
-const cartridge = new Cartridge(
+/* const cartridge = new Cartridge(
   new Uint8Array([
     0x00, // 0x0100
     0x00, // 0x0101
     0x00, // 0x0102
-    0xCE, // 0x0104
-    0xED,
+    0xce, // 0x0104
+    0xed,
     0x66,
     0x66,
-    0xCC,
-    0x0D,
+    0xcc,
+    0x0d,
     0x00,
-    0x0B,
+    0x0b,
     0x03,
     0x73,
     0x00,
     0x83,
     0x00,
-    0x0C,
+    0x0c,
     0x00,
-    0x0D,
+    0x0d,
     0x00,
     0x08,
     0x11,
-    0x1F,
+    0x1f,
     0x88,
     0x89,
     0x00,
-    0x0E,
-    0xDC,
-    0xCC,
-    0x6E,
-    0xE6,
-    0xDD,
-    0xDD,
-    0xD9,
+    0x0e,
+    0xdc,
+    0xcc,
+    0x6e,
+    0xe6,
+    0xdd,
+    0xdd,
+    0xd9,
     0x99,
-    0xBB,
-    0xBB,
+    0xbb,
+    0xbb,
     0x67,
     0x63,
-    0x6E,
-    0x0E,
-    0xEC,
-    0xCC,
-    0xDD,
-    0xDC,
+    0x6e,
+    0x0e,
+    0xec,
+    0xcc,
+    0xdd,
+    0xdc,
     0x99,
-    0x9F,
-    0xBB,
-    0xB9,
+    0x9f,
+    0xbb,
+    0xb9,
     0x33,
-    0x3E
+    0x3e
   ])
-);
+);*/
 
 const vRam = new VRam(); // VRam.initializeRandomly();
 
@@ -74,20 +84,23 @@ const screen = {
   }
 };
 
-const cpu = new Cpu()
+const cpu = new Cpu();
 
-const device = new Device(
-  cpu,
-  new Gpu(mmu, screen),
-  mmu
-);
+const device = new Device(cpu, new Gpu(mmu, screen), mmu);
+device.turnOn();
 
 for (let i = 0; i < 1000000; i++) {
-  console.log(i.toString() + ') 0x' + cpu.registers.pc.toString(16) + ' 0x' + mmu.readByte(cpu.registers.pc).toString(16));
-  device.tick();
+  console.log(
+    i.toString() +
+      ") 0x" +
+      cpu.registers.pc.toString(16) +
+      " 0x" +
+      mmu.readByte(cpu.registers.pc).toString(16)
+  );
+  device.tickCycle();
   if (i % 200 === 0) {
     const values = vRam.getValues();
-    const filled: { [address: number]: number; } = {};
+    const filled: { [address: number]: number } = {};
     for (let j = 0; j < values.length; j++) {
       if (values[j] !== 0) {
         filled[j] = values[j];

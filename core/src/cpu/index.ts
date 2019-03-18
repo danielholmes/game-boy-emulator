@@ -31,17 +31,33 @@ import { createCb } from "./cb";
 import { createJrNzN } from "./jr";
 import { createSbcAR } from "./sbc";
 
-export type Cycles = number;
+export type ClockCycles = number;
 
 export class Cpu {
   public readonly registers: CpuRegisters;
+  // Temporary variable until refactor done
+  private remainingCycles: ClockCycles;
 
   public constructor() {
     this.registers = new CpuRegistersImpl();
+    this.remainingCycles = 0;
   }
 
-  public tick(mmu: Mmu): Cycles {
+  // TODO: See device comments for changes
+  public tick(mmu: Mmu, cycles: ClockCycles): void {
+    this.remainingCycles += cycles;
+
+    // Note: that this currently goes below 0 which is a no no. Should only
+    // simulate up to current available cycles
+    while (this.remainingCycles > 4) {
+      this.tickCycle(mmu);
+    }
+  }
+
+  public tickCycle(mmu: Mmu): void {
     const opCode = mmu.readByte(this.registers.pc);
+    this.remainingCycles -= 4;
+
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const instruction = INSTRUCTIONS[opCode];
     if (!instruction) {
@@ -53,7 +69,7 @@ export class Cpu {
     }
     this.registers.pc++;
 
-    return instruction.execute(this, mmu);
+    this.remainingCycles -= instruction.execute(this, mmu);
   }
 }
 

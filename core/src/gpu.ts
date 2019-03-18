@@ -1,6 +1,6 @@
 import { Mmu } from "./memory/mmu";
 import { Screen } from "./screen";
-import { Cycles } from "./cpu";
+import { ClockCycles } from "./cpu";
 
 enum GpuMode {
   HBlank = 0,
@@ -12,7 +12,7 @@ enum GpuMode {
 export class Gpu {
   private readonly mmu: Mmu;
   private readonly screen: Screen;
-  private modeCycles: Cycles;
+  private modeCycles: ClockCycles;
   private mode: GpuMode;
 
   public constructor(mmu: Mmu, screen: Screen) {
@@ -22,7 +22,7 @@ export class Gpu {
     this.mode = GpuMode.ScanlineOam;
   }
 
-  public tick(cycles: Cycles): void {
+  public tick(cycles: ClockCycles): void {
     this.modeCycles += cycles;
 
     switch (this.mode) {

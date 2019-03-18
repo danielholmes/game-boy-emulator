@@ -25,9 +25,11 @@ describe("cpu", () => {
       mmu.loadCartridge(cartridge);
       cpu.registers.pc = 0x0000;
 
-      cpu.tick(mmu);
+      cpu.tickCycle(mmu);
 
-      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0001 }));
+      expect(cpu.registers).toEqual(
+        createCpuWithRegisters({ pc: 0x0001 }).registers
+      );
       expect(mmu).toEqual(createMmuWithCartridgeAndValues(cartridge));
     });
 
@@ -36,9 +38,11 @@ describe("cpu", () => {
       mmu.loadCartridge(cartridge);
       cpu.registers.pc = 0x0000;
 
-      cpu.tick(mmu);
+      cpu.tickCycle(mmu);
 
-      expect(cpu).toEqual(createCpuWithRegisters({ b: 0x66, pc: 0x0002 }));
+      expect(cpu.registers).toEqual(
+        createCpuWithRegisters({ b: 0x66, pc: 0x0002 }).registers
+      );
       expect(mmu).toEqual(createMmuWithCartridgeAndValues(cartridge));
     });
 
@@ -46,7 +50,7 @@ describe("cpu", () => {
       const ops: OpCode[] = [];
       while (ops.length < 50) {
         ops.push(mmu.readByte(cpu.registers.pc));
-        cpu.tick(mmu);
+        cpu.tickCycle(mmu);
       }
 
       expect(ops.slice(0, 12)).toEqual([
@@ -63,7 +67,7 @@ describe("cpu", () => {
         0xcb,
         0x20
       ]);
-      expect(cpu).toEqual(
+      expect(cpu.registers).toEqual(
         createCpuWithRegisters({
           a: 0x00,
           b: 0x00,
@@ -75,7 +79,7 @@ describe("cpu", () => {
           f: 0x20,
           pc: 0x000a,
           sp: 0xfffe
-        })
+        }).registers
       );
       // A lot of memory, not easy to specify/check it
       // expect(memory).toEqual(createMmuWithValues({ 0x10: 0x06, 0x11: 0x66 }))
