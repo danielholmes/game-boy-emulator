@@ -1,22 +1,35 @@
-import { BitValue, ByteValue, WordValue } from '../types'
-import { flatMap } from 'lodash'
+import { BitValue, ByteValue, WordValue } from "../types";
+import { flatMap } from "lodash";
 
-export type ByteRegister = 'a' | 'b' | 'c' | 'd' | 'e' | 'h' | 'l'
+export type ByteRegister = "a" | "b" | "c" | "d" | "e" | "h" | "l";
 
-export type GroupedWordRegister = 'bc' | 'de' | 'hl'
+export type GroupedWordRegister = "bc" | "de" | "hl";
 
-export type Register = ByteRegister | 'f' | GroupedWordRegister | 'sp' | 'pc'
+export type Register = ByteRegister | "f" | GroupedWordRegister | "sp" | "pc";
 
-export const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister> = ['bc', 'de', 'hl']
+export const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister> = [
+  "bc",
+  "de",
+  "hl"
+];
 
-export const BYTE_REGISTERS: ReadonlyArray<ByteRegister> = ['a', 'b', 'c', 'd', 'e', 'h', 'l']
+export const BYTE_REGISTERS: ReadonlyArray<ByteRegister> = [
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "h",
+  "l"
+];
 
-export const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<Readonly<[ByteRegister, ByteRegister]>> =
-  flatMap(
-    BYTE_REGISTERS.map((r1) =>
-      BYTE_REGISTERS.map((r2) => [r1, r2] as Readonly<[ByteRegister, ByteRegister]>)
-    )
+export const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<
+  Readonly<[ByteRegister, ByteRegister]>
+> = flatMap(
+  BYTE_REGISTERS.map(r1 =>
+    BYTE_REGISTERS.map(r2 => [r1, r2] as Readonly<[ByteRegister, ByteRegister]>)
   )
+);
 
 /*const B_C_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['b', 'c']
 const D_E_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['d', 'e']
@@ -35,8 +48,8 @@ export const groupedWordByteRegisters = (register: GroupedWordRegister): Readonl
 }*/
 
 // TODO: Shouldn't be exported, find a way to encapsulate this
-export const FLAG_Z = 7
-export const FLAG_Z_MASK = 1 << 7
+export const FLAG_Z = 7;
+export const FLAG_Z_MASK = 1 << 7;
 
 export interface CpuRegisters {
   a: ByteValue;
@@ -59,132 +72,130 @@ export interface CpuRegisters {
   readonly fNz: BitValue;
 }
 
-export class CpuRegistersImpl implements CpuRegisters
-{
-  private _a: ByteValue
-  private _b: ByteValue
-  private _c: ByteValue
-  private _d: ByteValue
-  private _e: ByteValue
-  private _h: ByteValue
-  private _l: ByteValue
+export class CpuRegistersImpl implements CpuRegisters {
+  private _a: ByteValue;
+  private _b: ByteValue;
+  private _c: ByteValue;
+  private _d: ByteValue;
+  private _e: ByteValue;
+  private _h: ByteValue;
+  private _l: ByteValue;
 
-  private _f: ByteValue
+  private _f: ByteValue;
 
-  private _pc: WordValue
-  private _sp: WordValue
-  
-  public constructor()
-  {
-    this._a = 0x00
-    this._b = 0x00
-    this._c = 0x00
-    this._d = 0x00
-    this._e = 0x00
-    this._h = 0x00
-    this._l = 0x00
+  private _pc: WordValue;
+  private _sp: WordValue;
 
-    this._f = 0x0000
+  public constructor() {
+    this._a = 0x00;
+    this._b = 0x00;
+    this._c = 0x00;
+    this._d = 0x00;
+    this._e = 0x00;
+    this._h = 0x00;
+    this._l = 0x00;
 
-    this._pc = 0x0000
-    this._sp = 0xFFFF
+    this._f = 0x0000;
+
+    this._pc = 0x0000;
+    this._sp = 0xffff;
   }
 
   public get fNz(): BitValue {
-    return (this.f & FLAG_Z_MASK) !== 0 ? 1 : 0
+    return (this.f & FLAG_Z_MASK) !== 0 ? 1 : 0;
   }
 
   public set a(value: ByteValue) {
-    this._a = value & 0xFF // Mask to 8 bits
+    this._a = value & 0xff; // Mask to 8 bits
   }
   public get a(): ByteValue {
-    return this._a
+    return this._a;
   }
 
   public set b(value: ByteValue) {
-    this._b = value & 0xFF // Mask to 8 bits
+    this._b = value & 0xff; // Mask to 8 bits
   }
   public get b(): ByteValue {
-    return this._b
+    return this._b;
   }
 
   public set c(value: ByteValue) {
-    this._c = value & 0xFF // Mask to 8 bits
+    this._c = value & 0xff; // Mask to 8 bits
   }
   public get c(): ByteValue {
-    return this._c
+    return this._c;
   }
 
   public set d(value: ByteValue) {
-    this._d = value & 0xFF // Mask to 8 bits
+    this._d = value & 0xff; // Mask to 8 bits
   }
   public get d(): ByteValue {
-    return this._d
+    return this._d;
   }
 
   public set e(value: ByteValue) {
-    this._e = value & 0xFF // Mask to 8 bits
+    this._e = value & 0xff; // Mask to 8 bits
   }
   public get e(): ByteValue {
-    return this._e
+    return this._e;
   }
 
   public set h(value: ByteValue) {
-    this._h = value & 0xFF // Mask to 8 bits
+    this._h = value & 0xff; // Mask to 8 bits
   }
   public get h(): ByteValue {
-    return this._h
+    return this._h;
   }
 
   public set l(value: ByteValue) {
-    this._l = value & 0xFF // Mask to 8 bits
+    this._l = value & 0xff; // Mask to 8 bits
   }
   public get l(): ByteValue {
-    return this._l
+    return this._l;
   }
 
   public set f(value: ByteValue) {
-    this._f = value & 0xFF // Mask to 8 bits
+    this._f = value & 0xff; // Mask to 8 bits
   }
   public get f(): ByteValue {
-    return this._f
+    return this._f;
   }
 
   public set pc(value: ByteValue) {
-    this._pc = value & 0xFFFF // Mask to 16 bits
+    this._pc = value & 0xffff; // Mask to 16 bits
   }
   public get pc(): ByteValue {
-    return this._pc
+    return this._pc;
   }
 
   public set sp(value: ByteValue) {
-    this._sp = value & 0xFFFF // Mask to 16 bits
+    this._sp = value & 0xffff; // Mask to 16 bits
   }
   public get sp(): ByteValue {
-    return this._sp
+    return this._sp;
   }
 
   public set bc(value: ByteValue) {
-    this._b = (value >> 8) & 0xFF
-    this._c = value & 0xFF
+    this._b = (value >> 8) & 0xff;
+    this._c = value & 0xff;
   }
   public get bc(): ByteValue {
-    return (this._b << 8) + this._c
+    return (this._b << 8) + this._c;
   }
 
   public set de(value: ByteValue) {
-    this._d = (value >> 8) & 0xFF
-    this._e = value & 0xFF
+    this._d = (value >> 8) & 0xff;
+    this._e = value & 0xff;
   }
   public get de(): ByteValue {
-    return (this._d << 8) + this._e
+    return (this._d << 8) + this._e;
   }
 
   public set hl(value: ByteValue) {
-    this._h = (value >> 8) & 0xFF
-    this._l = value & 0xFF
+    this._h = (value >> 8) & 0xff;
+    this._l = value & 0xff;
   }
   public get hl(): ByteValue {
-    return (this._h << 8) + this._l
+    return (this._h << 8) + this._l;
   }
 }

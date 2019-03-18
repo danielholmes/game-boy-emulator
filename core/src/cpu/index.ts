@@ -1,35 +1,46 @@
-import { Memory } from '../memory'
-import { fromPairs } from 'lodash'
-import { Cpu } from './types'
-import { Instruction, OpCode } from './instructions'
-import { createLddMHlA, createLdGrNn, createLdMNnSp, createLdRN, createLdRR, createLdSpNn } from './ld'
-import { ByteRegister, CpuRegistersImpl, GroupedWordRegister } from './registers'
-import { createRst, RstAddress } from './rst'
-import { createDecR } from './dec'
-import { createIncRr, createIncSp } from './inc'
-import { createNop } from './special'
-import { createXorR } from './xor'
-import { numberToByteHex } from '../types'
-import { createCb } from './cb'
-import { createJrNzN } from './jr'
-import { createSbcAR } from './sbc'
+import { Memory } from "../memory";
+import { fromPairs } from "lodash";
+import { Cpu } from "./types";
+import { Instruction, OpCode } from "./instructions";
+import {
+  createLddMHlA,
+  createLdGrNn,
+  createLdMNnSp,
+  createLdRN,
+  createLdRR,
+  createLdSpNn
+} from "./ld";
+import {
+  ByteRegister,
+  CpuRegistersImpl,
+  GroupedWordRegister
+} from "./registers";
+import { createRst, RstAddress } from "./rst";
+import { createDecR } from "./dec";
+import { createIncRr, createIncSp } from "./inc";
+import { createNop } from "./special";
+import { createXorR } from "./xor";
+import { numberToByteHex } from "../types";
+import { createCb } from "./cb";
+import { createJrNzN } from "./jr";
+import { createSbcAR } from "./sbc";
 
 export const create = (): Cpu => ({
   registers: new CpuRegistersImpl()
-})
+});
 
-export const copyCpu = (cpu: Cpu): Cpu => ({ ...cpu })
+export const copyCpu = (cpu: Cpu): Cpu => ({ ...cpu });
 
 export const runInstruction = (cpu: Cpu, memory: Memory): void => {
-  const opCode = memory.readByte(cpu.registers.pc)
-  const instruction = INSTRUCTIONS[opCode]
+  const opCode = memory.readByte(cpu.registers.pc);
+  const instruction = INSTRUCTIONS[opCode];
   if (!instruction) {
-    throw new Error(`No instruction for opCode ${numberToByteHex(opCode)}`)
+    throw new Error(`No instruction for opCode ${numberToByteHex(opCode)}`);
   }
-  cpu.registers.pc++
+  cpu.registers.pc++;
 
-  instruction.execute(cpu, memory)
-}
+  instruction.execute(cpu, memory);
+};
 
 // LD A,(HL) 7E 8
 // LD B,(HL) 46 8
@@ -49,142 +60,141 @@ export const runInstruction = (cpu: Cpu, memory: Memory): void => {
 
 // DEC (HL) 35 12
 
-const INSTRUCTIONS: { [opCode: number]: Instruction } =
-  fromPairs(
-    [
-      createNop(0x00),
+const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
+  [
+    createNop(0x00),
 
-      ...([
-        [0x7F, 'a', 'a'],
-        [0x78, 'a', 'b'],
-        [0x79, 'a', 'c'],
-        [0x7A, 'a', 'd'],
-        [0x7B, 'a', 'e'],
-        [0x7C, 'a', 'h'],
-        [0x7D, 'a', 'l'],
-        [0x40, 'b', 'b'],
-        [0x41, 'b', 'c'],
-        [0x42, 'b', 'd'],
-        [0x43, 'b', 'e'],
-        [0x44, 'b', 'h'],
-        [0x45, 'b', 'l'],
-        [0x48, 'c', 'b'],
-        [0x49, 'c', 'c'],
-        [0x4A, 'c', 'd'],
-        [0x4B, 'c', 'e'],
-        [0x4C, 'c', 'h'],
-        [0x4D, 'c', 'l'],
-        [0x50, 'd', 'b'],
-        [0x51, 'd', 'c'],
-        [0x52, 'd', 'd'],
-        [0x53, 'd', 'e'],
-        [0x54, 'd', 'h'],
-        [0x55, 'd', 'l'],
-        [0x58, 'e', 'b'],
-        [0x59, 'e', 'c'],
-        [0x5A, 'e', 'd'],
-        [0x5B, 'e', 'e'],
-        [0x5C, 'e', 'h'],
-        [0x5D, 'e', 'l'],
-        [0x60, 'h', 'b'],
-        [0x61, 'h', 'c'],
-        [0x62, 'h', 'd'],
-        [0x63, 'h', 'e'],
-        [0x64, 'h', 'h'],
-        [0x65, 'h', 'l'],
-        [0x68, 'l', 'b'],
-        [0x69, 'l', 'c'],
-        [0x6A, 'l', 'd'],
-        [0x6B, 'l', 'e'],
-        [0x6C, 'l', 'h'],
-        [0x6D, 'l', 'l']
-      ] as ReadonlyArray<[OpCode, ByteRegister, ByteRegister]>)
-        .map(([opCode, register1, register2]) => createLdRR(opCode, register1, register2)),
+    ...([
+      [0x7f, "a", "a"],
+      [0x78, "a", "b"],
+      [0x79, "a", "c"],
+      [0x7a, "a", "d"],
+      [0x7b, "a", "e"],
+      [0x7c, "a", "h"],
+      [0x7d, "a", "l"],
+      [0x40, "b", "b"],
+      [0x41, "b", "c"],
+      [0x42, "b", "d"],
+      [0x43, "b", "e"],
+      [0x44, "b", "h"],
+      [0x45, "b", "l"],
+      [0x48, "c", "b"],
+      [0x49, "c", "c"],
+      [0x4a, "c", "d"],
+      [0x4b, "c", "e"],
+      [0x4c, "c", "h"],
+      [0x4d, "c", "l"],
+      [0x50, "d", "b"],
+      [0x51, "d", "c"],
+      [0x52, "d", "d"],
+      [0x53, "d", "e"],
+      [0x54, "d", "h"],
+      [0x55, "d", "l"],
+      [0x58, "e", "b"],
+      [0x59, "e", "c"],
+      [0x5a, "e", "d"],
+      [0x5b, "e", "e"],
+      [0x5c, "e", "h"],
+      [0x5d, "e", "l"],
+      [0x60, "h", "b"],
+      [0x61, "h", "c"],
+      [0x62, "h", "d"],
+      [0x63, "h", "e"],
+      [0x64, "h", "h"],
+      [0x65, "h", "l"],
+      [0x68, "l", "b"],
+      [0x69, "l", "c"],
+      [0x6a, "l", "d"],
+      [0x6b, "l", "e"],
+      [0x6c, "l", "h"],
+      [0x6d, "l", "l"]
+    ] as ReadonlyArray<[OpCode, ByteRegister, ByteRegister]>).map(
+      ([opCode, register1, register2]) =>
+        createLdRR(opCode, register1, register2)
+    ),
 
-      ...([
-        [0x06, 'b'],
-        [0x0E, 'c'],
-        [0x16, 'd'],
-        [0x1E, 'e'],
-        [0x26, 'h'],
-        [0x2E, 'l'],
-        [0x3E, 'a']
-      ] as ReadonlyArray<[OpCode, ByteRegister]>)
-        .map(([opCode, register]) => createLdRN(opCode, register)),
+    ...([
+      [0x06, "b"],
+      [0x0e, "c"],
+      [0x16, "d"],
+      [0x1e, "e"],
+      [0x26, "h"],
+      [0x2e, "l"],
+      [0x3e, "a"]
+    ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
+      createLdRN(opCode, register)
+    ),
 
-      ...([
-        [0x01, 'bc'],
-        [0x11, 'de'],
-        [0x21, 'hl']
-      ] as ReadonlyArray<[OpCode, GroupedWordRegister]>)
-        .map(([opCode, register]) => createLdGrNn(opCode, register)),
+    ...([[0x01, "bc"], [0x11, "de"], [0x21, "hl"]] as ReadonlyArray<
+      [OpCode, GroupedWordRegister]
+    >).map(([opCode, register]) => createLdGrNn(opCode, register)),
 
-      createLdSpNn(0x31),
+    createLdSpNn(0x31),
 
-      ...([
-        [0xC7, 0x0000],
-        [0xCF, 0x0008],
-        [0xD7, 0x0010],
-        [0xDF, 0x0018],
-        [0xE7, 0x0020],
-        [0xEF, 0x0028],
-        [0xF7, 0x0030],
-        [0xFF, 0x0038]
-      ] as ReadonlyArray<[OpCode, RstAddress]>)
-        .map(([opCode, value]) => createRst(opCode, value)),
+    ...([
+      [0xc7, 0x0000],
+      [0xcf, 0x0008],
+      [0xd7, 0x0010],
+      [0xdf, 0x0018],
+      [0xe7, 0x0020],
+      [0xef, 0x0028],
+      [0xf7, 0x0030],
+      [0xff, 0x0038]
+    ] as ReadonlyArray<[OpCode, RstAddress]>).map(([opCode, value]) =>
+      createRst(opCode, value)
+    ),
 
-      createLdMNnSp(0x08),
+    createLdMNnSp(0x08),
 
-      ...([
-        [0x3D, 'a'],
-        [0x05, 'b'],
-        [0x0D, 'c'],
-        [0x15, 'd'],
-        [0x1D, 'e'],
-        [0x25, 'h'],
-        [0x2D, 'l']
-      ] as ReadonlyArray<[OpCode, ByteRegister]>)
-        .map(([opCode, register]) => createDecR(opCode, register)),
+    ...([
+      [0x3d, "a"],
+      [0x05, "b"],
+      [0x0d, "c"],
+      [0x15, "d"],
+      [0x1d, "e"],
+      [0x25, "h"],
+      [0x2d, "l"]
+    ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
+      createDecR(opCode, register)
+    ),
 
-      ...([
-        [0x03, 'bc'],
-        [0x13, 'de'],
-        [0x23, 'hl']
-      ] as ReadonlyArray<[OpCode, GroupedWordRegister]>)
-        .map(([opCode, register]) => createIncRr(opCode, register)),
+    ...([[0x03, "bc"], [0x13, "de"], [0x23, "hl"]] as ReadonlyArray<
+      [OpCode, GroupedWordRegister]
+    >).map(([opCode, register]) => createIncRr(opCode, register)),
 
-      createIncSp(0x33),
+    createIncSp(0x33),
 
-      ...([
-        [0xAF, 'a'],
-        [0xA8, 'b'],
-        [0xA9, 'c'],
-        [0xAA, 'd'],
-        [0xAB, 'e'],
-        [0xAC, 'h'],
-        [0xAD, 'l']
-      ] as ReadonlyArray<[OpCode, ByteRegister]>)
-        .map(([opCode, register]) => createXorR(opCode, register)),
+    ...([
+      [0xaf, "a"],
+      [0xa8, "b"],
+      [0xa9, "c"],
+      [0xaa, "d"],
+      [0xab, "e"],
+      [0xac, "h"],
+      [0xad, "l"]
+    ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
+      createXorR(opCode, register)
+    ),
 
-      createLddMHlA(0x32),
+    createLddMHlA(0x32),
 
-      createCb(0xCB),
+    createCb(0xcb),
 
-      createJrNzN(0x20),
+    createJrNzN(0x20),
 
-      ...([
-        [0x9F, 'a'],
-        [0x98, 'b'],
-        [0x99, 'c'],
-        [0x9A, 'd'],
-        [0x9B, 'e'],
-        [0x9C, 'h'],
-        [0x9D, 'l']
-      ] as ReadonlyArray<[OpCode, ByteRegister]>)
-        .map(([opCode, register]) => createSbcAR(opCode, register))
-    ]
-      .map((i: Instruction) => [i.opCode, i])
-  )
+    ...([
+      [0x9f, "a"],
+      [0x98, "b"],
+      [0x99, "c"],
+      [0x9a, "d"],
+      [0x9b, "e"],
+      [0x9c, "h"],
+      [0x9d, "l"]
+    ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
+      createSbcAR(opCode, register)
+    )
+  ].map((i: Instruction) => [i.opCode, i])
+);
 
 // const nop = (): void => {}
 //

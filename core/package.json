@@ -5,6 +5,8 @@
   "license": "MIT",
   "scripts": {
     "ts": "tsc -p tsconfig.json",
+    "format": "prettier --write src/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts",
     "lint": "eslint --fix './src/**/*.ts'",
     "lint:check": "eslint './src/**/*.ts'",
     "test": "jest",
@@ -12,7 +14,7 @@
     "clean": "rimraf ./dist/**",
     "compile": "babel src --out-dir ./dist/ --source-maps --ignore '**/__tests__/**/*' --extensions '.ts'",
     "compile:defs": "tsc -p tsconfig.json",
-    "build": "yarn ts && yarn lint:check && yarn test && yarn compile && yarn compile:defs"
+    "build": "yarn ts && yarn format:check && yarn lint:check && yarn test && yarn compile && yarn compile:defs"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -24,8 +26,11 @@
     "@typescript-eslint/eslint-plugin": "^1.4.2",
     "@typescript-eslint/parser": "^1.4.2",
     "eslint": "^5.15.1",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
     "jest": "^24.4.0",
     "jest-each": "^24.5.0",
+    "prettier": "^1.16.4",
     "ts-jest": "^24.0.0",
     "typescript": "^3.3.3333"
   },

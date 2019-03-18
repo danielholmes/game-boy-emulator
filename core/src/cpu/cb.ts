@@ -1,47 +1,46 @@
-import { Instruction, InstructionDefinition, OpCode } from './instructions'
-import { Cpu, Cycles } from './types'
-import { Memory } from '../memory'
-import { fromPairs } from 'lodash'
-import { numberToByteHex } from '../types'
-import { ByteRegister } from './registers'
+import { Instruction, InstructionDefinition, OpCode } from "./instructions";
+import { Cpu, Cycles } from "./types";
+import { Memory } from "../memory";
+import { fromPairs } from "lodash";
+import { numberToByteHex } from "../types";
+import { ByteRegister } from "./registers";
 
 class CbInstruction implements Instruction {
-  public readonly opCode: OpCode
-  public readonly label: string = 'CB'
-  public readonly cycles: Cycles = 4
+  public readonly opCode: OpCode;
+  public readonly label: string = "CB";
+  public readonly cycles: Cycles = 4;
 
   public constructor(opCode: OpCode) {
-    this.opCode = opCode
+    this.opCode = opCode;
   }
 
   public execute(cpu: Cpu, memory: Memory): void {
-    const operand = memory.readByte(cpu.registers.pc)
-    const subInstruction = CB_INSTRUCTIONS[operand]
+    const operand = memory.readByte(cpu.registers.pc);
+    const subInstruction = CB_INSTRUCTIONS[operand];
     if (!subInstruction) {
-      throw new Error(`No instruction for opCode ${numberToByteHex(operand)}`)
+      throw new Error(`No instruction for opCode ${numberToByteHex(operand)}`);
     }
-    cpu.registers.pc++
-    subInstruction.execute(cpu, memory)
+    cpu.registers.pc++;
+    subInstruction.execute(cpu, memory);
   }
 }
 
-export const createCb = (opCode: OpCode): Instruction => new CbInstruction(opCode)
+export const createCb = (opCode: OpCode): Instruction =>
+  new CbInstruction(opCode);
 
-export const createCbBit = (opCode: OpCode, register: ByteRegister): Instruction =>
-  new InstructionDefinition(opCode, `BIT ${register}`)
-    .bitFlags(register)
+export const createCbBit = (
+  opCode: OpCode,
+  register: ByteRegister
+): Instruction =>
+  new InstructionDefinition(opCode, `BIT ${register}`).bitFlags(register);
 
-const CB_INSTRUCTIONS: { [opCode: number]: Instruction } =
-  fromPairs(
-    [
-      ...([
-        [0x7B, 'e'],
-        [0x7C, 'h']
-      ] as ReadonlyArray<[OpCode, ByteRegister]>)
-        .map(([opCode, register]) => createCbBit(opCode, register))
-    ]
-      .map((i: Instruction) => [i.opCode, i])
-  )
+const CB_INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
+  [
+    ...([[0x7b, "e"], [0x7c, "h"]] as ReadonlyArray<
+      [OpCode, ByteRegister]
+    >).map(([opCode, register]) => createCbBit(opCode, register))
+  ].map((i: Instruction) => [i.opCode, i])
+);
 
 // Z80._r.f&=0x1F;
 // Z80._r.f|=0x20;

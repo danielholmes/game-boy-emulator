@@ -1,7 +1,7 @@
-import { CpuRegisters } from './registers'
+import { CpuRegisters } from "./registers";
 
 export interface Cpu {
   readonly registers: CpuRegisters;
 }
 
-export type Cycles = number
+export type Cycles = number;
