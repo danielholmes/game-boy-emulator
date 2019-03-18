@@ -87,7 +87,7 @@ export class BitFlags implements LowLevelOperation
     this.register = register
   }
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     const t = cpu.registers[this.register] & FLAG_Z_MASK
     const flag = 0x20 + (((t & 0xFF) === 0 ? 1 : 0) << FLAG_Z)
     cpu.registers.f &= 0x10
@@ -183,7 +183,7 @@ export class DecrementStackPointer implements LowLevelOperation {
     this.amount = amount
   }
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     cpu.registers.sp -= this.amount
   }
 }
@@ -191,7 +191,7 @@ export class DecrementStackPointer implements LowLevelOperation {
 export class LoadProgramCounter implements LowLevelOperation {
   public readonly cycles: Cycles = 4
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     return cpu.registers.pc
   }
 }
@@ -228,7 +228,7 @@ export class SetProgramCounter implements LowLevelOperation
     this.value = value
   }
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     cpu.registers.pc = this.value
   }
 }
@@ -238,7 +238,7 @@ export class LoadOperand implements LowLevelOperation
 {
   public readonly cycles: Cycles = 4
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu, memory: Memory): LowLevelStateReturn {
     const byte = memory.readByte(cpu.registers.pc)
     cpu.registers.pc++
     return byte
@@ -249,7 +249,7 @@ export class LoadWordOperand implements LowLevelOperation
 {
   public readonly cycles: Cycles = 8
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu, memory: Memory): LowLevelStateReturn {
     const byte = memory.readWord(cpu.registers.pc)
     cpu.registers.pc += 2
     return byte
@@ -265,7 +265,7 @@ export class IncrementGroupedRegister implements LowLevelOperation
     this.register = register
   }
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     cpu.registers[this.register]++
   }
 }
@@ -279,7 +279,7 @@ export class XOrRegister implements LowLevelOperation {
     this.register = register
   }
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     cpu.registers.a = cpu.registers[this.register] & 0xFF
     cpu.registers.f = cpu.registers.a ? 0x00 : 0x80
   }
@@ -288,7 +288,7 @@ export class XOrRegister implements LowLevelOperation {
 export class Nop implements LowLevelOperation {
   public readonly cycles: Cycles = 0
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(): LowLevelStateReturn {
   }
 }
 
@@ -296,7 +296,7 @@ export class IncrementStackPointer implements LowLevelOperation
 {
   public readonly cycles: Cycles = 4
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     cpu.registers.sp++
   }
 }
@@ -304,7 +304,7 @@ export class IncrementStackPointer implements LowLevelOperation
 export class LoadStackPointer implements LowLevelOperation {
   public readonly cycles: Cycles = 4
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     return cpu.registers.sp
   }
 }
@@ -318,7 +318,7 @@ export class DecrementRegister implements LowLevelOperation {
     this.register = register
   }
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     cpu.registers[this.register]--
   }
 }
@@ -333,7 +333,7 @@ export class DecrementGroupedRegister implements LowLevelOperation {
     this.register = register
   }
 
-  public execute(cpu: Cpu, memory: Memory, value: LowLevelState): LowLevelStateReturn {
+  public execute(cpu: Cpu): LowLevelStateReturn {
     cpu.registers[this.register]--
   }
 }
