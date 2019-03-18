@@ -1,5 +1,5 @@
 import { Cpu, Cycles } from "./types";
-import { Memory } from "../memory";
+import { Mmu } from "../memory";
 import {
   ByteRegister,
   FLAG_Z,
@@ -19,7 +19,7 @@ export interface LowLevelOperation {
   readonly cycles: Cycles;
   readonly execute: (
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ) => LowLevelStateReturn;
 }
@@ -42,13 +42,13 @@ export class ReadMemory implements LowLevelOperation {
 
   public execute(
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ): LowLevelStateReturn {
     if (value === undefined) {
       throw new Error("value undefined");
     }
-    return memory.readByte(value);
+    return mmu.readByte(value);
   }
 }
 
@@ -75,14 +75,14 @@ export class WriteWordFromGroupedRegisterAddress implements LowLevelOperation {
 
   public execute(
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ): LowLevelStateReturn {
     if (value === undefined) {
       throw new Error("value undefined");
     }
     const address = cpu.registers[this.register];
-    memory.writeByte(address, value);
+    mmu.writeByte(address, value);
   }
 }
 
@@ -107,7 +107,7 @@ export class JrCheck implements LowLevelOperation {
 
   public execute(
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ): LowLevelStateReturn {
     if (value === undefined) {
@@ -126,7 +126,7 @@ export class WordValueToSignedByte implements LowLevelOperation {
 
   public execute(
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ): LowLevelStateReturn {
     if (value === undefined) {
@@ -142,14 +142,14 @@ export class WriteByteFromOperandAddress implements LowLevelOperation {
 
   public execute(
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ): LowLevelStateReturn {
     if (value === undefined) {
       throw new Error("value undefined");
     }
-    const address = memory.readWord(cpu.registers.pc);
-    memory.writeByte(address, value);
+    const address = mmu.readWord(cpu.registers.pc);
+    mmu.writeByte(address, value);
     cpu.registers.pc += 2;
   }
 }
@@ -159,14 +159,14 @@ export class WriteWordFromOperandAddress implements LowLevelOperation {
 
   public execute(
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ): LowLevelStateReturn {
     if (value === undefined) {
       throw new Error("value undefined");
     }
-    const address = memory.readWord(cpu.registers.pc);
-    memory.writeWord(address, value);
+    const address = mmu.readWord(cpu.registers.pc);
+    mmu.writeWord(address, value);
     cpu.registers.pc += 2;
   }
 }
@@ -181,7 +181,7 @@ export class StoreInRegister implements LowLevelOperation {
 
   public execute(
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ): LowLevelStateReturn {
     if (value === undefined) {
@@ -201,7 +201,7 @@ export class StoreInGroupedRegister implements LowLevelOperation {
 
   public execute(
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ): LowLevelStateReturn {
     if (value === undefined) {
@@ -237,13 +237,13 @@ export class WriteMemoryFromStackPointer implements LowLevelOperation {
 
   public execute(
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ): LowLevelStateReturn {
     if (value === undefined) {
       throw new Error("value undefined");
     }
-    memory.writeWord(cpu.registers.sp, value);
+    mmu.writeWord(cpu.registers.sp, value);
   }
 }
 
@@ -252,7 +252,7 @@ export class StoreInStackPointer implements LowLevelOperation {
 
   public execute(
     cpu: Cpu,
-    memory: Memory,
+    mmu: Mmu,
     value: LowLevelState
   ): LowLevelStateReturn {
     if (value === undefined) {
@@ -279,8 +279,8 @@ export class SetProgramCounter implements LowLevelOperation {
 export class LoadOperand implements LowLevelOperation {
   public readonly cycles: Cycles = 4;
 
-  public execute(cpu: Cpu, memory: Memory): LowLevelStateReturn {
-    const byte = memory.readByte(cpu.registers.pc);
+  public execute(cpu: Cpu, mmu: Mmu): LowLevelStateReturn {
+    const byte = mmu.readByte(cpu.registers.pc);
     cpu.registers.pc++;
     return byte;
   }
@@ -289,8 +289,8 @@ export class LoadOperand implements LowLevelOperation {
 export class LoadWordOperand implements LowLevelOperation {
   public readonly cycles: Cycles = 8;
 
-  public execute(cpu: Cpu, memory: Memory): LowLevelStateReturn {
-    const byte = memory.readWord(cpu.registers.pc);
+  public execute(cpu: Cpu, mmu: Mmu): LowLevelStateReturn {
+    const byte = mmu.readWord(cpu.registers.pc);
     cpu.registers.pc += 2;
     return byte;
   }

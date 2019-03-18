@@ -1,6 +1,6 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
 import { Cpu, Cycles } from "./types";
-import { Memory } from "../memory";
+import { Mmu } from "../memory";
 import { fromPairs } from "lodash";
 import { numberToByteHex } from "../types";
 import { ByteRegister } from "./registers";
@@ -13,15 +13,15 @@ class CbInstruction implements Instruction {
     this.opCode = opCode;
   }
 
-  public execute(cpu: Cpu, memory: Memory): Cycles {
-    const operand = memory.readByte(cpu.registers.pc);
+  public execute(cpu: Cpu, mmu: Mmu): Cycles {
+    const operand = mmu.readByte(cpu.registers.pc);
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const subInstruction = CB_INSTRUCTIONS[operand];
     if (!subInstruction) {
       throw new Error(`No instruction for opCode ${numberToByteHex(operand)}`);
     }
     cpu.registers.pc++;
-    subInstruction.execute(cpu, memory);
+    subInstruction.execute(cpu, mmu);
     return 4;
   }
 }

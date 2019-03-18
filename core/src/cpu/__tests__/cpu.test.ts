@@ -1,57 +1,50 @@
 /* global describe, test, expect */
 
-import { Memory } from "../../memory";
+import { Memory, Mmu } from "../../memory";
 import bios from "../../bios";
 import { create as createCpu, runInstruction } from "../";
 import { Cpu } from "../types";
 import {
-  createCpuWithRegisters,
-  createMemoryWithValues
-} from "../../test/help";
+  createCpuWithRegisters, createMmuWithRomAndValues,
+  createMmuWithValues
+} from '../../test/help'
 import { OpCode } from "../instructions";
 
 describe("cpu", () => {
   let cpu: Cpu;
-  let memory: Memory;
+  let mmu: Mmu;
 
   beforeEach(() => {
     cpu = createCpu();
-    memory = new Memory();
+    mmu = new Mmu(new Memory());
   });
 
   describe("runInstruction", () => {
     test("runs NOP", () => {
-      memory.writeByte(0x10, 0x00);
-      cpu.registers.pc = 0x10;
+      mmu.loadRom([0x00]);
+      cpu.registers.pc = 0x0000;
 
-      runInstruction(cpu, memory);
+      runInstruction(cpu, mmu);
 
-      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x11 }));
-      expect(memory).toEqual(createMemoryWithValues({ 0x10: 0x00 }));
+      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0001 }));
+      expect(mmu).toEqual(createMmuWithRomAndValues([0x00]));
     });
 
     test("runs single operand", () => {
-      memory.writeByte(0x10, 0x06);
-      memory.writeByte(0x11, 0x66);
-      cpu.registers.pc = 0x10;
+      mmu.loadRom([0x06, 0x66]);
+      cpu.registers.pc = 0x0000;
 
-      runInstruction(cpu, memory);
+      runInstruction(cpu, mmu);
 
-      expect(cpu).toEqual(createCpuWithRegisters({ b: 0x66, pc: 0x12 }));
-      expect(memory).toEqual(
-        createMemoryWithValues({ 0x10: 0x06, 0x11: 0x66 })
-      );
+      expect(cpu).toEqual(createCpuWithRegisters({ b: 0x66, pc: 0x0002 }));
+      expect(mmu).toEqual(createMmuWithRomAndValues([0x06, 0x66]));
     });
 
     test("runs smoke test on bios", () => {
-      bios.forEach((value, address) => {
-        memory.writeByte(address, value);
-      });
-
       const ops: OpCode[] = [];
       while (cpu.registers.pc <= bios.length && ops.length < 12) {
-        ops.push(memory.readByte(cpu.registers.pc));
-        runInstruction(cpu, memory);
+        ops.push(mmu.readByte(cpu.registers.pc));
+        runInstruction(cpu, mmu);
       }
 
       expect(ops).toEqual([
@@ -83,7 +76,7 @@ describe("cpu", () => {
         })
       );
       // A lot of memory, not easy to specify/check it
-      // expect(memory).toEqual(createMemoryWithValues({ 0x10: 0x06, 0x11: 0x66 }))
+      // expect(memory).toEqual(createMmuWithValues({ 0x10: 0x06, 0x11: 0x66 }))
     });
   });
 });

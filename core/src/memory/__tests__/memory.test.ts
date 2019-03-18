@@ -1,7 +1,7 @@
 /* global describe, test, expect */
 
-import { Memory } from "../memory";
-import { createMemoryWithValues } from "../test/help";
+import { createMemoryWithValues } from '../../test/help'
+import { Memory } from "..";
 
 describe("memory", () => {
   let memory: Memory;
@@ -22,9 +22,7 @@ describe("memory", () => {
     test("success", () => {
       memory.writeWord(0x10, 0xabcd);
 
-      expect(memory).toEqual(
-        createMemoryWithValues({ 0x10: 0xab, 0x11: 0xcd })
-      );
+      expect(memory).toEqual(createMemoryWithValues({ 0x10: 0xab, 0x11: 0xcd }));
     });
   });
 

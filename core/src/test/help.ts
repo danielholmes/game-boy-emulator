@@ -1,11 +1,11 @@
 import { CpuRegisters, Register } from "../cpu/registers";
 import { Cpu } from "../cpu/types";
 import { create as createCpu } from "../cpu";
-import { Memory } from "../memory";
+import { Memory, Mmu } from "../memory";
 import { toPairs } from "lodash";
 import { ByteValue } from "../types";
 
-export const EMPTY_MEMORY = new Memory();
+export const EMPTY_MEMORY = new Mmu(new Memory());
 
 // Dummy to get around typing
 const isRegister = (name: string): name is Register => !!name;
@@ -35,5 +35,18 @@ export const createMemoryWithValues = (values: {
   toPairs(values).forEach(([address, value]) =>
     memory.writeByte(parseInt(address), value)
   );
-  return memory;
+  return memory
 };
+
+export const createMmuWithValues = (values: {
+  [address: number]: ByteValue;
+}): Mmu => new Mmu(createMemoryWithValues(values));
+
+export const createMmuWithRomAndValues = (
+  rom: ReadonlyArray<ByteValue>,
+  values?: { [address: number]: ByteValue; }
+): Mmu => {
+  const mmu = createMmuWithValues(values || {})
+  mmu.loadRom(rom)
+  return mmu
+}

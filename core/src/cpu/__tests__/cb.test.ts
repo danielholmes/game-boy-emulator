@@ -1,6 +1,6 @@
 /* global describe, expect */
 
-import { Memory } from "../../memory";
+import { Memory, Mmu } from "../../memory";
 import each from "jest-each";
 import { Cpu } from "../types";
 import { create as createCpu } from "../";
@@ -10,11 +10,11 @@ import { createCbBit } from "../cb";
 
 describe("cb", () => {
   let cpu: Cpu;
-  let memory: Memory;
+  let mmu: Mmu;
 
   beforeEach(() => {
     cpu = createCpu();
-    memory = new Memory();
+    mmu = new Mmu(new Memory());
   });
 
   describe("createCb", () => {
@@ -25,13 +25,13 @@ describe("cb", () => {
 
         const instruction = createCbBit(0x3d, register);
 
-        const cycles = instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(4);
         expect(cpu).toEqual(
           createCpuWithRegisters({ [register]: 0x14, f: 0xa0 })
         );
-        expect(memory).toEqual(EMPTY_MEMORY);
+        expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
   });

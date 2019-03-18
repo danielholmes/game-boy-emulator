@@ -1,5 +1,5 @@
 import { Cpu, Cycles } from "./types";
-import { Memory, MemoryAddress } from "../memory";
+import { MemoryAddress, Mmu } from "../memory";
 import {
   BitFlags,
   DecrementGroupedRegister,
@@ -26,8 +26,9 @@ import {
   WriteByteFromOperandAddress,
   WriteMemoryFromStackPointer,
   XOrRegister,
-  WordValueToSignedByte, WriteWordFromOperandAddress
-} from './lowLevel'
+  WordValueToSignedByte,
+  WriteWordFromOperandAddress
+} from "./lowLevel";
 import { ByteRegister, GroupedWordRegister } from "./registers";
 import { sum } from "lodash";
 import { WordValue } from "../types";
@@ -37,7 +38,7 @@ export type OpCode = number;
 export interface Instruction {
   readonly opCode: OpCode;
   readonly label: string;
-  readonly execute: (cpu: Cpu, memory: Memory) => Cycles;
+  readonly execute: (cpu: Cpu, mmu: Mmu) => Cycles;
 }
 
 // TODO: Definition to generate label?
@@ -60,10 +61,10 @@ export class InstructionDefinition implements Instruction {
     this.operations = operations;
   }
 
-  public execute(cpu: Cpu, memory: Memory): Cycles {
+  public execute(cpu: Cpu, mmu: Mmu): Cycles {
     this.operations.reduce(
       (value: LowLevelState, op: LowLevelOperation): LowLevelState => {
-        const newResult = op.execute(cpu, memory, value);
+        const newResult = op.execute(cpu, mmu, value);
         return typeof newResult === "undefined" ? undefined : newResult;
       },
       undefined

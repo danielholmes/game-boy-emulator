@@ -1,15 +1,16 @@
-import { Memory } from "../memory";
+import { Mmu } from "../memory";
 import { fromPairs } from "lodash";
 import { Cpu } from "./types";
 import { Instruction, OpCode } from "./instructions";
 import {
   createLddMHlA,
-  createLdGrNn, createLdMNnA,
+  createLdGrNn,
+  createLdMNnA,
   createLdMNnSp,
   createLdRN,
   createLdRR,
   createLdSpNn
-} from './ld'
+} from "./ld";
 import {
   ByteRegister,
   CpuRegistersImpl,
@@ -31,8 +32,8 @@ export const create = (): Cpu => ({
 
 export const copyCpu = (cpu: Cpu): Cpu => ({ ...cpu });
 
-export const runInstruction = (cpu: Cpu, memory: Memory): void => {
-  const opCode = memory.readByte(cpu.registers.pc);
+export const runInstruction = (cpu: Cpu, mmu: Mmu): void => {
+  const opCode = mmu.readByte(cpu.registers.pc);
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const instruction = INSTRUCTIONS[opCode];
   if (!instruction) {
@@ -41,7 +42,7 @@ export const runInstruction = (cpu: Cpu, memory: Memory): void => {
   cpu.registers.pc++;
 
   // TODO: Use returned cycles
-  instruction.execute(cpu, memory);
+  instruction.execute(cpu, mmu);
 };
 
 // LD A,(HL) 7E 8
@@ -115,7 +116,7 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
         createLdRR(opCode, register1, register2)
     ),
 
-    createLdMNnA(0xEA),
+    createLdMNnA(0xea),
 
     ...([
       [0x06, "b"],
