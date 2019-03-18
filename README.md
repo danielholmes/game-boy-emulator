@@ -1,6 +1,8 @@
 # Game Boy Emulator
 
-Game Boy emulation in the browser. 
+[![Build Status](https://travis-ci.org/danielholmes/functional-game-engine.svg?branch=master)](https://travis-ci.org/danielholmes/functional-game-engine)
+
+Game Boy emulation in JavaScript (browser or nodeJS). 
 
 
 ## Requirements
