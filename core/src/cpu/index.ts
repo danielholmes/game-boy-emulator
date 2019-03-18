@@ -37,7 +37,11 @@ export const runInstruction = (cpu: Cpu, mmu: Mmu): void => {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const instruction = INSTRUCTIONS[opCode];
   if (!instruction) {
-    throw new Error(`No instruction for opCode ${numberToByteHex(opCode)}`);
+    throw new Error(
+      `No instruction for opCode ${numberToByteHex(
+        opCode
+      )} reading from pc ${numberToByteHex(cpu.registers.pc)}`
+    );
   }
   cpu.registers.pc++;
 

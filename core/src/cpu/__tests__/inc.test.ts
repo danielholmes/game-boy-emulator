@@ -1,10 +1,14 @@
 /* global describe, test, expect */
 
-import { Memory, Mmu } from "../../memory";
+import { Mmu } from "../../memory";
 import each from "jest-each";
 import { Cpu } from "../types";
 import { create as createCpu } from "../";
-import { createCpuWithRegisters, EMPTY_MEMORY } from "../../test/help";
+import {
+  createCpuWithRegisters,
+  createMmu,
+  EMPTY_MEMORY
+} from "../../test/help";
 import { createIncRr, createIncSp } from "../inc";
 import { GROUPED_WORD_REGISTERS, GroupedWordRegister } from "../registers";
 
@@ -14,7 +18,7 @@ describe("inc", () => {
 
   beforeEach(() => {
     cpu = createCpu();
-    mmu = new Mmu(new Memory());
+    mmu = createMmu();
   });
 
   describe("createIncRr", () => {

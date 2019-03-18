@@ -1,6 +1,6 @@
 /* global describe, test, expect */
 
-import { Memory, Mmu } from "../../memory";
+import { Mmu } from "../../memory";
 import each from "jest-each";
 import {
   BYTE_REGISTER_PAIR_PERMUTATIONS,
@@ -26,10 +26,12 @@ import {
   createLdSpNn
 } from "../ld";
 import {
-  createCpuWithRegisters, createMmuWithRomAndValues,
+  createCpuWithRegisters,
+  createMmu,
+  createMmuWithRomAndValues,
   createMmuWithValues,
   EMPTY_MEMORY
-} from '../../test/help'
+} from "../../test/help";
 
 describe("ld", () => {
   let cpu: Cpu;
@@ -37,7 +39,7 @@ describe("ld", () => {
 
   beforeEach(() => {
     cpu = createCpu();
-    mmu = new Mmu(new Memory());
+    mmu = createMmu();
   });
 
   describe("createLdRR", () => {
@@ -63,7 +65,7 @@ describe("ld", () => {
       "LD %s,n",
       (register: ByteRegister) => {
         cpu.registers.pc = 0x0002;
-        mmu.loadRom([0x00, 0x00, 0x77]);
+        mmu.loadCartridge([0x00, 0x00, 0x77]);
 
         const instruction = createLdRN(0x3d, register);
 
@@ -82,8 +84,7 @@ describe("ld", () => {
     each(BYTE_REGISTERS.map(r => [r])).test(
       "LD %s,(hl)",
       (register: ByteRegister) => {
-        cpu.registers.h = 0xf1;
-        cpu.registers.l = 0x08;
+        cpu.registers.hl = 0xf108;
         mmu.writeByte(0xf108, 0x77);
 
         const instruction = createLdRHlM(0x3d, register);
@@ -92,7 +93,7 @@ describe("ld", () => {
 
         expect(cycles).toBe(8);
         expect(cpu).toEqual(
-          createCpuWithRegisters({ h: 0xf1, l: 0x08, [register]: 0x77 })
+          createCpuWithRegisters({ hl: 0xf108, [register]: 0x77 })
         );
         expect(mmu).toEqual(createMmuWithValues({ 0xf108: 0x77 }));
       }
@@ -103,8 +104,7 @@ describe("ld", () => {
     each(BYTE_REGISTERS.map(r => [r])).test(
       "LD (hl),%s",
       (register: ByteRegister) => {
-        cpu.registers.h = 0xf1;
-        cpu.registers.l = 0x08;
+        cpu.registers.hl = 0xf108;
         if (register !== "h" && register !== "l") {
           cpu.registers[register] = 0x75;
         }
@@ -115,7 +115,7 @@ describe("ld", () => {
 
         expect(cycles).toBe(8);
         expect(cpu).toEqual(
-          createCpuWithRegisters({ [register]: 0x75, h: 0xf1, l: 0x08 })
+          createCpuWithRegisters({ [register]: 0x75, hl: 0xf108 })
         );
         expect(mmu).toEqual(
           createMmuWithValues({ 0xf108: cpu.registers[register] })
@@ -126,20 +126,17 @@ describe("ld", () => {
 
   describe("createLdHlMN", () => {
     test("LD (hl),n", () => {
-      cpu.registers.h = 0xF1;
-      cpu.registers.l = 0x08;
+      cpu.registers.hl = 0xf108;
       cpu.registers.pc = 0x0000;
-      mmu.loadRom([0xB1]);
+      mmu.loadCartridge([0xb1]);
 
       const instruction = createLdHlMN(0x3d);
 
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(12);
-      expect(cpu).toEqual(
-        createCpuWithRegisters({ pc: 0x0001, h: 0xF1, l: 0x08 })
-      );
-      expect(mmu).toEqual(createMmuWithRomAndValues([0xB1], { 0xf108: 0xb1 }));
+      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0001, hl: 0xf108 }));
+      expect(mmu).toEqual(createMmuWithRomAndValues([0xb1], { 0xf108: 0xb1 }));
     });
   });
 
@@ -167,8 +164,8 @@ describe("ld", () => {
   describe("createLdAMNn", () => {
     test("LD a,(nn)", () => {
       cpu.registers.pc = 0x0000;
-      mmu.loadRom([0xB1, 0x16])
-      mmu.writeWord(0xB116, 0xAA21);
+      mmu.loadCartridge([0xd1, 0x16]);
+      mmu.writeWord(0xd116, 0xaa21);
 
       const memorySnapshot = mmu.copy();
       const instruction = createLdAMNn(0x3d);
@@ -176,7 +173,7 @@ describe("ld", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(16);
-      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, a: 0xAA }));
+      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, a: 0xaa }));
       expect(mmu).toEqual(memorySnapshot);
     });
   });
@@ -205,7 +202,7 @@ describe("ld", () => {
     test("LD (nn),a", () => {
       cpu.registers.a = 0x32;
       cpu.registers.pc = 0x0000;
-      mmu.loadRom([0xb1, 0x16]);
+      mmu.loadCartridge([0xc1, 0x16]);
 
       const cpuSnapshot = copyCpu(cpu);
       const instruction = createLdMNnA(0x3d);
@@ -215,7 +212,7 @@ describe("ld", () => {
       expect(cycles).toBe(16);
       expect(cpu).toEqual(cpuSnapshot);
       expect(mmu).toEqual(
-        createMmuWithRomAndValues([0xb1, 0x16], { 0xb116: 0x32 })
+        createMmuWithRomAndValues([0xc1, 0x16], { 0xc116: 0x32 })
       );
     });
   });
@@ -225,7 +222,7 @@ describe("ld", () => {
       "LD %s,nn",
       (register: GroupedWordRegister) => {
         cpu.registers.pc = 0x0001;
-        mmu.loadRom([0x00, 0x76, 0x54]);
+        mmu.loadCartridge([0x00, 0x76, 0x54]);
 
         const memorySnapshot = mmu.copy();
         const instruction = createLdGrNn(0x3d, register);
@@ -244,7 +241,7 @@ describe("ld", () => {
   describe("createLdSpNn", () => {
     test("LD sp,nn", () => {
       cpu.registers.pc = 0x0000;
-      mmu.loadRom([0x76, 0x54]);
+      mmu.loadCartridge([0x76, 0x54]);
 
       const memorySnapshot = mmu.copy();
       const instruction = createLdSpNn(0x3d);
@@ -261,7 +258,7 @@ describe("ld", () => {
     test("LD (nn),sp", () => {
       cpu.registers.pc = 0x0000;
       cpu.registers.sp = 0x1712;
-      mmu.loadRom([0xA6, 0x54])
+      mmu.loadCartridge([0xe6, 0x54]);
 
       const instruction = createLdMNnSp(0x3d);
 
@@ -270,13 +267,10 @@ describe("ld", () => {
       expect(cycles).toBe(20);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, sp: 0x1712 }));
       expect(mmu).toEqual(
-        createMmuWithRomAndValues(
-          [0xA6, 0x54],
-          {
-            0xA654: 0x17,
-            0xA655: 0x12
-          }
-        )
+        createMmuWithRomAndValues([0xe6, 0x54], {
+          0xe654: 0x17,
+          0xe655: 0x12
+        })
       );
     });
   });

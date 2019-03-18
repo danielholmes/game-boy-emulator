@@ -16,16 +16,19 @@ export const binaryToWord = (binary: number): WordValue => {
   return parseInt(binary.toString(), 2);
 };
 
-const toHex = (value: number, length: number): string => {
+const toHex = (value: number, length?: number): string => {
   const sign = value >= 0 ? "" : "-";
-  return `${sign}0x${padStart(
-    Math.abs(value)
-      .toString(16)
-      .toUpperCase(),
-    length,
-    "0"
-  )}`;
+  const start = `${sign}0x`;
+  const end = Math.abs(value)
+    .toString(16)
+    .toUpperCase();
+  if (length === undefined) {
+    return start + end;
+  }
+  return `${start}${padStart(end, length, "0")}`;
 };
+
+export const numberToHex = (value: number): string => toHex(value);
 
 export const numberToByteHex = (value: ByteValue): string => toHex(value, 2);
 

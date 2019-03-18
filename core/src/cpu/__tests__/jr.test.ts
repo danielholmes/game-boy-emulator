@@ -1,9 +1,9 @@
 /* global describe, test, expect */
 
-import { Memory, Mmu } from "../../memory";
+import { Mmu } from "../../memory";
 import { Cpu } from "../types";
 import { create as createCpu } from "../";
-import { createCpuWithRegisters } from "../../test/help";
+import { createCpuWithRegisters, createMmu } from "../../test/help";
 import { createJrNzN } from "../jr";
 
 describe("jr", () => {
@@ -12,7 +12,7 @@ describe("jr", () => {
 
   beforeEach(() => {
     cpu = createCpu();
-    mmu = new Mmu(new Memory());
+    mmu = createMmu();
   });
 
   describe("createJrNzN", () => {
@@ -20,7 +20,7 @@ describe("jr", () => {
       cpu.registers.pc = 0x0001;
       cpu.registers.f = 0x00;
       expect(cpu.registers.fNz).toBe(0); // Sanity check
-      mmu.loadRom([0x00, 0x03]);
+      mmu.loadCartridge([0x00, 0x03]);
 
       const memorySnapshot = mmu.copy();
       const instruction = createJrNzN(0x3d);
@@ -36,7 +36,7 @@ describe("jr", () => {
       cpu.registers.pc = 0x0004;
       cpu.registers.f = 0x00;
       expect(cpu.registers.fNz).toBe(0); // Sanity check
-      mmu.loadRom([0x00, 0x00, 0x00, 0x00, 0xfd]); // -3
+      mmu.loadCartridge([0x00, 0x00, 0x00, 0x00, 0xfd]); // -3
 
       const memorySnapshot = mmu.copy();
       const instruction = createJrNzN(0x3d);
@@ -52,7 +52,7 @@ describe("jr", () => {
       cpu.registers.pc = 0x0000;
       cpu.registers.f = 0x80;
       expect(cpu.registers.fNz).toBe(1); // Sanity check
-      mmu.loadRom([0x00, 0x03]);
+      mmu.loadCartridge([0x00, 0x03]);
 
       const memorySnapshot = mmu.copy();
       const instruction = createJrNzN(0x3d);

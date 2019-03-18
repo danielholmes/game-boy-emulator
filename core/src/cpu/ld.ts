@@ -66,7 +66,7 @@ export const createLdMRA = (
 export const createLdMNnA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (nn),a`)
     .loadRegister("a")
-    .writeByteFromProgramWord();
+    .writeByteFromWordOperandAddress();
 
 export const createLdGrNn = (
   opCode: OpCode,

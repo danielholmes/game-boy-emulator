@@ -1,11 +1,15 @@
 import { CpuRegisters, Register } from "../cpu/registers";
 import { Cpu } from "../cpu/types";
 import { create as createCpu } from "../cpu";
-import { Memory, Mmu } from "../memory";
+import { Mmu } from "../memory";
 import { toPairs } from "lodash";
 import { ByteValue } from "../types";
+import { Ram } from "../memory/ram";
 
-export const EMPTY_MEMORY = new Mmu(new Memory());
+export const createMmu = (): Mmu =>
+  new Mmu(new Ram(0x2000), new Ram(0x2000), new Ram(0xff));
+
+export const EMPTY_MEMORY = createMmu();
 
 // Dummy to get around typing
 const isRegister = (name: string): name is Register => !!name;
@@ -28,25 +32,21 @@ export const createCpuRegistersWithRegisters = (
   return createCpuWithRegisters(withRegisters).registers;
 };
 
-export const createMemoryWithValues = (values: {
-  [address: number]: ByteValue;
-}): Memory => {
-  const memory = new Memory();
-  toPairs(values).forEach(([address, value]) =>
-    memory.writeByte(parseInt(address), value)
-  );
-  return memory
-};
-
 export const createMmuWithValues = (values: {
   [address: number]: ByteValue;
-}): Mmu => new Mmu(createMemoryWithValues(values));
+}): Mmu => {
+  const mmu = createMmu();
+  toPairs(values).forEach(([address, value]) =>
+    mmu.writeByte(parseInt(address), value)
+  );
+  return mmu;
+};
 
 export const createMmuWithRomAndValues = (
   rom: ReadonlyArray<ByteValue>,
-  values?: { [address: number]: ByteValue; }
+  values?: { [address: number]: ByteValue }
 ): Mmu => {
-  const mmu = createMmuWithValues(values || {})
-  mmu.loadRom(rom)
-  return mmu
-}
+  const mmu = createMmuWithValues(values || {});
+  mmu.loadCartridge(rom);
+  return mmu;
+};

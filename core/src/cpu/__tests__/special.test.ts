@@ -1,10 +1,10 @@
 /* global describe, test, expect */
 
-import { Memory, Mmu } from "../../memory";
+import { Mmu } from "../../memory";
 import { Cpu } from "../types";
 import { create as createCpu } from "../";
 import { createNop } from "../special";
-import { EMPTY_MEMORY } from "../../test/help";
+import { createMmu, EMPTY_MEMORY } from "../../test/help";
 
 describe("special", () => {
   let cpu: Cpu;
@@ -12,7 +12,7 @@ describe("special", () => {
 
   beforeEach(() => {
     cpu = createCpu();
-    mmu = new Mmu(new Memory());
+    mmu = createMmu();
   });
 
   describe("createNop", () => {

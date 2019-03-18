@@ -1,13 +1,14 @@
 /* global describe, test, expect */
 
-import { Memory, Mmu } from "../../memory";
+import { Mmu } from "../../memory";
 import bios from "../../bios";
 import { create as createCpu, runInstruction } from "../";
 import { Cpu } from "../types";
 import {
-  createCpuWithRegisters, createMmuWithRomAndValues,
-  createMmuWithValues
-} from '../../test/help'
+  createCpuWithRegisters,
+  createMmu,
+  createMmuWithRomAndValues
+} from "../../test/help";
 import { OpCode } from "../instructions";
 
 describe("cpu", () => {
@@ -16,12 +17,12 @@ describe("cpu", () => {
 
   beforeEach(() => {
     cpu = createCpu();
-    mmu = new Mmu(new Memory());
+    mmu = createMmu();
   });
 
   describe("runInstruction", () => {
     test("runs NOP", () => {
-      mmu.loadRom([0x00]);
+      mmu.loadCartridge([0x00]);
       cpu.registers.pc = 0x0000;
 
       runInstruction(cpu, mmu);
@@ -31,7 +32,7 @@ describe("cpu", () => {
     });
 
     test("runs single operand", () => {
-      mmu.loadRom([0x06, 0x66]);
+      mmu.loadCartridge([0x06, 0x66]);
       cpu.registers.pc = 0x0000;
 
       runInstruction(cpu, mmu);

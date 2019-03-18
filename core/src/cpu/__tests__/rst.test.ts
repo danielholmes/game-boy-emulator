@@ -1,11 +1,12 @@
 /* global describe, expect */
 
-import { Memory, Mmu } from "../../memory";
+import { Mmu } from "../../memory";
 import each from "jest-each";
 import { Cpu } from "../types";
 import { create as createCpu } from "../";
 import {
   createCpuWithRegisters,
+  createMmu,
   createMmuWithValues
 } from "../../test/help";
 import { createRst, RST_ADDRESSES, RstAddress } from "../rst";
@@ -16,7 +17,7 @@ describe("rst", () => {
 
   beforeEach(() => {
     cpu = createCpu();
-    mmu = new Mmu(new Memory());
+    mmu = createMmu();
   });
 
   describe("createRst", () => {
@@ -30,9 +31,7 @@ describe("rst", () => {
 
       expect(cycles).toBe(32);
       expect(cpu).toEqual(createCpuWithRegisters({ sp: 0x8812, pc: address }));
-      expect(mmu).toEqual(
-        createMmuWithValues({ 0x8812: 0xab, 0x8813: 0xcd })
-      );
+      expect(mmu).toEqual(createMmuWithValues({ 0x8812: 0xab, 0x8813: 0xcd }));
     });
   });
 });

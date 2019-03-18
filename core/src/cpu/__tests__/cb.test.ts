@@ -1,10 +1,14 @@
 /* global describe, expect */
 
-import { Memory, Mmu } from "../../memory";
+import { Mmu } from "../../memory";
 import each from "jest-each";
 import { Cpu } from "../types";
 import { create as createCpu } from "../";
-import { createCpuWithRegisters, EMPTY_MEMORY } from "../../test/help";
+import {
+  createCpuWithRegisters,
+  createMmu,
+  EMPTY_MEMORY
+} from "../../test/help";
 import { BYTE_REGISTERS, ByteRegister } from "../registers";
 import { createCbBit } from "../cb";
 
@@ -14,7 +18,7 @@ describe("cb", () => {
 
   beforeEach(() => {
     cpu = createCpu();
-    mmu = new Mmu(new Memory());
+    mmu = createMmu();
   });
 
   describe("createCb", () => {

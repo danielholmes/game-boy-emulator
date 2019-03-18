@@ -161,7 +161,7 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new ReadMemory());
   }
 
-  public writeByteFromProgramWord(): InstructionDefinition {
+  public writeByteFromWordOperandAddress(): InstructionDefinition {
     return this.withOperation(new WriteByteFromOperandAddress());
   }
 

@@ -1,100 +1,93 @@
-import { ByteValue, WordValue } from "../types";
-import bios from '../bios'
+import { ByteValue, numberToWordHex, WordValue } from "../types";
+import { Ram, VRam, ZeroPageRam } from "./ram";
+import bios from "../bios";
 
 export type MemoryAddress = number;
 
-export class Memory {
-  private readonly raw: ByteValue[];
+export class Mmu {
+  private readonly ram: Ram;
+  private readonly vRam: VRam;
+  private readonly zeroPage: ZeroPageRam;
+  private cartridge?: ReadonlyArray<ByteValue>;
 
-  public constructor(raw?: Array<ByteValue>) {
-    this.raw = raw ? raw : bios.slice();
-    // range(0, 0xFFFF).map(constant(0x00))
+  public constructor(ram: Ram, vRam: VRam, zeroPage: ZeroPageRam) {
+    this.ram = ram;
+    this.vRam = vRam;
+    this.zeroPage = zeroPage;
   }
 
-  private assertWord(value: MemoryAddress): void {
-    if (value < 0x0000 || value > 0xffff) {
-      throw new Error("Out of bounds word");
+  public loadCartridge(cartridge: ReadonlyArray<ByteValue>): void {
+    if (cartridge.length > 0x7fff) {
+      throw new Error("ROM too large");
     }
+    this.cartridge = cartridge;
   }
 
-  private assertByte(value: MemoryAddress): void {
-    if (value < 0x00 || value > 0xff) {
-      throw new Error("Out of bounds byte");
-    }
-  }
-
+  // TODO: Test access and shadowing
   public readByte(address: MemoryAddress): ByteValue {
-    this.assertWord(address);
-    return this.raw[address];
+    // TODO: Once the bios has run, it is removed and goes through to cartridge
+    if (address >= 0x0000 && address <= 0x00ff && !this.cartridge) {
+      return bios[address];
+    }
+    if (address >= 0x0000 && address <= 0x7fff) {
+      if (!this.cartridge) {
+        throw new Error("No cartridge");
+      }
+      return this.cartridge[address];
+    }
+    if (address >= 0x8000 && address <= 0x9fff) {
+      return this.vRam.readByte(address - 0x8000);
+    }
+    if (address >= 0xc000 && address <= 0xdfff) {
+      return this.ram.readByte(address - 0xc000);
+    }
+    if (address >= 0xe000 && address <= 0xfdff) {
+      return this.ram.readByte(address - 0xe000);
+    }
+    if (address >= 0xff80 && address <= 0xffff) {
+      return this.zeroPage.readByte(address - 0xff80);
+    }
+
+    throw new Error("Address not readable");
   }
 
   public readWord(address: MemoryAddress): WordValue {
-    this.assertWord(address);
     return (this.readByte(address) << 8) + this.readByte(address + 1);
   }
 
   public writeByte(address: MemoryAddress, value: ByteValue): void {
-    this.assertWord(address);
-    this.assertByte(value);
-    this.raw[address] = value;
+    if (address >= 0x8000 && address <= 0x9fff) {
+      return this.vRam.writeByte(address - 0x8000, value);
+    }
+    if (address >= 0xc000 && address <= 0xdfff) {
+      return this.ram.writeByte(address - 0xc000, value);
+    }
+    if (address >= 0xe000 && address <= 0xfdff) {
+      return this.ram.writeByte(address - 0xe000, value);
+    }
+    if (address >= 0xff80 && address <= 0xffff) {
+      return this.zeroPage.writeByte(address - 0xff80, value);
+    }
+
+    throw new Error(`Can't write address ${numberToWordHex(address)}`);
   }
 
   public writeWord(address: MemoryAddress, value: WordValue): void {
-    this.assertWord(address);
-    this.assertWord(value);
     this.writeByte(address, value >> 8);
     this.writeByte(address + 1, value & 255);
   }
 
-  public copy(): Memory {
-    return new Memory(this.raw.slice());
-  }
-}
-
-export class Mmu {
-  private readonly memory: Memory;
-
-  public constructor(memory: Memory) {
-    this.memory = memory;
-  }
-
-  // TODO: Mmu actually defers through to the Cartridge so shouldn't load rom here
-  public loadRom(rom: ReadonlyArray<ByteValue>): void {
-    if (rom.length > 0x7FFF) {
-      throw new Error('ROM too large')
-    }
-    for (let i = 0x0000; i < rom.length; i++) {
-      this.memory.writeByte(i, rom[i]);
-    }
-  }
-
-  private assertWritable(address: MemoryAddress): void {
-    if (address < 0x8000) {
-      throw new Error("Trying to write to Read only memory");
-    }
-  }
-
-  public readByte(address: MemoryAddress): ByteValue {
-    return this.memory.readByte(address);
-  }
-
-  public readWord(address: MemoryAddress): WordValue {
-    return this.memory.readWord(address);
-  }
-
-  public writeByte(address: MemoryAddress, value: ByteValue): void {
-    this.assertWritable(address);
-    this.memory.writeByte(address, value);
-  }
-
-  public writeWord(address: MemoryAddress, value: WordValue): void {
-    this.assertWritable(address);
-    this.memory.writeWord(address, value);
-  }
-
   // TODO: Shouldn't be using this, should be testing against underlying memory
   public copy(): Mmu {
-    return new Mmu(this.memory.copy());
+    const mmu = new Mmu(
+      this.ram.copy(),
+      this.vRam.copy(),
+      this.zeroPage.copy()
+    );
+    if (this.cartridge) {
+      mmu.loadCartridge(this.cartridge.slice());
+    }
+    return mmu;
   }
 }
 
