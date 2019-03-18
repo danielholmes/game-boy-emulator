@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createLddMHlA = exports.createLdMNnSp = exports.createLdSpNn = exports.createLdGrNn = exports.createLdMNnA = exports.createLdMRA = exports.createLdAMNn = exports.createLdGrM = exports.createLdMNA = exports.createLdMCA = exports.createLdHlMN = exports.createLdHlMR = exports.createLdRHlM = exports.createLdAMRr = exports.createLdRN = exports.createLdRR = void 0;
+exports.createLddMHlA = exports.createLdMNnSp = exports.createLdSpNn = exports.createLdGrNn = exports.createLdMNnA = exports.createLdMRA = exports.createLdAMNn = exports.createLdGrM = exports.createLdMNA = exports.createLdMCA = exports.createLdHlMN = exports.createLdHlMR = exports.createLdRHlM = exports.createLdRMRr = exports.createLdRN = exports.createLdRR = void 0;
 
 var _instructions = require("./instructions");
 
@@ -19,11 +19,11 @@ var createLdRN = function createLdRN(opCode, register) {
 
 exports.createLdRN = createLdRN;
 
-var createLdAMRr = function createLdAMRr(opCode, register) {
-  return new _instructions.InstructionDefinition(opCode, "LD a,(".concat(register, ")")).loadGroupedRegister(register).readMemory().storeInRegister("a");
+var createLdRMRr = function createLdRMRr(opCode, register1, register2) {
+  return new _instructions.InstructionDefinition(opCode, "LD ".concat(register1, ",(").concat(register2, ")")).loadGroupedRegister(register2).readMemory().storeInRegister(register1);
 };
 
-exports.createLdAMRr = createLdAMRr;
+exports.createLdRMRr = createLdRMRr;
 
 var createLdRHlM = function createLdRHlM(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "LD ".concat(register, ",(hl)")).loadGroupedRegister("hl").readMemory().storeInRegister(register);

@@ -1,5 +1,5 @@
 import { Mmu } from "../memory/mmu";
-import { ByteRegister, GroupedWordRegister, Register } from "./registers";
+import { ByteRegister, GroupedWordRegister, NativeWordRegister, Register } from "./registers";
 import { ByteValue, WordValue } from "../types";
 import { Cpu, ClockCycles } from ".";
 export declare type LowLevelState = ByteValue | WordValue | undefined;
@@ -55,7 +55,7 @@ export declare class WriteWordFromOperandAddress implements LowLevelOperation {
 export declare class StoreInRegister implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly register;
-    constructor(register: ByteRegister);
+    constructor(register: ByteRegister | NativeWordRegister);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class StoreInGroupedRegister implements LowLevelOperation {
@@ -84,7 +84,7 @@ export declare class WriteMemoryFromRegisterAddress implements LowLevelOperation
     constructor(register: Register);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare class WriteMemoryFromStackPointer implements LowLevelOperation {
+export declare class WriteMemoryWordFromStackPointer implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }

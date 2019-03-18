@@ -8,7 +8,7 @@ import {
 } from "../registers";
 import {
   createLdAMNn,
-  createLdAMRr,
+  createLdRMRr,
   createLddMHlA,
   createLdGrM,
   createLdGrNn,
@@ -36,6 +36,7 @@ import {
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import { Cartridge } from "../../cartridge";
+import { flatMap } from "lodash";
 
 describe("ld", () => {
   let cpu: Cpu;
@@ -56,7 +57,7 @@ describe("ld", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(4);
+        expect(cycles).toBe(0);
         expect(cpu).toEqual(
           createCpuWithRegisters({ [register1]: 0x72, [register2]: 0x72 })
         );
@@ -77,7 +78,7 @@ describe("ld", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(8);
+        expect(cycles).toBe(4);
         expect(cpu).toEqual(
           createCpuWithRegisters({ [register]: 0x77, pc: 0x0003 })
         );
@@ -97,7 +98,7 @@ describe("ld", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(8);
+        expect(cycles).toBe(4);
         expect(cpu).toEqual(
           createCpuWithRegisters({ hl: 0xf108, [register]: 0x77 })
         );
@@ -119,7 +120,7 @@ describe("ld", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(8);
+        expect(cycles).toBe(4);
         expect(cpu).toEqual(
           createCpuWithRegisters({ [register]: 0x75, hl: 0xf108 })
         );
@@ -141,7 +142,7 @@ describe("ld", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(12);
+      expect(cycles).toBe(8);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0001, hl: 0xf108 }));
       expect(mmu).toEqual(
         createMmuWithCartridgeAndValues(cartridge, { 0xf108: 0xb1 })
@@ -161,7 +162,7 @@ describe("ld", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(8);
+        expect(cycles).toBe(4);
         expect(cpu).toEqual(
           createCpuWithRegisters({ a: 0x2d, [register]: 0xf108 })
         );
@@ -181,7 +182,7 @@ describe("ld", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(12);
+      expect(cycles).toBe(8);
       expect(cpu).toEqual(createCpuWithRegisters({ a: 0x12, pc: 0x0001 }));
       expect(mmu).toEqual(
         createMmuWithCartridgeAndValues(cart, { 0xff76: 0x12 })
@@ -199,7 +200,7 @@ describe("ld", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(8);
+      expect(cycles).toBe(4);
       expect(createCpuSnapshot(cpu)).toEqual(cpuSnapshot);
       expect(mmu).toEqual(createMmuWithValues({ 0xff77: 0x12 }));
     });
@@ -217,7 +218,7 @@ describe("ld", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(16);
+      expect(cycles).toBe(12);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, a: 0x21 }));
       expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
     });
@@ -234,7 +235,7 @@ describe("ld", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(8);
+        expect(cycles).toBe(4);
         expect(cpu).toEqual(
           createCpuWithRegisters({ a: 0x72, [register]: 0xf108 })
         );
@@ -243,21 +244,28 @@ describe("ld", () => {
     );
   });
 
-  describe("createLdAMRr", () => {
-    test.each([["bc"], ["de"], ["hl"]] as GroupedWordRegister[][])(
-      "LD a,(%s)",
-      (register: GroupedWordRegister) => {
-        cpu.registers[register] = 0xf108;
+  describe("createLdRMRr", () => {
+    test.each(
+      flatMap(
+        BYTE_REGISTERS.map((r) => [[r, "bc"], [r, "de"], [r, "hl"]])
+      ) as Array<[ByteRegister, GroupedWordRegister]>
+    )(
+      "LD %s,(%s)",
+      (register1: ByteRegister, register2: GroupedWordRegister) => {
+        cpu.registers[register2] = 0xf108;
         mmu.writeByte(0xf108, 0xdf);
 
-        const instruction = createLdAMRr(0x3d, register);
+        const instruction = createLdRMRr(0x3d, register1, register2);
 
         const memorySnapshot = createMemorySnapshot(mmu);
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(8);
+        expect(cycles).toBe(4);
         expect(cpu).toEqual(
-          createCpuWithRegisters({ a: 0xdf, [register]: 0xf108 })
+          createCpuWithRegisters({
+            [register2]: 0xf108,
+            [register1]: 0xdf
+          })
         );
         expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
       }
@@ -276,7 +284,7 @@ describe("ld", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(16);
+      expect(cycles).toBe(12);
       expect(createCpuSnapshot(cpu)).toEqual(cpuSnapshot);
       expect(mmu).toEqual(
         createMmuWithCartridgeAndValues(cartridge, { 0xc116: 0x32 })
@@ -297,7 +305,7 @@ describe("ld", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(12);
+        expect(cycles).toBe(8);
         expect(cpu).toEqual(
           createCpuWithRegisters({ pc: 0x0003, [register]: 0x7654 })
         );
@@ -317,7 +325,7 @@ describe("ld", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(12);
+      expect(cycles).toBe(8);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, sp: 0x7654 }));
       expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
     });
@@ -334,7 +342,7 @@ describe("ld", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(20);
+      expect(cycles).toBe(16);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, sp: 0x1712 }));
       expect(mmu).toEqual(
         createMmuWithCartridgeAndValues(cartridge, {
@@ -354,7 +362,7 @@ describe("ld", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(8);
+      expect(cycles).toBe(4);
       expect(cpu).toEqual(createCpuWithRegisters({ a: 0xaf, hl: 0x9611 }));
       expect(mmu).toEqual(createMmuWithValues({ 0x9612: 0xaf }));
     });

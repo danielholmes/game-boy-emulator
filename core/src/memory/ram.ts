@@ -58,7 +58,7 @@ export class WorkingRam extends Ram {
   }
 }
 
-const V_RAM_SIZE = 0x2000;
+export const V_RAM_SIZE = 0x2000;
 
 export class VRam extends Ram {
   public constructor() {

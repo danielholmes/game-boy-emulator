@@ -9,7 +9,7 @@ import {
   createLdMNA,
   createLdMNnA,
   createLdMNnSp,
-  createLdMRA,
+  createLdMRA, createLdRMRr,
   createLdRN,
   createLdRR,
   createLdSpNn
@@ -30,8 +30,11 @@ import { numberToByteHex } from "../types";
 import { createCb } from "./cb";
 import { createJrNzN } from "./jr";
 import { createSbcAR } from "./sbc";
+import { createCallNn } from "./call";
 
 export type ClockCycles = number;
+
+const CLOCK_CYCLES_PER_MACHINE_CYCLE = 4;
 
 export class Cpu {
   public readonly registers: CpuRegisters;
@@ -55,6 +58,7 @@ export class Cpu {
   }
 
   public tickCycle(mmu: Mmu): void {
+    // TODO: Convert to low level
     const opCode = mmu.readByte(this.registers.pc);
     this.remainingCycles -= 4;
 
@@ -73,14 +77,6 @@ export class Cpu {
   }
 }
 
-// LD A,(HL) 7E 8
-// LD B,(HL) 46 8
-// LD C,(HL) 4E 8
-// LD D,(HL) 56 8
-// LD E,(HL) 5E 8
-// LD H,(HL) 66 8
-// LD L,(HL) 6E 8
-
 // LD (HL),n 36 12
 
 // DEC (HL) 35 12
@@ -97,36 +93,42 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x7b, "a", "e"],
       [0x7c, "a", "h"],
       [0x7d, "a", "l"],
+      [0x47, "b", "a"],
       [0x40, "b", "b"],
       [0x41, "b", "c"],
       [0x42, "b", "d"],
       [0x43, "b", "e"],
       [0x44, "b", "h"],
       [0x45, "b", "l"],
+      [0x4f, "c", "a"],
       [0x48, "c", "b"],
       [0x49, "c", "c"],
       [0x4a, "c", "d"],
       [0x4b, "c", "e"],
       [0x4c, "c", "h"],
       [0x4d, "c", "l"],
+      [0x57, "d", "a"],
       [0x50, "d", "b"],
       [0x51, "d", "c"],
       [0x52, "d", "d"],
       [0x53, "d", "e"],
       [0x54, "d", "h"],
       [0x55, "d", "l"],
+      [0x5f, "e", "a"],
       [0x58, "e", "b"],
       [0x59, "e", "c"],
       [0x5a, "e", "d"],
       [0x5b, "e", "e"],
       [0x5c, "e", "h"],
       [0x5d, "e", "l"],
+      [0x67, "h", "a"],
       [0x60, "h", "b"],
       [0x61, "h", "c"],
       [0x62, "h", "d"],
       [0x63, "h", "e"],
       [0x64, "h", "h"],
       [0x65, "h", "l"],
+      [0x6f, "l", "a"],
       [0x68, "l", "b"],
       [0x69, "l", "c"],
       [0x6a, "l", "d"],
@@ -140,6 +142,8 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
 
     createLdMNnA(0xea),
 
+    createCallNn(0xCD),
+
     ...([
       [0x70, "b"],
       [0x71, "c"],
@@ -152,7 +156,22 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       createLdHlMR(opCode, register)
     ),
 
-    ...([[0x0a, "bc"], [0x1a, "de"], [0x7e, "hl"]] as ReadonlyArray<
+    ...([
+      [0x7e, "a", "hl"],
+      [0x46, "b", "hl"],
+      [0x4e, "c", "hl"],
+      [0x56, "d", "hl"],
+      [0x5e, "e", "hl"],
+      [0x66, "h", "hl"],
+      [0x6e, "l", "hl"],
+      [0x0a, "a", "bc"],
+      [0x1a, "a", "de"]
+    ] as ReadonlyArray<[OpCode, ByteRegister, GroupedWordRegister]>)
+      .map(([opCode, register1, register2]) =>
+        createLdRMRr(opCode, register1, register2)
+      ),
+
+    ...([[0x02, "bc"], [0x12, "de"], [0x77, "hl"]] as ReadonlyArray<
       [OpCode, GroupedWordRegister]
     >).map(([opCode, register]) => createLdMRA(opCode, register)),
 

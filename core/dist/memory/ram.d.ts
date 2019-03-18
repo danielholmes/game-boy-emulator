@@ -15,6 +15,7 @@ export declare class ZeroPageRam extends Ram {
 export declare class WorkingRam extends Ram {
     constructor();
 }
+export declare const V_RAM_SIZE = 8192;
 export declare class VRam extends Ram {
     constructor();
     static initializeRandomly(): VRam;

@@ -5,7 +5,9 @@ export type ByteRegister = "a" | "b" | "c" | "d" | "e" | "h" | "l";
 
 export type GroupedWordRegister = "bc" | "de" | "hl";
 
-export type Register = ByteRegister | "f" | GroupedWordRegister | "sp" | "pc";
+export type NativeWordRegister = "sp" | "pc";
+
+export type Register = ByteRegister | "f" | GroupedWordRegister | NativeWordRegister;
 
 export const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister> = [
   "bc",

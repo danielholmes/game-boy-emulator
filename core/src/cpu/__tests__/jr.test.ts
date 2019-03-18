@@ -32,7 +32,7 @@ describe("jr", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(8);
+      expect(cycles).toBe(4);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0005, f: 0x00 }));
       expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
     });
@@ -51,7 +51,7 @@ describe("jr", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(8);
+      expect(cycles).toBe(4);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, f: 0x00 }));
       expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
     });
@@ -68,7 +68,7 @@ describe("jr", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(8);
+      expect(cycles).toBe(4);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0001, f: 0x80 }));
       expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
     });

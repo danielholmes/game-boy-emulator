@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.IOMemory = exports.OamMemory = exports.VRam = exports.WorkingRam = exports.ZeroPageRam = void 0;
+exports.IOMemory = exports.OamMemory = exports.VRam = exports.V_RAM_SIZE = exports.WorkingRam = exports.ZeroPageRam = void 0;
 
 var _types = require("../types");
 
@@ -114,6 +114,7 @@ function (_Ram2) {
 
 exports.WorkingRam = WorkingRam;
 var V_RAM_SIZE = 0x2000;
+exports.V_RAM_SIZE = V_RAM_SIZE;
 
 var VRam =
 /*#__PURE__*/

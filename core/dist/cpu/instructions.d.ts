@@ -1,6 +1,6 @@
 import { Mmu } from "../memory/mmu";
 import { LowLevelOperation } from "./lowLevel";
-import { ByteRegister, GroupedWordRegister, Register } from "./registers";
+import { ByteRegister, GroupedWordRegister, NativeWordRegister, Register } from "./registers";
 import { MemoryAddress, WordValue } from "../types";
 import { Cpu, ClockCycles } from "./index";
 export declare type OpCode = number;
@@ -33,7 +33,7 @@ export declare class InstructionDefinition implements Instruction {
     incrementRegister(register: Register): InstructionDefinition;
     incrementGroupedRegister(register: GroupedWordRegister): InstructionDefinition;
     incrementStackPointer(): InstructionDefinition;
-    storeInRegister(register: ByteRegister): InstructionDefinition;
+    storeInRegister(register: ByteRegister | NativeWordRegister): InstructionDefinition;
     storeInGroupedRegister(register: GroupedWordRegister): InstructionDefinition;
     storeInStackPointer(): InstructionDefinition;
     readMemory(): InstructionDefinition;
@@ -42,7 +42,7 @@ export declare class InstructionDefinition implements Instruction {
     decrementStackPointer(amount: WordValue): InstructionDefinition;
     setProgramCounter(address: MemoryAddress): InstructionDefinition;
     loadProgramCounter(): InstructionDefinition;
-    writeMemoryFromStackPointer(): InstructionDefinition;
+    writeMemoryWordFromStackPointer(): InstructionDefinition;
     private withOperation;
 }
 //# sourceMappingURL=instructions.d.ts.map

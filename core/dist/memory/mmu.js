@@ -60,7 +60,8 @@ function () {
 
       if (address >= 0x0000 && address <= 0x7fff) {
         if (!this.cartridge) {
-          throw new Error("No cartridge");
+          // throw new Error(`Cannot access address ${numberToWordHex(address)}: no cartridge`);
+          return 0;
         }
 
         return this.cartridge.readByte(address);
@@ -118,7 +119,7 @@ function () {
       if (address >= 0x8000 && address <= 0x9fff) {
         this.vRam.writeByte(address - 0x8000, value);
       } else if (address >= 0xa000 && address <= 0xbfff) {
-        throw new Error("TODO: Write memory on cartridge");
+        throw new Error("Cannot write to ".concat((0, _types.numberToWordHex)(address), " which is on cartridge"));
       } else if (address >= 0xc000 && address <= 0xdfff) {
         this.workingRam.writeByte(address - 0xc000, value);
       } else if (address >= 0xe000 && address <= 0xfdff) {

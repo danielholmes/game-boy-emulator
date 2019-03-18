@@ -23,7 +23,7 @@ import {
   StoreInStackPointer,
   WriteWordFromGroupedRegisterAddress,
   WriteByteFromOperandAddress,
-  WriteMemoryFromStackPointer,
+  WriteMemoryWordFromStackPointer,
   XOrRegister,
   WordValueToSignedByte,
   WriteWordFromOperandAddress,
@@ -31,7 +31,7 @@ import {
   IncrementRegister,
   WriteMemoryFromOperandAddress
 } from "./lowLevel";
-import { ByteRegister, GroupedWordRegister, Register } from "./registers";
+import { ByteRegister, GroupedWordRegister, NativeWordRegister, Register } from "./registers";
 import { sum } from "lodash";
 import { MemoryAddress, WordValue } from "../types";
 import { Cpu, ClockCycles } from "./index";
@@ -72,8 +72,7 @@ export class InstructionDefinition implements Instruction {
       },
       undefined
     );
-    return sum(this.operations.map(op => op.cycles)) + 4;
-    // 4 are the cycles from reading the instruction. Perhaps shouldn't actually go here
+    return sum(this.operations.map(op => op.cycles));
   }
 
   public xOr(register: ByteRegister): InstructionDefinition {
@@ -160,7 +159,7 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new IncrementStackPointer());
   }
 
-  public storeInRegister(register: ByteRegister): InstructionDefinition {
+  public storeInRegister(register: ByteRegister | NativeWordRegister): InstructionDefinition {
     return this.withOperation(new StoreInRegister(register));
   }
 
@@ -198,8 +197,8 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new LoadProgramCounter());
   }
 
-  public writeMemoryFromStackPointer(): InstructionDefinition {
-    return this.withOperation(new WriteMemoryFromStackPointer());
+  public writeMemoryWordFromStackPointer(): InstructionDefinition {
+    return this.withOperation(new WriteMemoryWordFromStackPointer());
   }
 
   private withOperation(operation: LowLevelOperation): InstructionDefinition {

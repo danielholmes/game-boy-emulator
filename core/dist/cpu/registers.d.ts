@@ -1,7 +1,8 @@
 import { BitValue, ByteValue, WordValue } from "../types";
 export declare type ByteRegister = "a" | "b" | "c" | "d" | "e" | "h" | "l";
 export declare type GroupedWordRegister = "bc" | "de" | "hl";
-export declare type Register = ByteRegister | "f" | GroupedWordRegister | "sp" | "pc";
+export declare type NativeWordRegister = "sp" | "pc";
+export declare type Register = ByteRegister | "f" | GroupedWordRegister | NativeWordRegister;
 export declare const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister>;
 export declare const BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
 export declare const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<Readonly<[ByteRegister, ByteRegister]>>;

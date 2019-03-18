@@ -34,7 +34,7 @@ describe("inc", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(4);
+        expect(cycles).toBe(0);
         expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x2315 }));
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
@@ -49,7 +49,7 @@ describe("inc", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(4);
+      expect(cycles).toBe(0);
       expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x15 }));
       expect(mmu).toEqual(EMPTY_MEMORY);
     });
@@ -63,7 +63,7 @@ describe("inc", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(8);
+      expect(cycles).toBe(4);
       expect(cpu).toEqual(createCpuWithRegisters({ sp: 0x1235 }));
       expect(mmu).toEqual(EMPTY_MEMORY);
     });

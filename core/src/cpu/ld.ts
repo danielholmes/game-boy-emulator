@@ -18,14 +18,15 @@ export const createLdRN = (
     .loadByteOperand()
     .storeInRegister(register);
 
-export const createLdAMRr = (
+export const createLdRMRr = (
   opCode: OpCode,
-  register: GroupedWordRegister
+  register1: ByteRegister,
+  register2: GroupedWordRegister
 ): Instruction =>
-  new InstructionDefinition(opCode, `LD a,(${register})`)
-    .loadGroupedRegister(register)
+  new InstructionDefinition(opCode, `LD ${register1},(${register2})`)
+    .loadGroupedRegister(register2)
     .readMemory()
-    .storeInRegister("a");
+    .storeInRegister(register1);
 
 export const createLdRHlM = (
   opCode: OpCode,

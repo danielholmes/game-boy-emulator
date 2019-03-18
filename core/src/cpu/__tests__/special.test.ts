@@ -21,7 +21,7 @@ describe("special", () => {
       const cpuSnapshot = createCpuSnapshot(cpu);
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(4);
+      expect(cycles).toBe(0);
       expect(createCpuSnapshot(cpu)).toEqual(cpuSnapshot);
       expect(mmu).toEqual(EMPTY_MEMORY);
     });

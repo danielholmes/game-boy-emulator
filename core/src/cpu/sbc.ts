@@ -4,7 +4,7 @@ import { LowLevelOperation, LowLevelStateReturn } from "./lowLevel";
 import { Cpu, ClockCycles } from "./index";
 
 class SbcAR implements LowLevelOperation {
-  public readonly cycles: ClockCycles = 4;
+  public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;
 
   public constructor(register: ByteRegister) {

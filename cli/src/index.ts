@@ -67,7 +67,7 @@ import {
   ])
 );*/
 
-const vRam = new VRam(); // VRam.initializeRandomly();
+const vRam = VRam.initializeRandomly();
 
 const mmu = new Mmu(
   bios,
@@ -88,6 +88,11 @@ const cpu = new Cpu();
 
 const device = new Device(cpu, new Gpu(mmu, screen), mmu);
 device.turnOn();
+
+// process.stdout.write instead of console.log
+// Clear: console.log('\033c')
+// Alt: console.log('\033c\033[3J')
+// Console pixels: console.log('\u2591', '\u2592', '\u2588');
 
 for (let i = 0; i < 1000000; i++) {
   console.log(

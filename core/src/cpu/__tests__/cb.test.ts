@@ -29,7 +29,7 @@ describe("cb", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(4);
+        expect(cycles).toBe(0);
         expect(cpu).toEqual(
           createCpuWithRegisters({ [register]: 0x14, f: 0xa0 })
         );

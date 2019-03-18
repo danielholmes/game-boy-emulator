@@ -57,7 +57,7 @@ function () {
       }, undefined);
       return (0, _lodash.sum)(this.operations.map(function (op) {
         return op.cycles;
-      })) + 4; // 4 are the cycles from reading the instruction. Perhaps shouldn't actually go here
+      }));
     }
   }, {
     key: "xOr",
@@ -195,9 +195,9 @@ function () {
       return this.withOperation(new _lowLevel.LoadProgramCounter());
     }
   }, {
-    key: "writeMemoryFromStackPointer",
-    value: function writeMemoryFromStackPointer() {
-      return this.withOperation(new _lowLevel.WriteMemoryFromStackPointer());
+    key: "writeMemoryWordFromStackPointer",
+    value: function writeMemoryWordFromStackPointer() {
+      return this.withOperation(new _lowLevel.WriteMemoryWordFromStackPointer());
     }
   }, {
     key: "withOperation",

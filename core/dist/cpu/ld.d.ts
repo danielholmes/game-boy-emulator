@@ -2,7 +2,7 @@ import { ByteRegister, GroupedWordRegister } from "./registers";
 import { Instruction } from "./instructions";
 export declare const createLdRR: (opCode: number, register1: ByteRegister, register2: ByteRegister) => Instruction;
 export declare const createLdRN: (opCode: number, register: ByteRegister) => Instruction;
-export declare const createLdAMRr: (opCode: number, register: GroupedWordRegister) => Instruction;
+export declare const createLdRMRr: (opCode: number, register1: ByteRegister, register2: GroupedWordRegister) => Instruction;
 export declare const createLdRHlM: (opCode: number, register: ByteRegister) => Instruction;
 export declare const createLdHlMR: (opCode: number, register: ByteRegister) => Instruction;
 export declare const createLdHlMN: (opCode: number) => Instruction;

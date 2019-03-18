@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementGroupedRegister = exports.DecrementRegister = exports.LoadStackPointer = exports.IncrementStackPointer = exports.Nop = exports.XOrRegister = exports.IncrementGroupedRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetProgramCounter = exports.StoreInStackPointer = exports.WriteMemoryFromStackPointer = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryFromOperandAddress = exports.LoadProgramCounter = exports.DecrementStackPointer = exports.StoreInGroupedRegister = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.LoadGroupedRegister = exports.ReadMemory = exports.LoadRegister = void 0;
+exports.DecrementGroupedRegister = exports.DecrementRegister = exports.LoadStackPointer = exports.IncrementStackPointer = exports.Nop = exports.XOrRegister = exports.IncrementGroupedRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetProgramCounter = exports.StoreInStackPointer = exports.WriteMemoryWordFromStackPointer = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryFromOperandAddress = exports.LoadProgramCounter = exports.DecrementStackPointer = exports.StoreInGroupedRegister = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.LoadGroupedRegister = exports.ReadMemory = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -277,7 +277,7 @@ function () {
         throw new Error("value not defined");
       }
 
-      cpu.registers[this.register] = value & 255;
+      cpu.registers[this.register] = value;
     }
   }]);
 
@@ -321,7 +321,7 @@ function () {
   function DecrementStackPointer(amount) {
     _classCallCheck(this, DecrementStackPointer);
 
-    _defineProperty(this, "cycles", 4);
+    _defineProperty(this, "cycles", 0);
 
     _defineProperty(this, "amount", void 0);
 
@@ -417,16 +417,16 @@ function () {
 
 exports.WriteMemoryFromRegisterAddress = WriteMemoryFromRegisterAddress;
 
-var WriteMemoryFromStackPointer =
+var WriteMemoryWordFromStackPointer =
 /*#__PURE__*/
 function () {
-  function WriteMemoryFromStackPointer() {
-    _classCallCheck(this, WriteMemoryFromStackPointer);
+  function WriteMemoryWordFromStackPointer() {
+    _classCallCheck(this, WriteMemoryWordFromStackPointer);
 
-    _defineProperty(this, "cycles", 16);
+    _defineProperty(this, "cycles", 8);
   }
 
-  _createClass(WriteMemoryFromStackPointer, [{
+  _createClass(WriteMemoryWordFromStackPointer, [{
     key: "execute",
     value: function execute(cpu, mmu, value) {
       if (value === undefined) {
@@ -437,10 +437,10 @@ function () {
     }
   }]);
 
-  return WriteMemoryFromStackPointer;
+  return WriteMemoryWordFromStackPointer;
 }();
 
-exports.WriteMemoryFromStackPointer = WriteMemoryFromStackPointer;
+exports.WriteMemoryWordFromStackPointer = WriteMemoryWordFromStackPointer;
 
 var StoreInStackPointer =
 /*#__PURE__*/
@@ -473,7 +473,7 @@ function () {
   function SetProgramCounter(value) {
     _classCallCheck(this, SetProgramCounter);
 
-    _defineProperty(this, "cycles", 4);
+    _defineProperty(this, "cycles", 0);
 
     _defineProperty(this, "value", void 0);
 

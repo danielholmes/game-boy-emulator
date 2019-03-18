@@ -57,7 +57,7 @@ var _core = require("@gebby/core");
     0x3e
   ])
 );*/
-var vRam = new _core.VRam(); // VRam.initializeRandomly();
+var vRam = _core.VRam.initializeRandomly();
 
 var mmu = new _core.Mmu(_core.bios, new _core.WorkingRam(), vRam, new _core.IOMemory(), new _core.OamMemory(), new _core.ZeroPageRam());
 var screen = {
@@ -66,7 +66,10 @@ var screen = {
 };
 var cpu = new _core.Cpu();
 var device = new _core.Device(cpu, new _core.Gpu(mmu, screen), mmu);
-device.turnOn();
+device.turnOn(); // process.stdout.write instead of console.log
+// Clear: console.log('\033c')
+// Alt: console.log('\033c\033[3J')
+// Console pixels: console.log('\u2591', '\u2592', '\u2588');
 
 for (var i = 0; i < 1000000; i++) {
   console.log(i.toString() + ") 0x" + cpu.registers.pc.toString(16) + " 0x" + mmu.readByte(cpu.registers.pc).toString(16));

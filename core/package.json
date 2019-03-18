@@ -11,8 +11,9 @@
     "lint:check": "eslint './src/**/*.ts'",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --coverageDirectory ./reports",
     "clean": "rimraf ./dist/**",
-    "compile": "babel src --out-dir ./dist/ --source-maps --ignore '**/__tests__/**/*' --extensions '.ts'",
+    "compile": "babel src --out-dir ./dist/ --source-maps --extensions '.ts'",
     "compile:defs": "tsc -p tsconfig.json",
     "build": "yarn ts && yarn lint:check && yarn test && yarn compile && yarn compile:defs"
   },
@@ -45,6 +46,10 @@
     "moduleFileExtensions": [
       "ts",
       "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/src/test/"
     ]
   },
   "dependencies": {

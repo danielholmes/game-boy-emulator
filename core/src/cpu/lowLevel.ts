@@ -3,7 +3,7 @@ import {
   ByteRegister,
   FLAG_Z,
   FLAG_Z_MASK,
-  GroupedWordRegister,
+  GroupedWordRegister, NativeWordRegister,
   Register
 } from "./registers";
 import { ByteValue, WordValue, byteValueToSignedByte } from "../types";
@@ -170,9 +170,9 @@ export class WriteWordFromOperandAddress implements LowLevelOperation {
 
 export class StoreInRegister implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
-  private readonly register: ByteRegister;
+  private readonly register: ByteRegister | NativeWordRegister;
 
-  public constructor(register: ByteRegister) {
+  public constructor(register: ByteRegister | NativeWordRegister) {
     this.register = register;
   }
 
@@ -184,7 +184,7 @@ export class StoreInRegister implements LowLevelOperation {
     if (value === undefined) {
       throw new Error("value not defined");
     }
-    cpu.registers[this.register] = value & 255;
+    cpu.registers[this.register] = value;
   }
 }
 
@@ -209,7 +209,7 @@ export class StoreInGroupedRegister implements LowLevelOperation {
 }
 
 export class DecrementStackPointer implements LowLevelOperation {
-  public readonly cycles: ClockCycles = 4;
+  public readonly cycles: ClockCycles = 0;
   private readonly amount: WordValue;
 
   public constructor(amount: WordValue) {
@@ -266,8 +266,8 @@ export class WriteMemoryFromRegisterAddress implements LowLevelOperation {
   }
 }
 
-export class WriteMemoryFromStackPointer implements LowLevelOperation {
-  public readonly cycles: ClockCycles = 16;
+export class WriteMemoryWordFromStackPointer implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 8;
 
   public execute(
     cpu: Cpu,
@@ -297,7 +297,7 @@ export class StoreInStackPointer implements LowLevelOperation {
 }
 
 export class SetProgramCounter implements LowLevelOperation {
-  public readonly cycles: ClockCycles = 4;
+  public readonly cycles: ClockCycles = 0;
   private readonly value: WordValue;
 
   public constructor(value: WordValue) {

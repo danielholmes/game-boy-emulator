@@ -27,7 +27,7 @@ describe("rst", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(32);
+      expect(cycles).toBe(12);
       expect(cpu).toEqual(createCpuWithRegisters({ sp: 0x8812, pc: address }));
       expect(mmu).toEqual(createMmuWithValues({ 0x8812: 0xcd, 0x8813: 0xab }));
     });

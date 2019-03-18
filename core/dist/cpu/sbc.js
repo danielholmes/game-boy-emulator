@@ -21,7 +21,7 @@ function () {
   function SbcAR(register) {
     _classCallCheck(this, SbcAR);
 
-    _defineProperty(this, "cycles", 4);
+    _defineProperty(this, "cycles", 0);
 
     _defineProperty(this, "register", void 0);
 

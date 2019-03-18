@@ -1,4 +1,4 @@
-/* global describe, expect */
+/* global describe, test, expect */
 
 import { Mmu } from "../../memory/mmu";
 import {
@@ -7,10 +7,11 @@ import {
   EMPTY_MEMORY
 } from "../../test/help";
 import { BYTE_REGISTERS, ByteRegister } from "../registers";
-import { createXorR } from "../xor";
 import { Cpu } from "..";
+import { createSbcAR } from "../sbc";
+import { binaryToNumber } from "../../types";
 
-describe("xor", () => {
+describe("sbc", () => {
   let cpu: Cpu;
   let mmu: Mmu;
 
@@ -19,21 +20,23 @@ describe("xor", () => {
     mmu = createMmu();
   });
 
-  describe("createXorR", () => {
+  describe("createSbcAR", () => {
     test.each(BYTE_REGISTERS.map(r => [r]))(
-      "XOR %s",
+      "SBC a,%s",
       (register: ByteRegister) => {
-        cpu.registers.a = 0x01;
-        cpu.registers[register] = 0x12;
+        cpu.registers.a = 0xef;
+        cpu.registers[register] = 0xe0;
 
-        const instruction = createXorR(0x3d, register);
+        const instruction = createSbcAR(0x3d, register);
 
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({ a: 0x12, [register]: 0x12 })
-        );
+        expect(cpu).toEqual(createCpuWithRegisters({
+          [register]: 0xe0,
+          a: register === 'a' ? 0x00 : 0x0f,
+          f: register === 'a' ? binaryToNumber('11000000') : binaryToNumber('01000000')
+        }));
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
