@@ -1,0 +1,66 @@
+import { BitValue, ByteValue, WordValue } from "../types";
+export declare type ByteRegister = "a" | "b" | "c" | "d" | "e" | "h" | "l";
+export declare type GroupedWordRegister = "bc" | "de" | "hl";
+export declare type Register = ByteRegister | "f" | GroupedWordRegister | "sp" | "pc";
+export declare const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister>;
+export declare const BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
+export declare const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<Readonly<[ByteRegister, ByteRegister]>>;
+export declare const FLAG_Z = 7;
+export declare const FLAG_Z_MASK: number;
+export declare const FLAG_N_MASK: number;
+export declare const FLAG_H_MASK: number;
+export declare const FLAG_C_MASK: number;
+export interface CpuRegisters {
+    a: ByteValue;
+    b: ByteValue;
+    c: ByteValue;
+    d: ByteValue;
+    e: ByteValue;
+    h: ByteValue;
+    l: ByteValue;
+    f: ByteValue;
+    pc: WordValue;
+    sp: WordValue;
+    bc: WordValue;
+    de: WordValue;
+    hl: WordValue;
+    readonly fZ: BitValue;
+    readonly fNz: BitValue;
+    readonly fN: BitValue;
+    readonly fH: BitValue;
+    readonly fC: BitValue;
+    readonly fNc: BitValue;
+}
+export declare class CpuRegistersImpl implements CpuRegisters {
+    private _a;
+    private _b;
+    private _c;
+    private _d;
+    private _e;
+    private _h;
+    private _l;
+    private _f;
+    private _pc;
+    private _sp;
+    constructor();
+    readonly fNz: BitValue;
+    readonly fZ: BitValue;
+    readonly fN: BitValue;
+    readonly fH: BitValue;
+    readonly fC: BitValue;
+    readonly fNc: BitValue;
+    a: ByteValue;
+    b: ByteValue;
+    c: ByteValue;
+    d: ByteValue;
+    e: ByteValue;
+    h: ByteValue;
+    l: ByteValue;
+    f: ByteValue;
+    pc: ByteValue;
+    sp: ByteValue;
+    bc: ByteValue;
+    de: ByteValue;
+    hl: ByteValue;
+}
+//# sourceMappingURL=registers.d.ts.map

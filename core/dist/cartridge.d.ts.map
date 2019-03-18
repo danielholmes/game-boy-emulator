@@ -1,0 +1,1 @@
+{"version":3,"file":"cartridge.d.ts","sourceRoot":"","sources":["../src/cartridge.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,aAAa,EAAE,MAAM,SAAS,CAAC;AAGnD,qBAAa,SAAS;IACpB,SAAgB,KAAK,EAAE,UAAU,CAAC;gBAEf,KAAK,EAAE,UAAU;IAI7B,QAAQ,CAAC,OAAO,EAAE,aAAa,GAAG,SAAS;CAGnD"}

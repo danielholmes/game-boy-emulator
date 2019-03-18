@@ -8,7 +8,7 @@
     "ts": "tsc -p tsconfig.json",
     "lint": "eslint --fix './src/**/*.ts'",
     "lint:check": "eslint './src/**/*.ts'",
-    "test": "jest",
+    "test": "echo 'no tests'",
     "test:watch": "jest --watch",
     "clean": "rimraf ./dist/**",
     "compile": "babel src --out-dir ./dist/ --source-maps --ignore '**/__tests__/**/*' --extensions '.ts'",
