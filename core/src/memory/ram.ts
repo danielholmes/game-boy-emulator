@@ -1,24 +1,30 @@
-import { ByteValue, MemoryAddress, numberToHex, WordValue } from "../types";
+import {
+  ByteValue,
+  MemoryAddress,
+  numberToHex,
+  numberToWordHex
+} from "../types";
 
 class Ram {
-  protected readonly raw: ByteValue[];
+  protected readonly raw: Uint8Array;
   private readonly size: number;
 
   public constructor(size: number) {
     this.size = size;
-    this.raw = [];
+    this.raw = new Uint8Array(this.size);
+  }
+
+  public getValues(): Uint8Array {
+    return this.raw.slice();
   }
 
   private assertValidAddress(value: MemoryAddress): void {
-    this.assertWord(value);
-    if (value > this.size) {
-      throw new Error("Address out of range");
-    }
-  }
-
-  private assertWord(value: number): void {
-    if (value < 0x0000 || value > 0xffff) {
-      throw new Error(`Out of bounds word ${numberToHex(value)}`);
+    if (value < 0x0000 || value >= this.size) {
+      throw new Error(
+        `Address ${numberToWordHex(value)} out of range ${numberToWordHex(
+          this.size
+        )}`
+      );
     }
   }
 
@@ -33,22 +39,10 @@ class Ram {
     return this.raw[address];
   }
 
-  public readWord(address: MemoryAddress): WordValue {
-    this.assertValidAddress(address);
-    return (this.readByte(address) << 8) + this.readByte(address + 1);
-  }
-
   public writeByte(address: MemoryAddress, value: ByteValue): void {
     this.assertValidAddress(address);
     this.assertByte(value);
     this.raw[address] = value;
-  }
-
-  public writeWord(address: MemoryAddress, value: WordValue): void {
-    this.assertValidAddress(address);
-    this.assertWord(value);
-    this.writeByte(address, value >> 8);
-    this.writeByte(address + 1, value & 255);
   }
 }
 
@@ -64,9 +58,25 @@ export class WorkingRam extends Ram {
   }
 }
 
+const V_RAM_SIZE = 0x2000;
+
 export class VRam extends Ram {
   public constructor() {
-    super(0x02000);
+    super(V_RAM_SIZE);
+  }
+
+  public static initializeRandomly(): VRam {
+    const vRam = new VRam();
+    for (let i = 0; i < V_RAM_SIZE; i++) {
+      vRam.writeByte(i, Math.round(Math.random() * 0xff));
+    }
+    return vRam;
+  }
+}
+
+export class OamMemory extends Ram {
+  public constructor() {
+    super(0xa0);
   }
 }
 
@@ -81,9 +91,10 @@ export class IOMemory extends Ram {
   }
 
   public writeByte(address: MemoryAddress, value: ByteValue): void {
-    if (address === 0x0044) {
-      throw new Error("Current scan line Read-only");
-    }
+    // bios seems to use it
+    // if (address === 0x0044) {
+    //   throw new Error("Current scan line Read-only");
+    // }
     super.writeByte(address, value);
   }
 }

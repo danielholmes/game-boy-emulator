@@ -50,6 +50,9 @@ export const groupedWordByteRegisters = (register: GroupedWordRegister): Readonl
 // TODO: Shouldn't be exported, find a way to encapsulate this
 export const FLAG_Z = 7;
 export const FLAG_Z_MASK = 1 << 7;
+export const FLAG_N_MASK = 1 << 6;
+export const FLAG_H_MASK = 1 << 5;
+export const FLAG_C_MASK = 1 << 4;
 
 export interface CpuRegisters {
   a: ByteValue;
@@ -69,7 +72,12 @@ export interface CpuRegisters {
   de: WordValue;
   hl: WordValue;
 
+  readonly fZ: BitValue;
   readonly fNz: BitValue;
+  readonly fN: BitValue;
+  readonly fH: BitValue;
+  readonly fC: BitValue;
+  readonly fNc: BitValue;
 }
 
 export class CpuRegistersImpl implements CpuRegisters {
@@ -102,7 +110,27 @@ export class CpuRegistersImpl implements CpuRegisters {
   }
 
   public get fNz(): BitValue {
+    return this.fZ ? 0 : 1;
+  }
+
+  public get fZ(): BitValue {
     return (this.f & FLAG_Z_MASK) !== 0 ? 1 : 0;
+  }
+
+  public get fN(): BitValue {
+    return (this.f & FLAG_N_MASK) !== 0 ? 1 : 0;
+  }
+
+  public get fH(): BitValue {
+    return (this.f & FLAG_H_MASK) !== 0 ? 1 : 0;
+  }
+
+  public get fC(): BitValue {
+    return (this.f & FLAG_C_MASK) !== 0 ? 1 : 0;
+  }
+
+  public get fNc(): BitValue {
+    return this.fC ? 0 : 1;
   }
 
   public set a(value: ByteValue) {

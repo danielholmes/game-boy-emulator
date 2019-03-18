@@ -1,10 +1,9 @@
 {
-  "name": "@gebby/core",
+  "name": "@gebby/cli",
   "version": "0.0.1",
-  "description": "Core Game Boy Emulator",
+  "description": "Command line based ui for playing the game boy",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
   "scripts": {
     "ts": "tsc -p tsconfig.json",
     "lint": "eslint --fix './src/**/*.ts'",
@@ -30,7 +29,6 @@
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-prettier": "^3.0.1",
     "jest": "^24.4.0",
-    "jest-each": "^24.5.0",
     "prettier": "^1.16.4",
     "ts-jest": "^24.0.0",
     "typescript": "^3.3.3333"
@@ -49,6 +47,7 @@
     ]
   },
   "dependencies": {
+    "@gebby/core": "^0.0.1",
     "lodash": "^4.17.11"
   }
 }

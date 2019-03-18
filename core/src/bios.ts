@@ -1,6 +1,6 @@
 import { ByteValue, MemoryAddress } from "./types";
 
-const BIOS: ReadonlyArray<ByteValue> = [
+const BIOS: Uint8Array = new Uint8Array([
   0x31,
   0xfe,
   0xff,
@@ -257,7 +257,7 @@ const BIOS: ReadonlyArray<ByteValue> = [
   0x01,
   0xe0,
   0x50
-];
+]);
 
 export interface Bios {
   readByte(address: MemoryAddress): ByteValue;

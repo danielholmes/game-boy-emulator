@@ -4,8 +4,12 @@ import { Instruction, OpCode } from "./instructions";
 import {
   createLddMHlA,
   createLdGrNn,
+  createLdHlMR,
+  createLdMCA,
+  createLdMNA,
   createLdMNnA,
   createLdMNnSp,
+  createLdMRA,
   createLdRN,
   createLdRR,
   createLdSpNn
@@ -14,11 +18,12 @@ import {
   ByteRegister,
   CpuRegisters,
   CpuRegistersImpl,
-  GroupedWordRegister
+  GroupedWordRegister,
+  Register
 } from "./registers";
 import { createRst, RstAddress } from "./rst";
 import { createDecR } from "./dec";
-import { createIncRr, createIncSp } from "./inc";
+import { createIncR, createIncRr, createIncSp } from "./inc";
 import { createNop } from "./special";
 import { createXorR } from "./xor";
 import { numberToByteHex } from "../types";
@@ -35,7 +40,7 @@ export class Cpu {
     this.registers = new CpuRegistersImpl();
   }
 
-  public tick(mmu: Mmu): void {
+  public tick(mmu: Mmu): Cycles {
     const opCode = mmu.readByte(this.registers.pc);
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const instruction = INSTRUCTIONS[opCode];
@@ -48,8 +53,7 @@ export class Cpu {
     }
     this.registers.pc++;
 
-    // TODO: Use returned cycles
-    instruction.execute(this, mmu);
+    return instruction.execute(this, mmu);
   }
 }
 
@@ -61,12 +65,6 @@ export class Cpu {
 // LD H,(HL) 66 8
 // LD L,(HL) 6E 8
 
-// LD (HL),B 70 8
-// LD (HL),C 71 8
-// LD (HL),D 72 8
-// LD (HL),E 73 8
-// LD (HL),H 74 8
-// LD (HL),L 75 8
 // LD (HL),n 36 12
 
 // DEC (HL) 35 12
@@ -127,6 +125,24 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
     createLdMNnA(0xea),
 
     ...([
+      [0x70, "b"],
+      [0x71, "c"],
+      [0x72, "d"],
+      [0x73, "e"],
+      [0x74, "h"],
+      [0x75, "l"],
+      [0x77, "a"]
+    ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
+      createLdHlMR(opCode, register)
+    ),
+
+    ...([[0x0a, "bc"], [0x1a, "de"], [0x7e, "hl"]] as ReadonlyArray<
+      [OpCode, GroupedWordRegister]
+    >).map(([opCode, register]) => createLdMRA(opCode, register)),
+
+    createLdMNA(0xe0),
+
+    ...([
       [0x06, "b"],
       [0x0e, "c"],
       [0x16, "d"],
@@ -178,6 +194,18 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
     createIncSp(0x33),
 
     ...([
+      [0x3c, "a"],
+      [0x04, "b"],
+      [0x0c, "c"],
+      [0x14, "d"],
+      [0x1c, "e"],
+      [0x24, "h"],
+      [0x2c, "l"]
+    ] as ReadonlyArray<[OpCode, Register]>).map(([opCode, register]) =>
+      createIncR(opCode, register)
+    ),
+
+    ...([
       [0xaf, "a"],
       [0xa8, "b"],
       [0xa9, "c"],
@@ -190,6 +218,8 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
     ),
 
     createLddMHlA(0x32),
+
+    createLdMCA(0xe2),
 
     createCb(0xcb),
 

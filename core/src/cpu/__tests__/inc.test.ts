@@ -7,8 +7,13 @@ import {
   createMmu,
   EMPTY_MEMORY
 } from "../../test/help";
-import { createIncRr, createIncSp } from "../inc";
-import { GROUPED_WORD_REGISTERS, GroupedWordRegister } from "../registers";
+import { createIncR, createIncRr, createIncSp } from "../inc";
+import {
+  BYTE_REGISTERS,
+  GROUPED_WORD_REGISTERS,
+  GroupedWordRegister,
+  Register
+} from "../registers";
 import { Cpu } from "..";
 
 describe("inc", () => {
@@ -35,6 +40,20 @@ describe("inc", () => {
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
+  });
+
+  describe("createIncR", () => {
+    each(BYTE_REGISTERS.map(r => [r])).test("INC %s", (register: Register) => {
+      cpu.registers[register] = 0x14;
+
+      const instruction = createIncR(0x3d, register);
+
+      const cycles = instruction.execute(cpu, mmu);
+
+      expect(cycles).toBe(4);
+      expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x15 }));
+      expect(mmu).toEqual(EMPTY_MEMORY);
+    });
   });
 
   describe("createIncSp", () => {

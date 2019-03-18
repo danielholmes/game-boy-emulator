@@ -14,7 +14,7 @@ export const byteValueToSignedByte = (value: WordValue): SignedByteValue => {
   return value & 0xff;
 };
 
-export const binaryToWord = (binary: number): WordValue => {
+export const binaryToNumber = (binary: number | string): WordValue => {
   return parseInt(binary.toString(), 2);
 };
 

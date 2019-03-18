@@ -1,15 +1,90 @@
 import { Mmu } from "./memory/mmu";
+import { Screen } from "./screen";
+import { Cycles } from "./cpu";
+
+enum GpuMode {
+  HBlank = 0,
+  VBlank = 1,
+  ScanlineOam = 2,
+  ScanlineVRam = 3
+}
 
 export class Gpu {
   private readonly mmu: Mmu;
   private readonly screen: Screen;
+  private modeCycles: Cycles;
+  private mode: GpuMode;
 
   public constructor(mmu: Mmu, screen: Screen) {
     this.mmu = mmu;
     this.screen = screen;
+    this.modeCycles = 0;
+    this.mode = GpuMode.ScanlineOam;
   }
 
-  public tick(): void {}
+  public tick(cycles: Cycles): void {
+    this.modeCycles += cycles;
+
+    switch (this.mode) {
+      case GpuMode.ScanlineOam:
+        this.scanlineOamTick();
+        break;
+      case GpuMode.ScanlineVRam:
+        this.scanlineVRamTick();
+        break;
+      case GpuMode.HBlank:
+        this.hBlankTick();
+        break;
+      case GpuMode.VBlank:
+        this.vBlankTick();
+        break;
+    }
+
+    // # Mode 2
+    //   self.setSTATMode(2)
+    //   self.calculateCycles(80)
+    //
+    // # Mode 3
+    //   self.setSTATMode(3)
+    //   self.calculateCycles(170)
+    //
+    //   self.MainWindow.scanline(y, self.lcd)
+    //
+    // # Mode 0
+    //   self.setSTATMode(0)
+    //   self.calculateCycles(206)
+    //
+    //   self.cpu.setInterruptFlag(self.cpu.VBlank)
+  }
+
+  private scanlineOamTick(): void {
+    // TODO: Work
+    if (this.modeCycles >= 80) {
+      this.mode = GpuMode.ScanlineVRam;
+      this.modeCycles = this.modeCycles - 80;
+    }
+  }
+
+  private scanlineVRamTick(): void {
+    // TODO: Work
+    if (this.modeCycles >= 170) {
+      this.mode = GpuMode.HBlank;
+      this.modeCycles = this.modeCycles - 170;
+    }
+  }
+
+  private hBlankTick(): void {
+    // TODO: Work
+    if (this.modeCycles >= 206) {
+      this.mode = GpuMode.VBlank;
+      this.modeCycles = this.modeCycles - 206;
+    }
+  }
+
+  private vBlankTick(): void {
+    // throw new Error('VBlank')
+    this.mode = GpuMode.ScanlineOam;
+  }
 
   // VRam
   // 8000-87FF	Tile set #1: tiles 0-127

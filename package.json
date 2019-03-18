@@ -8,6 +8,7 @@
   "private": true,
   "workspaces": [
     "core",
+    "cli",
     "browser",
     "browser-play",
     "browser-dev"

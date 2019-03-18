@@ -3,8 +3,15 @@ import { toPairs } from "lodash";
 import { ByteValue } from "../types";
 import { Mmu } from "../memory/mmu";
 import bios from "../bios";
-import { IOMemory, VRam, WorkingRam, ZeroPageRam } from "../memory/ram";
+import {
+  IOMemory,
+  OamMemory,
+  VRam,
+  WorkingRam,
+  ZeroPageRam
+} from "../memory/ram";
 import { Cpu } from "../cpu";
+import { Cartridge } from "../cartridge";
 
 export const createMmu = (): Mmu =>
   new Mmu(
@@ -12,6 +19,7 @@ export const createMmu = (): Mmu =>
     new WorkingRam(),
     new VRam(),
     new IOMemory(),
+    new OamMemory(),
     new ZeroPageRam()
   );
 
@@ -48,12 +56,12 @@ export const createMmuWithValues = (values: {
   return mmu;
 };
 
-export const createMmuWithRomAndValues = (
-  rom: ReadonlyArray<ByteValue>,
+export const createMmuWithCartridgeAndValues = (
+  cartridge: Cartridge,
   values?: { [address: number]: ByteValue }
 ): Mmu => {
   const mmu = createMmuWithValues(values || {});
-  mmu.loadCartridge(rom);
+  mmu.loadCartridge(cartridge);
   return mmu;
 };
 

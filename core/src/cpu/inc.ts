@@ -1,11 +1,16 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
-import { GroupedWordRegister } from "./registers";
+import { GroupedWordRegister, Register } from "./registers";
 
 export const createIncRr = (
   opCode: OpCode,
   register: GroupedWordRegister
 ): Instruction =>
   new InstructionDefinition(opCode, `INC ${register}`).incrementGroupedRegister(
+    register
+  );
+
+export const createIncR = (opCode: OpCode, register: Register): Instruction =>
+  new InstructionDefinition(opCode, `INC ${register}`).incrementRegister(
     register
   );
 

@@ -18,6 +18,15 @@ export const createLdRN = (
     .loadByteOperand()
     .storeInRegister(register);
 
+export const createLdAMRr = (
+  opCode: OpCode,
+  register: GroupedWordRegister
+): Instruction =>
+  new InstructionDefinition(opCode, `LD a,(${register})`)
+    .loadGroupedRegister(register)
+    .readMemory()
+    .storeInRegister("a");
+
 export const createLdRHlM = (
   opCode: OpCode,
   register: ByteRegister
@@ -39,6 +48,16 @@ export const createLdHlMN = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (hl),n`)
     .loadByteOperand()
     .writeMemoryFromGroupedRegisterAddress("hl");
+
+export const createLdMCA = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LD (0xff00+c),a`)
+    .loadRegister("a")
+    .writeMemoryFromRegisterAddress("c");
+
+export const createLdMNA = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LD (0xff00+n),a`)
+    .loadRegister("a")
+    .writeMemoryFromOperandAddress();
 
 export const createLdGrM = (
   opCode: OpCode,

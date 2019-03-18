@@ -27,6 +27,7 @@ yarn
  - https://www.youtube.com/watch?v=t0V-D2YMhrs&index=2&list=PLu3xpmdUP-GRDp8tknpXC_Y4RUQtMMqEu
  - https://www.youtube.com/watch?v=GBYwjch6oEE
  - See blarg's test ROM https://github.com/taisel/GameBoy-Online
+ - https://realboyemulator.wordpress.com/2013/01/03/a-look-at-the-game-boy-bootstrap-let-the-fun-begin/
  
  - http://imrannazar.com/GameBoy-Emulation-in-JavaScript
  - https://media.ccc.de/v/33c3-8029-the_ultimate_game_boy_talk

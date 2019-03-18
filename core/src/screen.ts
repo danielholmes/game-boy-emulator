@@ -1,5 +1,5 @@
-export type PixelColor = 0 | 1 | 2 | 3;
+export type PixelColor = 0 | 1 | 2 | 3; // off (white) -> on/black
 
 export interface Screen {
-  writePixel(x: number, y: number, pixelColor: PixelColor): void;
+  setPixel(x: number, y: number, pixelColor: PixelColor): void;
 }

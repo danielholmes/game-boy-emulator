@@ -26,9 +26,12 @@ import {
   WriteMemoryFromStackPointer,
   XOrRegister,
   WordValueToSignedByte,
-  WriteWordFromOperandAddress
+  WriteWordFromOperandAddress,
+  WriteMemoryFromRegisterAddress,
+  IncrementRegister,
+  WriteMemoryFromOperandAddress
 } from "./lowLevel";
-import { ByteRegister, GroupedWordRegister } from "./registers";
+import { ByteRegister, GroupedWordRegister, Register } from "./registers";
 import { sum } from "lodash";
 import { MemoryAddress, WordValue } from "../types";
 import { Cpu, Cycles } from "./index";
@@ -105,6 +108,16 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new LoadGroupedRegister(register));
   }
 
+  public writeMemoryFromOperandAddress(): InstructionDefinition {
+    return this.withOperation(new WriteMemoryFromOperandAddress());
+  }
+
+  public writeMemoryFromRegisterAddress(
+    register: Register
+  ): InstructionDefinition {
+    return this.withOperation(new WriteMemoryFromRegisterAddress(register));
+  }
+
   public writeMemoryFromGroupedRegisterAddress(
     register: GroupedWordRegister
   ): InstructionDefinition {
@@ -131,6 +144,10 @@ export class InstructionDefinition implements Instruction {
 
   public decrementRegister(register: ByteRegister): InstructionDefinition {
     return this.withOperation(new DecrementRegister(register));
+  }
+
+  public incrementRegister(register: Register): InstructionDefinition {
+    return this.withOperation(new IncrementRegister(register));
   }
 
   public incrementGroupedRegister(

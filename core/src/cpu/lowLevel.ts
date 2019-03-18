@@ -3,7 +3,8 @@ import {
   ByteRegister,
   FLAG_Z,
   FLAG_Z_MASK,
-  GroupedWordRegister
+  GroupedWordRegister,
+  Register
 } from "./registers";
 import { ByteValue, WordValue, byteValueToSignedByte } from "../types";
 import { Cpu, Cycles } from ".";
@@ -110,7 +111,7 @@ export class JrCheck implements LowLevelOperation {
       throw new Error("value undefined");
     }
 
-    if (!cpu.registers.fNz) {
+    if (cpu.registers.fNz) {
       // TODO: Becomes a longer cycle operation
       cpu.registers.pc += value;
     }
@@ -144,7 +145,7 @@ export class WriteByteFromOperandAddress implements LowLevelOperation {
     if (value === undefined) {
       throw new Error("value undefined");
     }
-    const address = mmu.readWord(cpu.registers.pc);
+    const address = mmu.readBigEndianWord(cpu.registers.pc);
     mmu.writeByte(address, value);
     cpu.registers.pc += 2;
   }
@@ -161,8 +162,8 @@ export class WriteWordFromOperandAddress implements LowLevelOperation {
     if (value === undefined) {
       throw new Error("value undefined");
     }
-    const address = mmu.readWord(cpu.registers.pc);
-    mmu.writeWord(address, value);
+    const address = mmu.readBigEndianWord(cpu.registers.pc);
+    mmu.writeWordBigEndian(address, value);
     cpu.registers.pc += 2;
   }
 }
@@ -228,6 +229,43 @@ export class LoadProgramCounter implements LowLevelOperation {
   }
 }
 
+export class WriteMemoryFromOperandAddress implements LowLevelOperation {
+  public readonly cycles: Cycles = 8;
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error("value undefined");
+    }
+    const operand = mmu.readByte(cpu.registers.pc);
+    mmu.writeWordBigEndian(0xff00 + operand, value);
+    cpu.registers.pc++;
+  }
+}
+
+export class WriteMemoryFromRegisterAddress implements LowLevelOperation {
+  public readonly cycles: Cycles = 4;
+  private readonly register: Register;
+
+  public constructor(register: Register) {
+    this.register = register;
+  }
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error("value undefined");
+    }
+    mmu.writeWordBigEndian(0xff00 + cpu.registers[this.register], value);
+  }
+}
+
 export class WriteMemoryFromStackPointer implements LowLevelOperation {
   public readonly cycles: Cycles = 16;
 
@@ -239,7 +277,7 @@ export class WriteMemoryFromStackPointer implements LowLevelOperation {
     if (value === undefined) {
       throw new Error("value undefined");
     }
-    mmu.writeWord(cpu.registers.sp, value);
+    mmu.writeWordBigEndian(cpu.registers.sp, value);
   }
 }
 
@@ -286,9 +324,22 @@ export class LoadWordOperand implements LowLevelOperation {
   public readonly cycles: Cycles = 8;
 
   public execute(cpu: Cpu, mmu: Mmu): LowLevelStateReturn {
-    const byte = mmu.readWord(cpu.registers.pc);
+    const byte = mmu.readBigEndianWord(cpu.registers.pc);
     cpu.registers.pc += 2;
     return byte;
+  }
+}
+
+export class IncrementRegister implements LowLevelOperation {
+  public readonly cycles: Cycles = 0;
+  private readonly register: Register;
+
+  public constructor(register: Register) {
+    this.register = register;
+  }
+
+  public execute(cpu: Cpu): LowLevelStateReturn {
+    cpu.registers[this.register]++;
   }
 }
 
