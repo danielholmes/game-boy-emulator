@@ -22,7 +22,9 @@ export const RST_ADDRESSES: ReadonlyArray<RstAddress> = [
 
 export const createRst = (opCode: OpCode, address: RstAddress): Instruction =>
   new InstructionDefinition(opCode, `RST $${address.toString(16)}`)
-    .decrementStackPointer(2)
+    .internalDelay()
     .loadProgramCounter()
+    .decrementRegister("sp")
+    .decrementRegister("sp")
     .writeMemoryWordFromStackPointer()
-    .setProgramCounter(address);
+    .setRegister("pc", address);

@@ -4,14 +4,13 @@ import {
   BYTE_REGISTER_PAIR_PERMUTATIONS,
   BYTE_REGISTERS,
   ByteRegister,
-  GroupedWordRegister
+  NonAfGroupedWordRegister
 } from "../registers";
 import {
   createLdAMNn,
   createLdRMRr,
   createLddMHlA,
   createLdGrM,
-  createLdGrNn,
   createLdHlMN,
   createLdHlMR,
   createLdMCA,
@@ -22,7 +21,7 @@ import {
   createLdRHlM,
   createLdRN,
   createLdRR,
-  createLdSpNn
+  createLdRrNn
 } from "../ld";
 import {
   createCpuSnapshot,
@@ -151,9 +150,9 @@ describe("ld", () => {
   });
 
   describe("createLdGrM", () => {
-    test.each([["bc"], ["de"]] as GroupedWordRegister[][])(
+    test.each([["bc"], ["de"]] as NonAfGroupedWordRegister[][])(
       "LD a,(%s)",
-      (register: GroupedWordRegister) => {
+      (register: NonAfGroupedWordRegister) => {
         cpu.registers[register] = 0xf108;
         mmu.writeByte(0xf108, 0x2d);
         const memorySnapshot = createMemorySnapshot(mmu);
@@ -225,9 +224,9 @@ describe("ld", () => {
   });
 
   describe("createLdMRA", () => {
-    test.each([["bc"], ["de"], ["hl"]] as GroupedWordRegister[][])(
+    test.each([["bc"], ["de"], ["hl"]] as NonAfGroupedWordRegister[][])(
       "LD (%s),a",
-      (register: GroupedWordRegister) => {
+      (register: NonAfGroupedWordRegister) => {
         cpu.registers.a = 0x72;
         cpu.registers[register] = 0xf108;
 
@@ -244,14 +243,33 @@ describe("ld", () => {
     );
   });
 
+  describe("createLdRrNn", () => {
+    test.each([["bc"], ["de"], ["hl"], ["sp"]] as (
+      | NonAfGroupedWordRegister
+      | "sp")[][])("LD %s,nn", (register: NonAfGroupedWordRegister | "sp") => {
+      cpu.registers.pc = 0x0000;
+      const cart = new Cartridge(new Uint8Array([0xfa, 0xde]));
+      mmu.loadCartridge(cart);
+
+      const instruction = createLdRrNn(0x3d, register);
+
+      const mmuSnapshot = createMemorySnapshot(mmu);
+      const cycles = instruction.execute(cpu, mmu);
+
+      expect(cycles).toBe(8);
+      expect(cpu).toEqual(
+        createCpuWithRegisters({ pc: 0x0002, [register]: 0xdefa })
+      );
+      expect(createMemorySnapshot(mmu)).toEqual(mmuSnapshot);
+    });
+  });
+
   describe("createLdRMRr", () => {
-    test.each(
-      flatMap(
-        BYTE_REGISTERS.map((r) => [[r, "bc"], [r, "de"], [r, "hl"]])
-      ) as Array<[ByteRegister, GroupedWordRegister]>
-    )(
+    test.each(flatMap(
+      BYTE_REGISTERS.map(r => [[r, "bc"], [r, "de"], [r, "hl"]])
+    ) as [ByteRegister, NonAfGroupedWordRegister][])(
       "LD %s,(%s)",
-      (register1: ByteRegister, register2: GroupedWordRegister) => {
+      (register1: ByteRegister, register2: NonAfGroupedWordRegister) => {
         cpu.registers[register2] = 0xf108;
         mmu.writeByte(0xf108, 0xdf);
 
@@ -289,45 +307,6 @@ describe("ld", () => {
       expect(mmu).toEqual(
         createMmuWithCartridgeAndValues(cartridge, { 0xc116: 0x32 })
       );
-    });
-  });
-
-  describe("createLdGrNn", () => {
-    test.each([["bc"], ["de"], ["hl"]] as GroupedWordRegister[][])(
-      "LD %s,nn",
-      (register: GroupedWordRegister) => {
-        cpu.registers.pc = 0x0001;
-        const cartridge = new Cartridge(new Uint8Array([0x00, 0x54, 0x76]));
-        mmu.loadCartridge(cartridge);
-
-        const memorySnapshot = createMemorySnapshot(mmu);
-        const instruction = createLdGrNn(0x3d, register);
-
-        const cycles = instruction.execute(cpu, mmu);
-
-        expect(cycles).toBe(8);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({ pc: 0x0003, [register]: 0x7654 })
-        );
-        expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
-      }
-    );
-  });
-
-  describe("createLdSpNn", () => {
-    test("LD sp,nn", () => {
-      cpu.registers.pc = 0x0000;
-      const cartridge = new Cartridge(new Uint8Array([0x54, 0x76]));
-      mmu.loadCartridge(cartridge);
-
-      const memorySnapshot = createMemorySnapshot(mmu);
-      const instruction = createLdSpNn(0x3d);
-
-      const cycles = instruction.execute(cpu, mmu);
-
-      expect(cycles).toBe(8);
-      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, sp: 0x7654 }));
-      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
     });
   });
 

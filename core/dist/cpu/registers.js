@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CpuRegistersImpl = exports.FLAG_C_MASK = exports.FLAG_H_MASK = exports.FLAG_N_MASK = exports.FLAG_Z_MASK = exports.FLAG_Z = exports.BYTE_REGISTER_PAIR_PERMUTATIONS = exports.BYTE_REGISTERS = exports.GROUPED_WORD_REGISTERS = void 0;
+exports.CpuRegistersImpl = exports.FLAG_C_MASK = exports.FLAG_H_MASK = exports.FLAG_N_MASK = exports.FLAG_Z_MASK = exports.FLAG_Z = exports.BYTE_REGISTER_PAIR_PERMUTATIONS = exports.BYTE_REGISTERS = exports.GROUPED_WORD_REGISTERS = exports.NON_AF_GROUPED_WORD_REGISTERS = void 0;
 
 var _lodash = require("lodash");
 
@@ -15,7 +15,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var GROUPED_WORD_REGISTERS = ["bc", "de", "hl"];
+var NON_AF_GROUPED_WORD_REGISTERS = ["bc", "de", "hl"];
+exports.NON_AF_GROUPED_WORD_REGISTERS = NON_AF_GROUPED_WORD_REGISTERS;
+var GROUPED_WORD_REGISTERS = ["af"].concat(NON_AF_GROUPED_WORD_REGISTERS);
 exports.GROUPED_WORD_REGISTERS = GROUPED_WORD_REGISTERS;
 var BYTE_REGISTERS = ["a", "b", "c", "d", "e", "h", "l"];
 exports.BYTE_REGISTERS = BYTE_REGISTERS;
@@ -28,7 +30,7 @@ var BYTE_REGISTER_PAIR_PERMUTATIONS = (0, _lodash.flatMap)(BYTE_REGISTERS.map(fu
 const D_E_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['d', 'e']
 const H_L_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['h', 'l']
 
-export const groupedWordByteRegisters = (register: GroupedWordRegister): Readonly<[ByteRegister, ByteRegister]> => {
+export const groupedWordByteRegisters = (register: NonAfGroupedWordRegister): Readonly<[ByteRegister, ByteRegister]> => {
   switch (register)
   {
     case 'bc':
@@ -218,6 +220,15 @@ function () {
     },
     get: function get() {
       return (this._d << 8) + this._e;
+    }
+  }, {
+    key: "af",
+    set: function set(value) {
+      this._a = value >> 8 & 0xff;
+      this._f = value & 0xff;
+    },
+    get: function get() {
+      return (this._a << 8) + this._f;
     }
   }, {
     key: "hl",

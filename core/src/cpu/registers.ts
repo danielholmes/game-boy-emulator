@@ -3,16 +3,25 @@ import { flatMap } from "lodash";
 
 export type ByteRegister = "a" | "b" | "c" | "d" | "e" | "h" | "l";
 
-export type GroupedWordRegister = "bc" | "de" | "hl";
+export type NonAfGroupedWordRegister = "bc" | "de" | "hl";
+
+export type GroupedWordRegister = "af" | NonAfGroupedWordRegister;
 
 export type NativeWordRegister = "sp" | "pc";
 
-export type Register = ByteRegister | "f" | GroupedWordRegister | NativeWordRegister;
+export type Register =
+  | ByteRegister
+  | "f"
+  | GroupedWordRegister
+  | NativeWordRegister;
+
+export const NON_AF_GROUPED_WORD_REGISTERS: ReadonlyArray<
+  NonAfGroupedWordRegister
+> = ["bc", "de", "hl"];
 
 export const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister> = [
-  "bc",
-  "de",
-  "hl"
+  "af",
+  ...NON_AF_GROUPED_WORD_REGISTERS
 ];
 
 export const BYTE_REGISTERS: ReadonlyArray<ByteRegister> = [
@@ -37,7 +46,7 @@ export const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<
 const D_E_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['d', 'e']
 const H_L_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['h', 'l']
 
-export const groupedWordByteRegisters = (register: GroupedWordRegister): Readonly<[ByteRegister, ByteRegister]> => {
+export const groupedWordByteRegisters = (register: NonAfGroupedWordRegister): Readonly<[ByteRegister, ByteRegister]> => {
   switch (register)
   {
     case 'bc':
@@ -73,6 +82,7 @@ export interface CpuRegisters {
   bc: WordValue;
   de: WordValue;
   hl: WordValue;
+  af: WordValue;
 
   readonly fZ: BitValue;
   readonly fNz: BitValue;
@@ -219,6 +229,14 @@ export class CpuRegistersImpl implements CpuRegisters {
   }
   public get de(): ByteValue {
     return (this._d << 8) + this._e;
+  }
+
+  public set af(value: ByteValue) {
+    this._a = (value >> 8) & 0xff;
+    this._f = value & 0xff;
+  }
+  public get af(): ByteValue {
+    return (this._a << 8) + this._f;
   }
 
   public set hl(value: ByteValue) {

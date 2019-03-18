@@ -8,7 +8,7 @@ exports.createNop = void 0;
 var _instructions = require("./instructions");
 
 var createNop = function createNop(opCode) {
-  return new _instructions.InstructionDefinition(opCode, "NOP").nop();
+  return new _instructions.InstructionDefinition(opCode, "NOP");
 };
 
 exports.createNop = createNop;

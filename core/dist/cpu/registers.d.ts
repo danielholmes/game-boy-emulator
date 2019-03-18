@@ -1,8 +1,10 @@
 import { BitValue, ByteValue, WordValue } from "../types";
 export declare type ByteRegister = "a" | "b" | "c" | "d" | "e" | "h" | "l";
-export declare type GroupedWordRegister = "bc" | "de" | "hl";
+export declare type NonAfGroupedWordRegister = "bc" | "de" | "hl";
+export declare type GroupedWordRegister = "af" | NonAfGroupedWordRegister;
 export declare type NativeWordRegister = "sp" | "pc";
 export declare type Register = ByteRegister | "f" | GroupedWordRegister | NativeWordRegister;
+export declare const NON_AF_GROUPED_WORD_REGISTERS: ReadonlyArray<NonAfGroupedWordRegister>;
 export declare const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister>;
 export declare const BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
 export declare const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<Readonly<[ByteRegister, ByteRegister]>>;
@@ -25,6 +27,7 @@ export interface CpuRegisters {
     bc: WordValue;
     de: WordValue;
     hl: WordValue;
+    af: WordValue;
     readonly fZ: BitValue;
     readonly fNz: BitValue;
     readonly fN: BitValue;
@@ -62,6 +65,7 @@ export declare class CpuRegistersImpl implements CpuRegisters {
     sp: ByteValue;
     bc: ByteValue;
     de: ByteValue;
+    af: ByteValue;
     hl: ByteValue;
 }
 //# sourceMappingURL=registers.d.ts.map

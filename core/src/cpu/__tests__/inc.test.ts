@@ -9,8 +9,8 @@ import {
 import { createIncR, createIncRr, createIncSp } from "../inc";
 import {
   BYTE_REGISTERS,
-  GROUPED_WORD_REGISTERS,
-  GroupedWordRegister,
+  NON_AF_GROUPED_WORD_REGISTERS,
+  NonAfGroupedWordRegister,
   Register
 } from "../registers";
 import { Cpu } from "..";
@@ -25,9 +25,9 @@ describe("inc", () => {
   });
 
   describe("createIncRr", () => {
-    test.each(GROUPED_WORD_REGISTERS.map(r => [r]))(
+    test.each(NON_AF_GROUPED_WORD_REGISTERS.map(r => [r]))(
       "INC %s",
-      (register: GroupedWordRegister) => {
+      (register: NonAfGroupedWordRegister) => {
         cpu.registers[register] = 0x2314;
 
         const instruction = createIncRr(0x3d, register);

@@ -56,7 +56,7 @@ function () {
       var subInstruction = CB_INSTRUCTIONS[operand];
 
       if (!subInstruction) {
-        throw new Error("No instruction for opCode ".concat((0, _types.numberToByteHex)(operand)));
+        throw new Error("No instruction for CB opCode ".concat((0, _types.numberToByteHex)(operand)));
       }
 
       cpu.registers.pc++;

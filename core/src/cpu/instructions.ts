@@ -1,39 +1,32 @@
 import { Mmu } from "../memory/mmu";
 import {
   BitFlags,
-  DecrementGroupedRegister,
   DecrementRegister,
-  DecrementStackPointer,
-  IncrementGroupedRegister,
-  IncrementStackPointer,
+  IncrementRegister,
   JrCheck,
-  LoadGroupedRegister,
   LoadOperand,
-  LoadProgramCounter,
   LoadWordOperand,
   LoadRegister,
-  LoadStackPointer,
   LowLevelOperation,
   LowLevelState,
-  Nop,
   ReadMemory,
-  SetProgramCounter,
-  StoreInGroupedRegister,
+  SetRegister,
   StoreInRegister,
-  StoreInStackPointer,
   WriteWordFromGroupedRegisterAddress,
   WriteByteFromOperandAddress,
-  WriteMemoryWordFromStackPointer,
   XOrRegister,
   WordValueToSignedByte,
   WriteWordFromOperandAddress,
   WriteMemoryFromRegisterAddress,
-  IncrementRegister,
-  WriteMemoryFromOperandAddress
+  WriteMemoryLowByteFromOperandAddress,
+  WriteMemoryHighByteFromOperandAddress,
+  InternalDelay,
+  WriteMemoryWordHighByteFromStackPointer,
+  WriteMemoryWordLowByteFromStackPointer
 } from "./lowLevel";
-import { ByteRegister, GroupedWordRegister, NativeWordRegister, Register } from "./registers";
+import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
 import { sum } from "lodash";
-import { MemoryAddress, WordValue } from "../types";
+import { MemoryAddress } from "../types";
 import { Cpu, ClockCycles } from "./index";
 
 export type OpCode = number;
@@ -75,14 +68,12 @@ export class InstructionDefinition implements Instruction {
     return sum(this.operations.map(op => op.cycles));
   }
 
-  public xOr(register: ByteRegister): InstructionDefinition {
-    return this.withOperation(new XOrRegister(register));
+  public internalDelay(): InstructionDefinition {
+    return this.withOperation(new InternalDelay());
   }
 
-  public decrementGroupedRegister(
-    register: GroupedWordRegister
-  ): InstructionDefinition {
-    return this.withOperation(new DecrementGroupedRegister(register));
+  public xOr(register: ByteRegister): InstructionDefinition {
+    return this.withOperation(new XOrRegister(register));
   }
 
   public jrCheck(): InstructionDefinition {
@@ -93,22 +84,18 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new BitFlags(register));
   }
 
-  public nop(): InstructionDefinition {
-    return this.withOperation(new Nop());
-  }
-
-  public loadRegister(register: ByteRegister): InstructionDefinition {
+  public loadRegister(register: Register): InstructionDefinition {
     return this.withOperation(new LoadRegister(register));
   }
 
-  public loadGroupedRegister(
-    register: GroupedWordRegister
-  ): InstructionDefinition {
-    return this.withOperation(new LoadGroupedRegister(register));
+  public loadProgramCounter(): InstructionDefinition {
+    return this.loadRegister("pc");
   }
 
   public writeMemoryFromOperandAddress(): InstructionDefinition {
-    return this.withOperation(new WriteMemoryFromOperandAddress());
+    return this.withOperation(new WriteMemoryHighByteFromOperandAddress())
+      .withOperation(new WriteMemoryLowByteFromOperandAddress())
+      .incrementRegister("pc");
   }
 
   public writeMemoryFromRegisterAddress(
@@ -118,7 +105,7 @@ export class InstructionDefinition implements Instruction {
   }
 
   public writeMemoryFromGroupedRegisterAddress(
-    register: GroupedWordRegister
+    register: NonAfGroupedWordRegister
   ): InstructionDefinition {
     return this.withOperation(
       new WriteWordFromGroupedRegisterAddress(register)
@@ -137,11 +124,7 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new LoadWordOperand());
   }
 
-  public loadStackPointer(): InstructionDefinition {
-    return this.withOperation(new LoadStackPointer());
-  }
-
-  public decrementRegister(register: ByteRegister): InstructionDefinition {
+  public decrementRegister(register: Register): InstructionDefinition {
     return this.withOperation(new DecrementRegister(register));
   }
 
@@ -149,28 +132,8 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new IncrementRegister(register));
   }
 
-  public incrementGroupedRegister(
-    register: GroupedWordRegister
-  ): InstructionDefinition {
-    return this.withOperation(new IncrementGroupedRegister(register));
-  }
-
-  public incrementStackPointer(): InstructionDefinition {
-    return this.withOperation(new IncrementStackPointer());
-  }
-
-  public storeInRegister(register: ByteRegister | NativeWordRegister): InstructionDefinition {
+  public storeInRegister(register: Register): InstructionDefinition {
     return this.withOperation(new StoreInRegister(register));
-  }
-
-  public storeInGroupedRegister(
-    register: GroupedWordRegister
-  ): InstructionDefinition {
-    return this.withOperation(new StoreInGroupedRegister(register));
-  }
-
-  public storeInStackPointer(): InstructionDefinition {
-    return this.withOperation(new StoreInStackPointer());
   }
 
   public readMemory(): InstructionDefinition {
@@ -185,20 +148,23 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new WriteWordFromOperandAddress());
   }
 
-  public decrementStackPointer(amount: WordValue): InstructionDefinition {
-    return this.withOperation(new DecrementStackPointer(amount));
+  public setRegister(
+    register: Register,
+    address: MemoryAddress
+  ): InstructionDefinition {
+    return this.withOperation(new SetRegister(register, address));
   }
 
-  public setProgramCounter(address: MemoryAddress): InstructionDefinition {
-    return this.withOperation(new SetProgramCounter(address));
-  }
-
-  public loadProgramCounter(): InstructionDefinition {
-    return this.withOperation(new LoadProgramCounter());
+  public pushWordToStack(): InstructionDefinition {
+    return this.decrementRegister("sp")
+      .decrementRegister("sp")
+      .writeMemoryWordFromStackPointer();
   }
 
   public writeMemoryWordFromStackPointer(): InstructionDefinition {
-    return this.withOperation(new WriteMemoryWordFromStackPointer());
+    return this.withOperation(
+      new WriteMemoryWordHighByteFromStackPointer()
+    ).withOperation(new WriteMemoryWordLowByteFromStackPointer());
   }
 
   private withOperation(operation: LowLevelOperation): InstructionDefinition {

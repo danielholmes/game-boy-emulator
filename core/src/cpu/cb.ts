@@ -18,7 +18,9 @@ class CbInstruction implements Instruction {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const subInstruction = CB_INSTRUCTIONS[operand];
     if (!subInstruction) {
-      throw new Error(`No instruction for opCode ${numberToByteHex(operand)}`);
+      throw new Error(
+        `No instruction for CB opCode ${numberToByteHex(operand)}`
+      );
     }
     cpu.registers.pc++;
     subInstruction.execute(cpu, mmu);

@@ -3,22 +3,23 @@ import { fromPairs } from "lodash";
 import { Instruction, OpCode } from "./instructions";
 import {
   createLddMHlA,
-  createLdGrNn,
   createLdHlMR,
   createLdMCA,
   createLdMNA,
   createLdMNnA,
   createLdMNnSp,
-  createLdMRA, createLdRMRr,
+  createLdMRA,
+  createLdRMRr,
   createLdRN,
   createLdRR,
-  createLdSpNn
+  createLdRrNn
 } from "./ld";
 import {
   ByteRegister,
   CpuRegisters,
   CpuRegistersImpl,
   GroupedWordRegister,
+  NonAfGroupedWordRegister,
   Register
 } from "./registers";
 import { createRst, RstAddress } from "./rst";
@@ -31,10 +32,11 @@ import { createCb } from "./cb";
 import { createJrNzN } from "./jr";
 import { createSbcAR } from "./sbc";
 import { createCallNn } from "./call";
+import { createPush } from "./push";
 
 export type ClockCycles = number;
 
-const CLOCK_CYCLES_PER_MACHINE_CYCLE = 4;
+// const CLOCK_CYCLES_PER_MACHINE_CYCLE = 4;
 
 export class Cpu {
   public readonly registers: CpuRegisters;
@@ -142,7 +144,16 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
 
     createLdMNnA(0xea),
 
-    createCallNn(0xCD),
+    createCallNn(0xcd),
+
+    ...([
+      [0xf5, "af"],
+      [0xc5, "bc"],
+      [0xd5, "de"],
+      [0xe5, "hl"]
+    ] as ReadonlyArray<[OpCode, GroupedWordRegister]>).map(
+      ([opCode, register]) => createPush(opCode, register)
+    ),
 
     ...([
       [0x70, "b"],
@@ -166,13 +177,13 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x6e, "l", "hl"],
       [0x0a, "a", "bc"],
       [0x1a, "a", "de"]
-    ] as ReadonlyArray<[OpCode, ByteRegister, GroupedWordRegister]>)
-      .map(([opCode, register1, register2]) =>
+    ] as ReadonlyArray<[OpCode, ByteRegister, NonAfGroupedWordRegister]>).map(
+      ([opCode, register1, register2]) =>
         createLdRMRr(opCode, register1, register2)
-      ),
+    ),
 
     ...([[0x02, "bc"], [0x12, "de"], [0x77, "hl"]] as ReadonlyArray<
-      [OpCode, GroupedWordRegister]
+      [OpCode, NonAfGroupedWordRegister]
     >).map(([opCode, register]) => createLdMRA(opCode, register)),
 
     createLdMNA(0xe0),
@@ -189,11 +200,14 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       createLdRN(opCode, register)
     ),
 
-    ...([[0x01, "bc"], [0x11, "de"], [0x21, "hl"]] as ReadonlyArray<
-      [OpCode, GroupedWordRegister]
-    >).map(([opCode, register]) => createLdGrNn(opCode, register)),
-
-    createLdSpNn(0x31),
+    ...([
+      [0x01, "bc"],
+      [0x11, "de"],
+      [0x21, "hl"],
+      [0x31, "sp"]
+    ] as ReadonlyArray<[OpCode, NonAfGroupedWordRegister | "sp"]>).map(
+      ([opCode, register]) => createLdRrNn(opCode, register)
+    ),
 
     ...([
       [0xc7, 0x0000],
@@ -223,7 +237,7 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
     ),
 
     ...([[0x03, "bc"], [0x13, "de"], [0x23, "hl"]] as ReadonlyArray<
-      [OpCode, GroupedWordRegister]
+      [OpCode, NonAfGroupedWordRegister]
     >).map(([opCode, register]) => createIncRr(opCode, register)),
 
     createIncSp(0x33),

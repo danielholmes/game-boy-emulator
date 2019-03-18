@@ -1,5 +1,5 @@
 import { Mmu } from "../memory/mmu";
-import { ByteRegister, GroupedWordRegister, NativeWordRegister, Register } from "./registers";
+import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
 import { ByteValue, WordValue } from "../types";
 import { Cpu, ClockCycles } from ".";
 export declare type LowLevelState = ByteValue | WordValue | undefined;
@@ -11,23 +11,17 @@ export interface LowLevelOperation {
 export declare class LoadRegister implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly register;
-    constructor(register: ByteRegister);
+    constructor(register: Register);
     execute(cpu: Cpu): LowLevelStateReturn;
 }
 export declare class ReadMemory implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare class LoadGroupedRegister implements LowLevelOperation {
-    readonly cycles: ClockCycles;
-    private readonly register;
-    constructor(register: GroupedWordRegister);
-    execute(cpu: Cpu): LowLevelStateReturn;
-}
 export declare class WriteWordFromGroupedRegisterAddress implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly register;
-    constructor(register: GroupedWordRegister);
+    constructor(register: NonAfGroupedWordRegister);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class BitFlags implements LowLevelOperation {
@@ -55,26 +49,14 @@ export declare class WriteWordFromOperandAddress implements LowLevelOperation {
 export declare class StoreInRegister implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly register;
-    constructor(register: ByteRegister | NativeWordRegister);
+    constructor(register: Register);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare class StoreInGroupedRegister implements LowLevelOperation {
+export declare class WriteMemoryHighByteFromOperandAddress implements LowLevelOperation {
     readonly cycles: ClockCycles;
-    private readonly register;
-    constructor(register: GroupedWordRegister);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare class DecrementStackPointer implements LowLevelOperation {
-    readonly cycles: ClockCycles;
-    private readonly amount;
-    constructor(amount: WordValue);
-    execute(cpu: Cpu): LowLevelStateReturn;
-}
-export declare class LoadProgramCounter implements LowLevelOperation {
-    readonly cycles: ClockCycles;
-    execute(cpu: Cpu): LowLevelStateReturn;
-}
-export declare class WriteMemoryFromOperandAddress implements LowLevelOperation {
+export declare class WriteMemoryLowByteFromOperandAddress implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
@@ -84,18 +66,23 @@ export declare class WriteMemoryFromRegisterAddress implements LowLevelOperation
     constructor(register: Register);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare class WriteMemoryWordFromStackPointer implements LowLevelOperation {
+export declare class InternalDelay implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare class StoreInStackPointer implements LowLevelOperation {
+export declare class WriteMemoryWordHighByteFromStackPointer implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare class SetProgramCounter implements LowLevelOperation {
+export declare class WriteMemoryWordLowByteFromStackPointer implements LowLevelOperation {
     readonly cycles: ClockCycles;
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
+}
+export declare class SetRegister implements LowLevelOperation {
+    readonly cycles: ClockCycles;
+    private readonly register;
     private readonly value;
-    constructor(value: WordValue);
+    constructor(register: Register, value: WordValue);
     execute(cpu: Cpu): LowLevelStateReturn;
 }
 export declare class LoadOperand implements LowLevelOperation {
@@ -110,13 +97,7 @@ export declare class IncrementRegister implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly register;
     constructor(register: Register);
-    execute(cpu: Cpu): LowLevelStateReturn;
-}
-export declare class IncrementGroupedRegister implements LowLevelOperation {
-    readonly cycles: ClockCycles;
-    private readonly register;
-    constructor(register: GroupedWordRegister);
-    execute(cpu: Cpu): LowLevelStateReturn;
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class XOrRegister implements LowLevelOperation {
     readonly cycles: ClockCycles;
@@ -124,28 +105,10 @@ export declare class XOrRegister implements LowLevelOperation {
     constructor(register: ByteRegister);
     execute(cpu: Cpu): LowLevelStateReturn;
 }
-export declare class Nop implements LowLevelOperation {
-    readonly cycles: ClockCycles;
-    execute(): LowLevelStateReturn;
-}
-export declare class IncrementStackPointer implements LowLevelOperation {
-    readonly cycles: ClockCycles;
-    execute(cpu: Cpu): LowLevelStateReturn;
-}
-export declare class LoadStackPointer implements LowLevelOperation {
-    readonly cycles: ClockCycles;
-    execute(cpu: Cpu): LowLevelStateReturn;
-}
 export declare class DecrementRegister implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly register;
-    constructor(register: ByteRegister);
-    execute(cpu: Cpu): LowLevelStateReturn;
-}
-export declare class DecrementGroupedRegister implements LowLevelOperation {
-    readonly cycles: ClockCycles;
-    private readonly register;
-    constructor(register: GroupedWordRegister);
-    execute(cpu: Cpu): LowLevelStateReturn;
+    constructor(register: Register);
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 //# sourceMappingURL=lowLevel.d.ts.map

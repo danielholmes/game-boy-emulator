@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementGroupedRegister = exports.DecrementRegister = exports.LoadStackPointer = exports.IncrementStackPointer = exports.Nop = exports.XOrRegister = exports.IncrementGroupedRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetProgramCounter = exports.StoreInStackPointer = exports.WriteMemoryWordFromStackPointer = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryFromOperandAddress = exports.LoadProgramCounter = exports.DecrementStackPointer = exports.StoreInGroupedRegister = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.LoadGroupedRegister = exports.ReadMemory = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -66,31 +66,6 @@ function () {
 }();
 
 exports.ReadMemory = ReadMemory;
-
-var LoadGroupedRegister =
-/*#__PURE__*/
-function () {
-  function LoadGroupedRegister(register) {
-    _classCallCheck(this, LoadGroupedRegister);
-
-    _defineProperty(this, "cycles", 0);
-
-    _defineProperty(this, "register", void 0);
-
-    this.register = register;
-  }
-
-  _createClass(LoadGroupedRegister, [{
-    key: "execute",
-    value: function execute(cpu) {
-      return cpu.registers[this.register];
-    }
-  }]);
-
-  return LoadGroupedRegister;
-}();
-
-exports.LoadGroupedRegister = LoadGroupedRegister;
 
 var WriteWordFromGroupedRegisterAddress =
 /*#__PURE__*/
@@ -236,7 +211,7 @@ function () {
   function WriteWordFromOperandAddress() {
     _classCallCheck(this, WriteWordFromOperandAddress);
 
-    _defineProperty(this, "cycles", 12);
+    _defineProperty(this, "cycles", 16);
   }
 
   _createClass(WriteWordFromOperandAddress, [{
@@ -286,91 +261,16 @@ function () {
 
 exports.StoreInRegister = StoreInRegister;
 
-var StoreInGroupedRegister =
+var WriteMemoryHighByteFromOperandAddress =
 /*#__PURE__*/
 function () {
-  function StoreInGroupedRegister(register) {
-    _classCallCheck(this, StoreInGroupedRegister);
-
-    _defineProperty(this, "cycles", 0);
-
-    _defineProperty(this, "register", void 0);
-
-    this.register = register;
-  }
-
-  _createClass(StoreInGroupedRegister, [{
-    key: "execute",
-    value: function execute(cpu, mmu, value) {
-      if (value === undefined) {
-        throw new Error("value not defined");
-      }
-
-      cpu.registers[this.register] = value;
-    }
-  }]);
-
-  return StoreInGroupedRegister;
-}();
-
-exports.StoreInGroupedRegister = StoreInGroupedRegister;
-
-var DecrementStackPointer =
-/*#__PURE__*/
-function () {
-  function DecrementStackPointer(amount) {
-    _classCallCheck(this, DecrementStackPointer);
-
-    _defineProperty(this, "cycles", 0);
-
-    _defineProperty(this, "amount", void 0);
-
-    this.amount = amount;
-  }
-
-  _createClass(DecrementStackPointer, [{
-    key: "execute",
-    value: function execute(cpu) {
-      cpu.registers.sp -= this.amount;
-    }
-  }]);
-
-  return DecrementStackPointer;
-}();
-
-exports.DecrementStackPointer = DecrementStackPointer;
-
-var LoadProgramCounter =
-/*#__PURE__*/
-function () {
-  function LoadProgramCounter() {
-    _classCallCheck(this, LoadProgramCounter);
+  function WriteMemoryHighByteFromOperandAddress() {
+    _classCallCheck(this, WriteMemoryHighByteFromOperandAddress);
 
     _defineProperty(this, "cycles", 4);
   }
 
-  _createClass(LoadProgramCounter, [{
-    key: "execute",
-    value: function execute(cpu) {
-      return cpu.registers.pc;
-    }
-  }]);
-
-  return LoadProgramCounter;
-}();
-
-exports.LoadProgramCounter = LoadProgramCounter;
-
-var WriteMemoryFromOperandAddress =
-/*#__PURE__*/
-function () {
-  function WriteMemoryFromOperandAddress() {
-    _classCallCheck(this, WriteMemoryFromOperandAddress);
-
-    _defineProperty(this, "cycles", 8);
-  }
-
-  _createClass(WriteMemoryFromOperandAddress, [{
+  _createClass(WriteMemoryHighByteFromOperandAddress, [{
     key: "execute",
     value: function execute(cpu, mmu, value) {
       if (value === undefined) {
@@ -378,15 +278,42 @@ function () {
       }
 
       var operand = mmu.readByte(cpu.registers.pc);
-      mmu.writeWordBigEndian(0xff00 + operand, value);
-      cpu.registers.pc++;
+      mmu.writeWordBigEndian(0xff00 + operand + 1, value >> 8);
+      return value;
     }
   }]);
 
-  return WriteMemoryFromOperandAddress;
+  return WriteMemoryHighByteFromOperandAddress;
 }();
 
-exports.WriteMemoryFromOperandAddress = WriteMemoryFromOperandAddress;
+exports.WriteMemoryHighByteFromOperandAddress = WriteMemoryHighByteFromOperandAddress;
+
+var WriteMemoryLowByteFromOperandAddress =
+/*#__PURE__*/
+function () {
+  function WriteMemoryLowByteFromOperandAddress() {
+    _classCallCheck(this, WriteMemoryLowByteFromOperandAddress);
+
+    _defineProperty(this, "cycles", 4);
+  }
+
+  _createClass(WriteMemoryLowByteFromOperandAddress, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      if (value === undefined) {
+        throw new Error("value undefined");
+      }
+
+      var operand = mmu.readByte(cpu.registers.pc);
+      mmu.writeWordBigEndian(0xff00 + operand, value & 255);
+      return value;
+    }
+  }]);
+
+  return WriteMemoryLowByteFromOperandAddress;
+}();
+
+exports.WriteMemoryLowByteFromOperandAddress = WriteMemoryLowByteFromOperandAddress;
 
 var WriteMemoryFromRegisterAddress =
 /*#__PURE__*/
@@ -417,81 +344,107 @@ function () {
 
 exports.WriteMemoryFromRegisterAddress = WriteMemoryFromRegisterAddress;
 
-var WriteMemoryWordFromStackPointer =
+var InternalDelay =
 /*#__PURE__*/
 function () {
-  function WriteMemoryWordFromStackPointer() {
-    _classCallCheck(this, WriteMemoryWordFromStackPointer);
+  function InternalDelay() {
+    _classCallCheck(this, InternalDelay);
 
-    _defineProperty(this, "cycles", 8);
+    _defineProperty(this, "cycles", 4);
   }
 
-  _createClass(WriteMemoryWordFromStackPointer, [{
+  _createClass(InternalDelay, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      return value;
+    }
+  }]);
+
+  return InternalDelay;
+}();
+
+exports.InternalDelay = InternalDelay;
+
+var WriteMemoryWordHighByteFromStackPointer =
+/*#__PURE__*/
+function () {
+  function WriteMemoryWordHighByteFromStackPointer() {
+    _classCallCheck(this, WriteMemoryWordHighByteFromStackPointer);
+
+    _defineProperty(this, "cycles", 4);
+  }
+
+  _createClass(WriteMemoryWordHighByteFromStackPointer, [{
     key: "execute",
     value: function execute(cpu, mmu, value) {
       if (value === undefined) {
         throw new Error("value undefined");
       }
 
-      mmu.writeWordBigEndian(cpu.registers.sp, value);
+      mmu.writeByte(cpu.registers.sp + 1, value >> 8);
+      return value;
     }
   }]);
 
-  return WriteMemoryWordFromStackPointer;
+  return WriteMemoryWordHighByteFromStackPointer;
 }();
 
-exports.WriteMemoryWordFromStackPointer = WriteMemoryWordFromStackPointer;
+exports.WriteMemoryWordHighByteFromStackPointer = WriteMemoryWordHighByteFromStackPointer;
 
-var StoreInStackPointer =
+var WriteMemoryWordLowByteFromStackPointer =
 /*#__PURE__*/
 function () {
-  function StoreInStackPointer() {
-    _classCallCheck(this, StoreInStackPointer);
+  function WriteMemoryWordLowByteFromStackPointer() {
+    _classCallCheck(this, WriteMemoryWordLowByteFromStackPointer);
 
-    _defineProperty(this, "cycles", 0);
+    _defineProperty(this, "cycles", 4);
   }
 
-  _createClass(StoreInStackPointer, [{
+  _createClass(WriteMemoryWordLowByteFromStackPointer, [{
     key: "execute",
     value: function execute(cpu, mmu, value) {
       if (value === undefined) {
-        throw new Error("value not defined");
+        throw new Error("value undefined");
       }
 
-      cpu.registers.sp = value;
+      mmu.writeByte(cpu.registers.sp, value & 255);
+      return value;
     }
   }]);
 
-  return StoreInStackPointer;
+  return WriteMemoryWordLowByteFromStackPointer;
 }();
 
-exports.StoreInStackPointer = StoreInStackPointer;
+exports.WriteMemoryWordLowByteFromStackPointer = WriteMemoryWordLowByteFromStackPointer;
 
-var SetProgramCounter =
+var SetRegister =
 /*#__PURE__*/
 function () {
-  function SetProgramCounter(value) {
-    _classCallCheck(this, SetProgramCounter);
+  function SetRegister(register, value) {
+    _classCallCheck(this, SetRegister);
 
     _defineProperty(this, "cycles", 0);
 
+    _defineProperty(this, "register", void 0);
+
     _defineProperty(this, "value", void 0);
 
+    this.register = register;
     this.value = value;
   }
 
-  _createClass(SetProgramCounter, [{
+  _createClass(SetRegister, [{
     key: "execute",
     value: function execute(cpu) {
-      cpu.registers.pc = this.value;
+      cpu.registers[this.register] = this.value;
     }
   }]);
 
-  return SetProgramCounter;
+  return SetRegister;
 }(); // TODO: Can be done in terms of lower level ops
 
 
-exports.SetProgramCounter = SetProgramCounter;
+exports.SetRegister = SetRegister;
 
 var LoadOperand =
 /*#__PURE__*/
@@ -554,8 +507,9 @@ function () {
 
   _createClass(IncrementRegister, [{
     key: "execute",
-    value: function execute(cpu) {
+    value: function execute(cpu, mmu, value) {
       cpu.registers[this.register]++;
+      return value;
     }
   }]);
 
@@ -563,31 +517,6 @@ function () {
 }();
 
 exports.IncrementRegister = IncrementRegister;
-
-var IncrementGroupedRegister =
-/*#__PURE__*/
-function () {
-  function IncrementGroupedRegister(register) {
-    _classCallCheck(this, IncrementGroupedRegister);
-
-    _defineProperty(this, "cycles", 0);
-
-    _defineProperty(this, "register", void 0);
-
-    this.register = register;
-  }
-
-  _createClass(IncrementGroupedRegister, [{
-    key: "execute",
-    value: function execute(cpu) {
-      cpu.registers[this.register]++;
-    }
-  }]);
-
-  return IncrementGroupedRegister;
-}();
-
-exports.IncrementGroupedRegister = IncrementGroupedRegister;
 
 var XOrRegister =
 /*#__PURE__*/
@@ -615,67 +544,6 @@ function () {
 
 exports.XOrRegister = XOrRegister;
 
-var Nop =
-/*#__PURE__*/
-function () {
-  function Nop() {
-    _classCallCheck(this, Nop);
-
-    _defineProperty(this, "cycles", 0);
-  }
-
-  _createClass(Nop, [{
-    key: "execute",
-    value: function execute() {}
-  }]);
-
-  return Nop;
-}();
-
-exports.Nop = Nop;
-
-var IncrementStackPointer =
-/*#__PURE__*/
-function () {
-  function IncrementStackPointer() {
-    _classCallCheck(this, IncrementStackPointer);
-
-    _defineProperty(this, "cycles", 4);
-  }
-
-  _createClass(IncrementStackPointer, [{
-    key: "execute",
-    value: function execute(cpu) {
-      cpu.registers.sp++;
-    }
-  }]);
-
-  return IncrementStackPointer;
-}();
-
-exports.IncrementStackPointer = IncrementStackPointer;
-
-var LoadStackPointer =
-/*#__PURE__*/
-function () {
-  function LoadStackPointer() {
-    _classCallCheck(this, LoadStackPointer);
-
-    _defineProperty(this, "cycles", 4);
-  }
-
-  _createClass(LoadStackPointer, [{
-    key: "execute",
-    value: function execute(cpu) {
-      return cpu.registers.sp;
-    }
-  }]);
-
-  return LoadStackPointer;
-}();
-
-exports.LoadStackPointer = LoadStackPointer;
-
 var DecrementRegister =
 /*#__PURE__*/
 function () {
@@ -691,39 +559,14 @@ function () {
 
   _createClass(DecrementRegister, [{
     key: "execute",
-    value: function execute(cpu) {
+    value: function execute(cpu, mmu, value) {
       cpu.registers[this.register]--;
+      return value;
     }
   }]);
 
   return DecrementRegister;
-}(); // TODO: Depending on cycles, make this WordRegister
-
-
-exports.DecrementRegister = DecrementRegister;
-
-var DecrementGroupedRegister =
-/*#__PURE__*/
-function () {
-  function DecrementGroupedRegister(register) {
-    _classCallCheck(this, DecrementGroupedRegister);
-
-    _defineProperty(this, "cycles", 0);
-
-    _defineProperty(this, "register", void 0);
-
-    this.register = register;
-  }
-
-  _createClass(DecrementGroupedRegister, [{
-    key: "execute",
-    value: function execute(cpu) {
-      cpu.registers[this.register]--;
-    }
-  }]);
-
-  return DecrementGroupedRegister;
 }();
 
-exports.DecrementGroupedRegister = DecrementGroupedRegister;
+exports.DecrementRegister = DecrementRegister;
 //# sourceMappingURL=lowLevel.js.map

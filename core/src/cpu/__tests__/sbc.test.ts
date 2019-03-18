@@ -32,11 +32,16 @@ describe("sbc", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(createCpuWithRegisters({
-          [register]: 0xe0,
-          a: register === 'a' ? 0x00 : 0x0f,
-          f: register === 'a' ? binaryToNumber('11000000') : binaryToNumber('01000000')
-        }));
+        expect(cpu).toEqual(
+          createCpuWithRegisters({
+            [register]: 0xe0,
+            a: register === "a" ? 0x00 : 0x0f,
+            f:
+              register === "a"
+                ? binaryToNumber("11000000")
+                : binaryToNumber("01000000")
+          })
+        );
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );

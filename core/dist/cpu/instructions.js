@@ -60,14 +60,14 @@ function () {
       }));
     }
   }, {
+    key: "internalDelay",
+    value: function internalDelay() {
+      return this.withOperation(new _lowLevel.InternalDelay());
+    }
+  }, {
     key: "xOr",
     value: function xOr(register) {
       return this.withOperation(new _lowLevel.XOrRegister(register));
-    }
-  }, {
-    key: "decrementGroupedRegister",
-    value: function decrementGroupedRegister(register) {
-      return this.withOperation(new _lowLevel.DecrementGroupedRegister(register));
     }
   }, {
     key: "jrCheck",
@@ -80,24 +80,19 @@ function () {
       return this.withOperation(new _lowLevel.BitFlags(register));
     }
   }, {
-    key: "nop",
-    value: function nop() {
-      return this.withOperation(new _lowLevel.Nop());
-    }
-  }, {
     key: "loadRegister",
     value: function loadRegister(register) {
       return this.withOperation(new _lowLevel.LoadRegister(register));
     }
   }, {
-    key: "loadGroupedRegister",
-    value: function loadGroupedRegister(register) {
-      return this.withOperation(new _lowLevel.LoadGroupedRegister(register));
+    key: "loadProgramCounter",
+    value: function loadProgramCounter() {
+      return this.loadRegister("pc");
     }
   }, {
     key: "writeMemoryFromOperandAddress",
     value: function writeMemoryFromOperandAddress() {
-      return this.withOperation(new _lowLevel.WriteMemoryFromOperandAddress());
+      return this.withOperation(new _lowLevel.WriteMemoryHighByteFromOperandAddress()).withOperation(new _lowLevel.WriteMemoryLowByteFromOperandAddress()).incrementRegister("pc");
     }
   }, {
     key: "writeMemoryFromRegisterAddress",
@@ -125,11 +120,6 @@ function () {
       return this.withOperation(new _lowLevel.LoadWordOperand());
     }
   }, {
-    key: "loadStackPointer",
-    value: function loadStackPointer() {
-      return this.withOperation(new _lowLevel.LoadStackPointer());
-    }
-  }, {
     key: "decrementRegister",
     value: function decrementRegister(register) {
       return this.withOperation(new _lowLevel.DecrementRegister(register));
@@ -140,29 +130,9 @@ function () {
       return this.withOperation(new _lowLevel.IncrementRegister(register));
     }
   }, {
-    key: "incrementGroupedRegister",
-    value: function incrementGroupedRegister(register) {
-      return this.withOperation(new _lowLevel.IncrementGroupedRegister(register));
-    }
-  }, {
-    key: "incrementStackPointer",
-    value: function incrementStackPointer() {
-      return this.withOperation(new _lowLevel.IncrementStackPointer());
-    }
-  }, {
     key: "storeInRegister",
     value: function storeInRegister(register) {
       return this.withOperation(new _lowLevel.StoreInRegister(register));
-    }
-  }, {
-    key: "storeInGroupedRegister",
-    value: function storeInGroupedRegister(register) {
-      return this.withOperation(new _lowLevel.StoreInGroupedRegister(register));
-    }
-  }, {
-    key: "storeInStackPointer",
-    value: function storeInStackPointer() {
-      return this.withOperation(new _lowLevel.StoreInStackPointer());
     }
   }, {
     key: "readMemory",
@@ -180,24 +150,19 @@ function () {
       return this.withOperation(new _lowLevel.WriteWordFromOperandAddress());
     }
   }, {
-    key: "decrementStackPointer",
-    value: function decrementStackPointer(amount) {
-      return this.withOperation(new _lowLevel.DecrementStackPointer(amount));
+    key: "setRegister",
+    value: function setRegister(register, address) {
+      return this.withOperation(new _lowLevel.SetRegister(register, address));
     }
   }, {
-    key: "setProgramCounter",
-    value: function setProgramCounter(address) {
-      return this.withOperation(new _lowLevel.SetProgramCounter(address));
-    }
-  }, {
-    key: "loadProgramCounter",
-    value: function loadProgramCounter() {
-      return this.withOperation(new _lowLevel.LoadProgramCounter());
+    key: "pushWordToStack",
+    value: function pushWordToStack() {
+      return this.decrementRegister("sp").decrementRegister("sp").writeMemoryWordFromStackPointer();
     }
   }, {
     key: "writeMemoryWordFromStackPointer",
     value: function writeMemoryWordFromStackPointer() {
-      return this.withOperation(new _lowLevel.WriteMemoryWordFromStackPointer());
+      return this.withOperation(new _lowLevel.WriteMemoryWordHighByteFromStackPointer()).withOperation(new _lowLevel.WriteMemoryWordLowByteFromStackPointer());
     }
   }, {
     key: "withOperation",

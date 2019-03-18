@@ -89,7 +89,7 @@ describe("cpu", () => {
           e: 0x00,
           h: 0xff,
           l: 0x26,
-          f: 0xA0,
+          f: 0xa0,
           pc: 0x000f,
           sp: 0xfffe
         }).registers
