@@ -25,9 +25,9 @@ describe("dec", () => {
 
         const instruction = createDecR(0x3d, register);
 
-        instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, memory);
 
-        expect(instruction.cycles).toBe(4);
+        expect(cycles).toBe(4);
         expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x0013 }));
         expect(memory).toEqual(new Memory());
       }

@@ -49,9 +49,9 @@ describe("ld", () => {
 
       const instruction = createLdRR(0x3d, register1, register2);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(4);
+      expect(cycles).toBe(4);
       expect(cpu).toEqual(
         createCpuWithRegisters({ [register1]: 0x72, [register2]: 0x72 })
       );
@@ -68,9 +68,9 @@ describe("ld", () => {
 
         const instruction = createLdRN(0x3d, register);
 
-        instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, memory);
 
-        expect(instruction.cycles).toBe(8);
+        expect(cycles).toBe(8);
         expect(cpu).toEqual(
           createCpuWithRegisters({ [register]: 0x77, pc: 0x23 })
         );
@@ -89,9 +89,9 @@ describe("ld", () => {
 
         const instruction = createLdRHlM(0x3d, register);
 
-        instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, memory);
 
-        expect(instruction.cycles).toBe(8);
+        expect(cycles).toBe(8);
         expect(cpu).toEqual(
           createCpuWithRegisters({ h: 0xf1, l: 0x08, [register]: 0x77 })
         );
@@ -112,9 +112,9 @@ describe("ld", () => {
 
         const instruction = createLdHlMR(0x3d, register);
 
-        instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, memory);
 
-        expect(instruction.cycles).toBe(8);
+        expect(cycles).toBe(8);
         expect(cpu).toEqual(
           createCpuWithRegisters({ [register]: 0x75, h: 0xf1, l: 0x08 })
         );
@@ -134,9 +134,9 @@ describe("ld", () => {
 
       const instruction = createLdHlMN(0x3d);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(12);
+      expect(cycles).toBe(12);
       expect(cpu).toEqual(
         createCpuWithRegisters({ pc: 0xcd, h: 0xf1, l: 0x08 })
       );
@@ -156,9 +156,9 @@ describe("ld", () => {
 
         const instruction = createLdGrM(0x3d, register);
 
-        instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, memory);
 
-        expect(instruction.cycles).toBe(8);
+        expect(cycles).toBe(8);
         expect(cpu).toEqual(
           createCpuWithRegisters({ a: 0x2d, [register]: 0xf108 })
         );
@@ -176,9 +176,9 @@ describe("ld", () => {
       const memorySnapshot = memory.copy();
       const instruction = createLdAMNn(0x3d);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(16);
+      expect(cycles).toBe(16);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0xce, a: 0xaa }));
       expect(memory).toEqual(memorySnapshot);
     });
@@ -193,9 +193,9 @@ describe("ld", () => {
 
         const instruction = createLdMRA(0x3d, register);
 
-        instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, memory);
 
-        expect(instruction.cycles).toBe(8);
+        expect(cycles).toBe(8);
         expect(cpu).toEqual(
           createCpuWithRegisters({ a: 0x56, [register]: 0xf108 })
         );
@@ -213,9 +213,9 @@ describe("ld", () => {
       const cpuSnapshot = copyCpu(cpu);
       const instruction = createLdMNnA(0x3d);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(16);
+      expect(cycles).toBe(16);
       expect(cpu).toEqual(cpuSnapshot);
       expect(memory).toEqual(
         createMemoryWithValues({ 0xcc: 0xb1, 0xcd: 0x16, 0xb116: 0x32 })
@@ -233,9 +233,9 @@ describe("ld", () => {
         const memorySnapshot = memory.copy();
         const instruction = createLdGrNn(0x3d, register);
 
-        instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, memory);
 
-        expect(instruction.cycles).toBe(12);
+        expect(cycles).toBe(12);
         expect(cpu).toEqual(
           createCpuWithRegisters({ pc: 0x5603, [register]: 0x7654 })
         );
@@ -252,9 +252,9 @@ describe("ld", () => {
       const memorySnapshot = memory.copy();
       const instruction = createLdSpNn(0x3d);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(12);
+      expect(cycles).toBe(12);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x5603, sp: 0x7654 }));
       expect(memory).toEqual(memorySnapshot);
     });
@@ -268,9 +268,9 @@ describe("ld", () => {
 
       const instruction = createLdMNnSp(0x3d);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(20);
+      expect(cycles).toBe(20);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x5603, sp: 0x1712 }));
       expect(memory).toEqual(
         createMemoryWithValues({ 0x7654: 0x1712, 0x5601: 0x76, 0x5602: 0x54 })
@@ -285,9 +285,9 @@ describe("ld", () => {
 
       const instruction = createLddMHlA(0x3d);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(8);
+      expect(cycles).toBe(8);
       expect(cpu).toEqual(createCpuWithRegisters({ a: 0xaf, hl: 0x5611 }));
       expect(memory).toEqual(createMemoryWithValues({ 0x5612: 0xaf }));
     });

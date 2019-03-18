@@ -8,7 +8,7 @@ import {
   createCpuWithRegisters,
   createMemoryWithValues
 } from "../../test/help";
-import { numberToByteHex, numberToWordHex } from "../../types";
+import { OpCode } from "../instructions";
 
 describe("cpu", () => {
   let cpu: Cpu;
@@ -48,33 +48,41 @@ describe("cpu", () => {
         memory.writeByte(address, value);
       });
 
-      let num = 0;
-      while (cpu.registers.pc <= bios.length && num < 100) {
-        num++;
-        console.log(
-          "PC " + numberToWordHex(cpu.registers.pc),
-          "OP " +
-            numberToByteHex(memory.readByte(cpu.registers.pc)) +
-            (memory.readByte(cpu.registers.pc) === 0xcb
-              ? " " + numberToByteHex(memory.readByte(cpu.registers.pc + 1))
-              : ""),
-          "Bios length: " + bios.length
-        );
-        /*console.log(
-          sortBy(
-            toPairs(memory.getValues())
-              .filter(([, value]) => value !== undefined),
-            ([address, ]) => address
-          )
-            .filter(([address,]) => parseInt(address) >= 0xFF)
-            .map(([address, value]) =>
-              `${numberToWordHex(parseInt(address))}: ${numberToByteHex(value)}`
-            )
-        )*/
+      const ops: OpCode[] = [];
+      while (cpu.registers.pc <= bios.length && ops.length < 12) {
+        ops.push(memory.readByte(cpu.registers.pc));
         runInstruction(cpu, memory);
       }
 
-      // expect(cpu).toEqual(createCpuWithRegisters({ b: 0x66, pc: 0x12 }))
+      expect(ops).toEqual([
+        0x31,
+        0xaf,
+        0x21,
+        0x32,
+        0xcb,
+        0x20,
+        0x32,
+        0xcb,
+        0x20,
+        0x32,
+        0xcb,
+        0x20
+      ]);
+      expect(cpu).toEqual(
+        createCpuWithRegisters({
+          a: 0x00,
+          b: 0x00,
+          c: 0x00,
+          d: 0x00,
+          e: 0x00,
+          h: 0xff,
+          l: 0x9c,
+          f: 0x20,
+          pc: 0x0007,
+          sp: 0xfeff
+        })
+      );
+      // A lot of memory, not easy to specify/check it
       // expect(memory).toEqual(createMemoryWithValues({ 0x10: 0x06, 0x11: 0x66 }))
     });
   });

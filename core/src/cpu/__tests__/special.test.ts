@@ -18,9 +18,9 @@ describe("special", () => {
     test("success", () => {
       const instruction = createNop(0x00);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(4);
+      expect(cycles).toBe(4);
       expect(cpu).toEqual(createCpu());
       expect(memory).toEqual(new Memory());
     });

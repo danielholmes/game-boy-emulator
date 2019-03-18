@@ -25,9 +25,9 @@ describe("inc", () => {
 
         const instruction = createIncRr(0x3d, register);
 
-        instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, memory);
 
-        expect(instruction.cycles).toBe(4);
+        expect(cycles).toBe(4);
         expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x2315 }));
         expect(memory).toEqual(new Memory());
       }
@@ -40,9 +40,9 @@ describe("inc", () => {
 
       const instruction = createIncSp(0x3d);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(8);
+      expect(cycles).toBe(8);
       expect(cpu).toEqual(createCpuWithRegisters({ sp: 0x1235 }));
       expect(memory).toEqual(new Memory());
     });

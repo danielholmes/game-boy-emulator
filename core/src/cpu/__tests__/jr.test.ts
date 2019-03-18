@@ -25,9 +25,9 @@ describe("jr", () => {
       const memorySnapshot = memory.copy();
       const instruction = createJrNzN(0x3d);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(8);
+      expect(cycles).toBe(8);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x00f9, f: 0x00 }));
       expect(memory).toEqual(memorySnapshot);
     });
@@ -41,9 +41,9 @@ describe("jr", () => {
       const memorySnapshot = memory.copy();
       const instruction = createJrNzN(0x3d);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(8);
+      expect(cycles).toBe(8);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x00f3, f: 0x00 }));
       expect(memory).toEqual(memorySnapshot);
     });
@@ -57,9 +57,9 @@ describe("jr", () => {
       const memorySnapshot = memory.copy();
       const instruction = createJrNzN(0x3d);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(8);
+      expect(cycles).toBe(8);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x00f6, f: 0x80 }));
       expect(memory).toEqual(memorySnapshot);
     });

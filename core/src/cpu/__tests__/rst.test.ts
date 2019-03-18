@@ -26,9 +26,9 @@ describe("rst", () => {
 
       const instruction = createRst(0x3d, address);
 
-      instruction.execute(cpu, memory);
+      const cycles = instruction.execute(cpu, memory);
 
-      expect(instruction.cycles).toBe(32);
+      expect(cycles).toBe(32);
       expect(cpu).toEqual(createCpuWithRegisters({ sp: 0x0012, pc: address }));
       expect(memory).toEqual(
         createMemoryWithValues({ 0x0012: 0xab, 0x0013: 0xcd })

@@ -37,8 +37,7 @@ export type OpCode = number;
 export interface Instruction {
   readonly opCode: OpCode;
   readonly label: string;
-  readonly cycles: Cycles;
-  readonly execute: (cpu: Cpu, memory: Memory) => void;
+  readonly execute: (cpu: Cpu, memory: Memory) => Cycles;
 }
 
 // TODO: Definition to generate label?
@@ -49,7 +48,6 @@ export interface Instruction {
 export class InstructionDefinition implements Instruction {
   public readonly opCode: OpCode;
   public readonly label: string;
-  public readonly cycles: Cycles;
   private readonly operations: ReadonlyArray<LowLevelOperation>;
 
   public constructor(
@@ -60,11 +58,9 @@ export class InstructionDefinition implements Instruction {
     this.opCode = opCode;
     this.label = label;
     this.operations = operations;
-    this.cycles = sum(operations.map(op => op.cycles)) + 4;
-    // 4 are the cycles from reading the instruction. Perhaps shouldnt actually go here
   }
 
-  public execute(cpu: Cpu, memory: Memory): void {
+  public execute(cpu: Cpu, memory: Memory): Cycles {
     this.operations.reduce(
       (value: LowLevelState, op: LowLevelOperation): LowLevelState => {
         const newResult = op.execute(cpu, memory, value);
@@ -72,6 +68,8 @@ export class InstructionDefinition implements Instruction {
       },
       undefined
     );
+    return sum(this.operations.map(op => op.cycles)) + 4;
+    // 4 are the cycles from reading the instruction. Perhaps shouldn't actually go here
   }
 
   public xOr(register: ByteRegister): InstructionDefinition {

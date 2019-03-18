@@ -26,9 +26,9 @@ describe("xor", () => {
 
         const instruction = createXorR(0x3d, register);
 
-        instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, memory);
 
-        expect(instruction.cycles).toBe(4);
+        expect(cycles).toBe(4);
         expect(cpu).toEqual(
           createCpuWithRegisters({ a: 0x12, [register]: 0x12 })
         );

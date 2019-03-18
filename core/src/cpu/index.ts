@@ -33,12 +33,14 @@ export const copyCpu = (cpu: Cpu): Cpu => ({ ...cpu });
 
 export const runInstruction = (cpu: Cpu, memory: Memory): void => {
   const opCode = memory.readByte(cpu.registers.pc);
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const instruction = INSTRUCTIONS[opCode];
   if (!instruction) {
     throw new Error(`No instruction for opCode ${numberToByteHex(opCode)}`);
   }
   cpu.registers.pc++;
 
+  // TODO: Use returned cycles
   instruction.execute(cpu, memory);
 };
 

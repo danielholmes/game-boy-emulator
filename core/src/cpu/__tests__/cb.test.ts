@@ -25,9 +25,9 @@ describe("cb", () => {
 
         const instruction = createCbBit(0x3d, register);
 
-        instruction.execute(cpu, memory);
+        const cycles = instruction.execute(cpu, memory);
 
-        expect(instruction.cycles).toBe(4);
+        expect(cycles).toBe(4);
         expect(cpu).toEqual(
           createCpuWithRegisters({ [register]: 0x14, f: 0xa0 })
         );
