@@ -1,6 +1,5 @@
 import { Mmu } from "../memory/mmu";
 import { fromPairs } from "lodash";
-import { Cpu } from "./types";
 import { Instruction, OpCode } from "./instructions";
 import {
   createLddMHlA,
@@ -13,6 +12,7 @@ import {
 } from "./ld";
 import {
   ByteRegister,
+  CpuRegisters,
   CpuRegistersImpl,
   GroupedWordRegister
 } from "./registers";
@@ -26,28 +26,32 @@ import { createCb } from "./cb";
 import { createJrNzN } from "./jr";
 import { createSbcAR } from "./sbc";
 
-export const create = (): Cpu => ({
-  registers: new CpuRegistersImpl()
-});
+export type Cycles = number;
 
-export const copyCpu = (cpu: Cpu): Cpu => ({ ...cpu });
+export class Cpu {
+  public readonly registers: CpuRegisters;
 
-export const runInstruction = (cpu: Cpu, mmu: Mmu): void => {
-  const opCode = mmu.readByte(cpu.registers.pc);
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  const instruction = INSTRUCTIONS[opCode];
-  if (!instruction) {
-    throw new Error(
-      `No instruction for opCode ${numberToByteHex(
-        opCode
-      )} reading from pc ${numberToByteHex(cpu.registers.pc)}`
-    );
+  public constructor() {
+    this.registers = new CpuRegistersImpl();
   }
-  cpu.registers.pc++;
 
-  // TODO: Use returned cycles
-  instruction.execute(cpu, mmu);
-};
+  public tick(mmu: Mmu): void {
+    const opCode = mmu.readByte(this.registers.pc);
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    const instruction = INSTRUCTIONS[opCode];
+    if (!instruction) {
+      throw new Error(
+        `No instruction for opCode ${numberToByteHex(
+          opCode
+        )} reading from pc ${numberToByteHex(this.registers.pc)}`
+      );
+    }
+    this.registers.pc++;
+
+    // TODO: Use returned cycles
+    instruction.execute(this, mmu);
+  }
+}
 
 // LD A,(HL) 7E 8
 // LD B,(HL) 46 8

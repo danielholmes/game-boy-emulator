@@ -76,14 +76,14 @@ export class IOMemory extends Ram {
     super(0x7f);
   }
 
-  public readByte (address: MemoryAddress): ByteValue {
-    return super.readByte(address)
+  public readByte(address: MemoryAddress): ByteValue {
+    return super.readByte(address);
   }
 
-  public writeByte (address: MemoryAddress, value: ByteValue): void {
+  public writeByte(address: MemoryAddress, value: ByteValue): void {
     if (address === 0x0044) {
-      throw new Error('Current scan line Read-only')
+      throw new Error("Current scan line Read-only");
     }
-    super.writeByte(address, value)
+    super.writeByte(address, value);
   }
 }

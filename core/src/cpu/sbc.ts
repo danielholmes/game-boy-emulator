@@ -1,7 +1,7 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
 import { ByteRegister } from "./registers";
 import { LowLevelOperation, LowLevelStateReturn } from "./lowLevel";
-import { Cpu, Cycles } from "./types";
+import { Cpu, Cycles } from "./index";
 
 class SbcAR implements LowLevelOperation {
   public readonly cycles: Cycles = 4;

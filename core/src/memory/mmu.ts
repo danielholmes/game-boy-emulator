@@ -1,5 +1,5 @@
 import { ByteValue, MemoryAddress, numberToWordHex, WordValue } from "../types";
-import { WorkingRam, VRam, ZeroPageRam, IOMemory } from './ram'
+import { WorkingRam, VRam, ZeroPageRam, IOMemory } from "./ram";
 import { Bios } from "../bios";
 
 export class Mmu {
@@ -63,8 +63,8 @@ export class Mmu {
       // sprites' positions and attributes.
       throw new Error("graphics mem not yet implemented");
     }
-    if (address >= 0xFF00 && address <= 0xFF7F) {
-      return this.io.readByte(address - 0xFF00);
+    if (address >= 0xff00 && address <= 0xff7f) {
+      return this.io.readByte(address - 0xff00);
     }
 
     throw new Error("Address not readable");
@@ -77,20 +77,15 @@ export class Mmu {
   public writeByte(address: MemoryAddress, value: ByteValue): void {
     if (address >= 0x8000 && address <= 0x9fff) {
       this.vRam.writeByte(address - 0x8000, value);
-    }
-    else if (address >= 0xc000 && address <= 0xdfff) {
+    } else if (address >= 0xc000 && address <= 0xdfff) {
       this.workingRam.writeByte(address - 0xc000, value);
-    }
-    else if (address >= 0xe000 && address <= 0xfdff) {
+    } else if (address >= 0xe000 && address <= 0xfdff) {
       this.workingRam.writeByte(address - 0xe000, value);
-    }
-    else if (address >= 0xff80 && address <= 0xffff) {
+    } else if (address >= 0xff80 && address <= 0xffff) {
       this.zeroPage.writeByte(address - 0xff80, value);
-    }
-    else if (address >= 0xFF00 && address <= 0xFF7F) {
-      this.io.writeByte(address - 0xFF00, value);
-    }
-    else {
+    } else if (address >= 0xff00 && address <= 0xff7f) {
+      this.io.writeByte(address - 0xff00, value);
+    } else {
       throw new Error(`Can't write address ${numberToWordHex(address)}`);
     }
   }

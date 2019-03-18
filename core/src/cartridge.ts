@@ -1,3 +1,1 @@
-export class Cartridge {
-
-}
+export class Cartridge {}

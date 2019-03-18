@@ -1,9 +1,9 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
-import { Cpu, Cycles } from "./types";
 import { Mmu } from "../memory/mmu";
 import { fromPairs } from "lodash";
 import { numberToByteHex } from "../types";
 import { ByteRegister } from "./registers";
+import { Cpu, Cycles } from "./index";
 
 class CbInstruction implements Instruction {
   public readonly opCode: OpCode;

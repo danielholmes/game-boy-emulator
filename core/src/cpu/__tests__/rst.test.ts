@@ -1,22 +1,21 @@
 /* global describe, expect */
 
-import { Mmu } from "../../memory";
+import { Mmu } from "../../memory/mmu";
 import each from "jest-each";
-import { Cpu } from "../types";
-import { create as createCpu } from "../";
 import {
   createCpuWithRegisters,
   createMmu,
   createMmuWithValues
 } from "../../test/help";
 import { createRst, RST_ADDRESSES, RstAddress } from "../rst";
+import { Cpu } from "..";
 
 describe("rst", () => {
   let cpu: Cpu;
   let mmu: Mmu;
 
   beforeEach(() => {
-    cpu = createCpu();
+    cpu = new Cpu();
     mmu = createMmu();
   });
 

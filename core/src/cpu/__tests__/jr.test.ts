@@ -1,7 +1,5 @@
 /* global describe, test, expect */
 
-import { Cpu } from "../types";
-import { create as createCpu } from "../";
 import {
   createCpuWithRegisters,
   createMemorySnapshot,
@@ -9,13 +7,14 @@ import {
 } from "../../test/help";
 import { createJrNzN } from "../jr";
 import { Mmu } from "../../memory/mmu";
+import { Cpu } from "..";
 
 describe("jr", () => {
   let cpu: Cpu;
   let mmu: Mmu;
 
   beforeEach(() => {
-    cpu = createCpu();
+    cpu = new Cpu();
     mmu = createMmu();
   });
 

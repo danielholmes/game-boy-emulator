@@ -1,9 +1,7 @@
 /* global describe, expect */
 
-import { Mmu } from "../../memory";
+import { Mmu } from "../../memory/mmu";
 import each from "jest-each";
-import { Cpu } from "../types";
-import { create as createCpu } from "../";
 import {
   createCpuWithRegisters,
   createMmu,
@@ -11,13 +9,14 @@ import {
 } from "../../test/help";
 import { BYTE_REGISTERS, ByteRegister } from "../registers";
 import { createXorR } from "../xor";
+import { Cpu } from "..";
 
 describe("xor", () => {
   let cpu: Cpu;
   let mmu: Mmu;
 
   beforeEach(() => {
-    cpu = createCpu();
+    cpu = new Cpu();
     mmu = createMmu();
   });
 

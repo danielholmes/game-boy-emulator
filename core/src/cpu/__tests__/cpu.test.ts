@@ -1,8 +1,7 @@
 /* global describe, test, expect */
 
 import { Mmu } from "../../memory/mmu";
-import { create as createCpu, runInstruction } from "../";
-import { Cpu } from "../types";
+import { Cpu } from "../";
 import {
   createCpuWithRegisters,
   createMmu,
@@ -15,16 +14,16 @@ describe("cpu", () => {
   let mmu: Mmu;
 
   beforeEach(() => {
-    cpu = createCpu();
+    cpu = new Cpu();
     mmu = createMmu();
   });
 
-  describe("runInstruction", () => {
+  describe("Cpu", () => {
     test("runs NOP", () => {
       mmu.loadCartridge([0x00]);
       cpu.registers.pc = 0x0000;
 
-      runInstruction(cpu, mmu);
+      cpu.tick(mmu);
 
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0001 }));
       expect(mmu).toEqual(createMmuWithRomAndValues([0x00]));
@@ -34,7 +33,7 @@ describe("cpu", () => {
       mmu.loadCartridge([0x06, 0x66]);
       cpu.registers.pc = 0x0000;
 
-      runInstruction(cpu, mmu);
+      cpu.tick(mmu);
 
       expect(cpu).toEqual(createCpuWithRegisters({ b: 0x66, pc: 0x0002 }));
       expect(mmu).toEqual(createMmuWithRomAndValues([0x06, 0x66]));
@@ -44,7 +43,7 @@ describe("cpu", () => {
       const ops: OpCode[] = [];
       while (ops.length < 12) {
         ops.push(mmu.readByte(cpu.registers.pc));
-        runInstruction(cpu, mmu);
+        cpu.tick(mmu);
       }
 
       expect(ops).toEqual([

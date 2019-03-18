@@ -1,14 +1,15 @@
-import { Mmu } from './memory/mmu'
+import { Mmu } from "./memory/mmu";
 
 export class Gpu {
   private readonly mmu: Mmu;
   private readonly screen: Screen;
 
-  public constructor(mmu: Mmu, screen: Screen)
-  {
+  public constructor(mmu: Mmu, screen: Screen) {
     this.mmu = mmu;
     this.screen = screen;
   }
+
+  public tick(): void {}
 
   // VRam
   // 8000-87FF	Tile set #1: tiles 0-127

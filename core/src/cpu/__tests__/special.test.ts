@@ -1,17 +1,16 @@
 /* global describe, test, expect */
 
-import { Mmu } from "../../memory";
-import { Cpu } from "../types";
-import { create as createCpu } from "../";
+import { Mmu } from "../../memory/mmu";
 import { createNop } from "../special";
-import { createMmu, EMPTY_MEMORY } from "../../test/help";
+import { createCpuSnapshot, createMmu, EMPTY_MEMORY } from "../../test/help";
+import { Cpu } from "..";
 
 describe("special", () => {
   let cpu: Cpu;
   let mmu: Mmu;
 
   beforeEach(() => {
-    cpu = createCpu();
+    cpu = new Cpu();
     mmu = createMmu();
   });
 
@@ -19,10 +18,11 @@ describe("special", () => {
     test("success", () => {
       const instruction = createNop(0x00);
 
+      const cpuSnapshot = createCpuSnapshot(cpu);
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
-      expect(cpu).toEqual(createCpu());
+      expect(createCpuSnapshot(cpu)).toEqual(cpuSnapshot);
       expect(mmu).toEqual(EMPTY_MEMORY);
     });
   });

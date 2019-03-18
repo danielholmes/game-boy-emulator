@@ -7,8 +7,6 @@ import {
   ByteRegister,
   GroupedWordRegister
 } from "../registers";
-import { Cpu } from "../types";
-import { copyCpu, create as createCpu } from "../";
 import {
   createLdAMNn,
   createLddMHlA,
@@ -25,6 +23,7 @@ import {
   createLdSpNn
 } from "../ld";
 import {
+  createCpuSnapshot,
   createCpuWithRegisters,
   createMemorySnapshot,
   createMmu,
@@ -33,13 +32,14 @@ import {
   EMPTY_MEMORY
 } from "../../test/help";
 import { Mmu } from "../../memory/mmu";
+import { Cpu } from "..";
 
 describe("ld", () => {
   let cpu: Cpu;
   let mmu: Mmu;
 
   beforeEach(() => {
-    cpu = createCpu();
+    cpu = new Cpu();
     mmu = createMmu();
   });
 
@@ -205,13 +205,13 @@ describe("ld", () => {
       cpu.registers.pc = 0x0000;
       mmu.loadCartridge([0xc1, 0x16]);
 
-      const cpuSnapshot = copyCpu(cpu);
+      const cpuSnapshot = createCpuSnapshot(cpu);
       const instruction = createLdMNnA(0x3d);
 
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(16);
-      expect(cpu).toEqual(cpuSnapshot);
+      expect(createCpuSnapshot(cpu)).toEqual(cpuSnapshot);
       expect(mmu).toEqual(
         createMmuWithRomAndValues([0xc1, 0x16], { 0xc116: 0x32 })
       );

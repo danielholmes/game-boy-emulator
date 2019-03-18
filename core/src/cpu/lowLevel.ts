@@ -1,4 +1,3 @@
-import { Cpu, Cycles } from "./types";
 import { Mmu } from "../memory/mmu";
 import {
   ByteRegister,
@@ -7,6 +6,7 @@ import {
   GroupedWordRegister
 } from "./registers";
 import { ByteValue, WordValue, byteValueToSignedByte } from "../types";
+import { Cpu, Cycles } from ".";
 
 export type LowLevelState = ByteValue | WordValue | undefined;
 export type LowLevelStateReturn = ByteValue | WordValue | void;
