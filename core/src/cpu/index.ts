@@ -1,4 +1,4 @@
-import { Mmu } from "../memory";
+import { Mmu } from "../memory/mmu";
 import { fromPairs } from "lodash";
 import { Cpu } from "./types";
 import { Instruction, OpCode } from "./instructions";

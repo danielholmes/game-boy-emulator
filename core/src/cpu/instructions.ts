@@ -1,5 +1,5 @@
 import { Cpu, Cycles } from "./types";
-import { MemoryAddress, Mmu } from "../memory";
+import { Mmu } from "../memory/mmu";
 import {
   BitFlags,
   DecrementGroupedRegister,
@@ -31,7 +31,7 @@ import {
 } from "./lowLevel";
 import { ByteRegister, GroupedWordRegister } from "./registers";
 import { sum } from "lodash";
-import { WordValue } from "../types";
+import { MemoryAddress, WordValue } from "../types";
 
 export type OpCode = number;
 

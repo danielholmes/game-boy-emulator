@@ -1,5 +1,5 @@
 import { Cpu, Cycles } from "./types";
-import { Mmu } from "../memory";
+import { Mmu } from "../memory/mmu";
 import {
   ByteRegister,
   FLAG_Z,

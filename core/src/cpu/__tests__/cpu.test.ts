@@ -1,7 +1,6 @@
 /* global describe, test, expect */
 
-import { Mmu } from "../../memory";
-import bios from "../../bios";
+import { Mmu } from "../../memory/mmu";
 import { create as createCpu, runInstruction } from "../";
 import { Cpu } from "../types";
 import {
@@ -43,7 +42,7 @@ describe("cpu", () => {
 
     test("runs smoke test on bios", () => {
       const ops: OpCode[] = [];
-      while (cpu.registers.pc <= bios.length && ops.length < 12) {
+      while (ops.length < 12) {
         ops.push(mmu.readByte(cpu.registers.pc));
         runInstruction(cpu, mmu);
       }

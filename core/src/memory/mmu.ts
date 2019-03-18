@@ -1,16 +1,16 @@
-import { ByteValue, numberToWordHex, WordValue } from "../types";
+import { ByteValue, MemoryAddress, numberToWordHex, WordValue } from "../types";
 import { Ram, VRam, ZeroPageRam } from "./ram";
-import bios from "../bios";
-
-export type MemoryAddress = number;
+import { Bios } from "../bios";
 
 export class Mmu {
+  private readonly bios: Bios;
   private readonly ram: Ram;
   private readonly vRam: VRam;
   private readonly zeroPage: ZeroPageRam;
   private cartridge?: ReadonlyArray<ByteValue>;
 
-  public constructor(ram: Ram, vRam: VRam, zeroPage: ZeroPageRam) {
+  public constructor(bios: Bios, ram: Ram, vRam: VRam, zeroPage: ZeroPageRam) {
+    this.bios = bios;
     this.ram = ram;
     this.vRam = vRam;
     this.zeroPage = zeroPage;
@@ -18,7 +18,7 @@ export class Mmu {
 
   public loadCartridge(cartridge: ReadonlyArray<ByteValue>): void {
     if (cartridge.length > 0x7fff) {
-      throw new Error("ROM too large");
+      throw new Error("Cartridge too large");
     }
     this.cartridge = cartridge;
   }
@@ -27,7 +27,7 @@ export class Mmu {
   public readByte(address: MemoryAddress): ByteValue {
     // TODO: Once the bios has run, it is removed and goes through to cartridge
     if (address >= 0x0000 && address <= 0x00ff && !this.cartridge) {
-      return bios[address];
+      return this.bios.readByte(address);
     }
     if (address >= 0x0000 && address <= 0x7fff) {
       if (!this.cartridge) {
@@ -41,11 +41,22 @@ export class Mmu {
     if (address >= 0xc000 && address <= 0xdfff) {
       return this.ram.readByte(address - 0xc000);
     }
+    if (address >= 0xa000 && address <= 0xbfff) {
+      throw new Error('TODO: Access memory on cartridge')
+    }
     if (address >= 0xe000 && address <= 0xfdff) {
       return this.ram.readByte(address - 0xe000);
     }
     if (address >= 0xff80 && address <= 0xffff) {
       return this.zeroPage.readByte(address - 0xff80);
+    }
+    if (address >= 0xFE00 && address <= 0xFE9F) {
+      // Graphics: sprite information: Data about the sprites rendered by the graphics chip are held here, including the
+      // sprites' positions and attributes.
+      throw new Error('graphics mem not yet implemented')
+    }
+    if (address >= 0xFF00 && address <= 0xFF7F) {
+      throw new Error('TODO: Memory-mapped I/O')
     }
 
     throw new Error("Address not readable");
@@ -80,6 +91,7 @@ export class Mmu {
   // TODO: Shouldn't be using this, should be testing against underlying memory
   public copy(): Mmu {
     const mmu = new Mmu(
+      this.bios,
       this.ram.copy(),
       this.vRam.copy(),
       this.zeroPage.copy()

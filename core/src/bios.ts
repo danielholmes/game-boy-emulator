@@ -1,4 +1,6 @@
-const BIOS: ReadonlyArray<number> = [
+import { ByteValue, MemoryAddress } from "./types";
+
+const BIOS: ReadonlyArray<ByteValue> = [
   0x31,
   0xfe,
   0xff,
@@ -257,4 +259,17 @@ const BIOS: ReadonlyArray<number> = [
   0x50
 ];
 
-export default BIOS;
+export interface Bios {
+  readByte(address: MemoryAddress): ByteValue;
+}
+
+const bios: Bios = {
+  readByte(address: MemoryAddress): ByteValue {
+    if (address < 0x0000 || address >= BIOS.length) {
+      throw new Error("Accessing bios out of bounds");
+    }
+    return BIOS[address];
+  }
+};
+
+export default bios;

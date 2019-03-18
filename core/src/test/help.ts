@@ -1,13 +1,14 @@
 import { CpuRegisters, Register } from "../cpu/registers";
 import { Cpu } from "../cpu/types";
 import { create as createCpu } from "../cpu";
-import { Mmu } from "../memory";
 import { toPairs } from "lodash";
 import { ByteValue } from "../types";
 import { Ram } from "../memory/ram";
+import { Mmu } from "../memory/mmu";
+import bios from "../bios";
 
 export const createMmu = (): Mmu =>
-  new Mmu(new Ram(0x2000), new Ram(0x2000), new Ram(0xff));
+  new Mmu(bios, new Ram(0x2000), new Ram(0x2000), new Ram(0xff));
 
 export const EMPTY_MEMORY = createMmu();
 

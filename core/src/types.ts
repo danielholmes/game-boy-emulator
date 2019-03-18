@@ -5,6 +5,8 @@ export type SignedByteValue = number;
 export type WordValue = number;
 export type BitValue = 1 | 0;
 
+export type MemoryAddress = number;
+
 export const byteValueToSignedByte = (value: WordValue): SignedByteValue => {
   if ((value & 0x80) !== 0) {
     return -(~value & 0xff) - 1;

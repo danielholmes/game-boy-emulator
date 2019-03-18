@@ -1,5 +1,4 @@
-import { ByteValue, numberToHex, WordValue } from "../types";
-import { MemoryAddress } from "./index";
+import { ByteValue, MemoryAddress, numberToHex, WordValue } from "../types";
 
 export class Ram {
   private readonly raw: ByteValue[];
