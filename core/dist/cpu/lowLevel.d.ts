@@ -14,6 +14,16 @@ export declare class LoadRegister implements LowLevelOperation {
     constructor(register: Register);
     execute(cpu: Cpu): LowLevelStateReturn;
 }
+export declare class RotateLeft implements LowLevelOperation {
+    readonly cycles: ClockCycles;
+    private readonly register;
+    constructor(register: ByteRegister);
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
+}
+export declare class ReadMemoryWord implements LowLevelOperation {
+    readonly cycles: ClockCycles;
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
+}
 export declare class ReadMemory implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;

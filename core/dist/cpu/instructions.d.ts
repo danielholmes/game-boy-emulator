@@ -15,6 +15,7 @@ export declare class InstructionDefinition implements Instruction {
     private readonly operations;
     constructor(opCode: OpCode, label: string, operations?: ReadonlyArray<LowLevelOperation>);
     execute(cpu: Cpu, mmu: Mmu): ClockCycles;
+    rotateLeft(register: ByteRegister): InstructionDefinition;
     internalDelay(): InstructionDefinition;
     xOr(register: ByteRegister): InstructionDefinition;
     jrCheck(): InstructionDefinition;
@@ -31,6 +32,7 @@ export declare class InstructionDefinition implements Instruction {
     incrementRegister(register: Register): InstructionDefinition;
     storeInRegister(register: Register): InstructionDefinition;
     readMemory(): InstructionDefinition;
+    readMemoryWord(): InstructionDefinition;
     writeByteFromWordOperandAddress(): InstructionDefinition;
     writeWordFromProgramWord(): InstructionDefinition;
     setRegister(register: Register, address: MemoryAddress): InstructionDefinition;

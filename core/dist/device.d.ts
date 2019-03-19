@@ -7,6 +7,7 @@ export declare class Device {
     private readonly gpu;
     private readonly mmu;
     private _isOn;
+    private nonUsedMs;
     constructor(cpu: Cpu, gpu: Gpu, mmu: Mmu);
     readonly isOn: boolean;
     insertCartridge(cartridge: Cartridge): void;

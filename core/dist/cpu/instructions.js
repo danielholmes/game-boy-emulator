@@ -60,6 +60,11 @@ function () {
       }));
     }
   }, {
+    key: "rotateLeft",
+    value: function rotateLeft(register) {
+      return this.withOperation(new _lowLevel.RotateLeft(register));
+    }
+  }, {
     key: "internalDelay",
     value: function internalDelay() {
       return this.withOperation(new _lowLevel.InternalDelay());
@@ -138,6 +143,11 @@ function () {
     key: "readMemory",
     value: function readMemory() {
       return this.withOperation(new _lowLevel.ReadMemory());
+    }
+  }, {
+    key: "readMemoryWord",
+    value: function readMemoryWord() {
+      return this.withOperation(new _lowLevel.ReadMemoryWord());
     }
   }, {
     key: "writeByteFromWordOperandAddress",

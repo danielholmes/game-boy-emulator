@@ -17,7 +17,24 @@ yarn
 ```
 
 
+## Roadmap
+
+ 1. Get bios running to completion
+ 2. complete GPU enough (nintendo logo is a background, not sprite)
+ 3. interrupts
+ 4. Set up cli running and displaying bios
+ 5. Set up browser running and displaying bios
+ 6. Set up blarg test roms infrastructure
+ 7. get tetris running
+ 8. input, sound, etc
+ 9. more complicated carts
+
+
 ## References
+
+ GPU
+  - https://forums.nesdev.com/viewtopic.php?f=20&t=17754
+  - http://blog.kevtris.org/blogfiles/Nitty%20Gritty%20Gameboy%20VRAM%20Timing.txt
 
  - https://realboyemulator.wordpress.com/posts/
  - https://cturt.github.io/cinoop.html

@@ -15,7 +15,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var CLOCK_SPEED = 4194304; // MHz
+// clock cycles per second 4.19 MHz
+// approx 69,905 clock cycles per frame (60 fps)
+// = approx 17,476 machine cycles per frame
+var CLOCK_SPEED = 4194304;
+var CLOCK_CYCLES_PER_MACHINE_CYCLE = 4;
 
 var Device =
 /*#__PURE__*/
@@ -31,10 +35,13 @@ function () {
 
     _defineProperty(this, "_isOn", void 0);
 
+    _defineProperty(this, "nonUsedMs", void 0);
+
     this.cpu = cpu;
     this.gpu = gpu;
     this.mmu = mmu;
     this._isOn = false;
+    this.nonUsedMs = 0;
   }
 
   _createClass(Device, [{
@@ -85,7 +92,10 @@ function () {
         throw new Error("Not powered on");
       }
 
-      var numClockCycles = CLOCK_SPEED * ms; // TODO:
+      this.nonUsedMs += ms;
+      var numMachineCycles = Math.floor(CLOCK_SPEED / CLOCK_CYCLES_PER_MACHINE_CYCLE * 0.001 * this.nonUsedMs);
+      var numClockCycles = numMachineCycles * CLOCK_CYCLES_PER_MACHINE_CYCLE;
+      this.nonUsedMs -= numClockCycles / CLOCK_SPEED; // TODO:
 
       /*
         All are running in parallel so should:

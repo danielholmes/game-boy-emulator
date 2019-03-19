@@ -4,6 +4,7 @@ import { fromPairs } from "lodash";
 import { numberToByteHex } from "../types";
 import { ByteRegister } from "./registers";
 import { Cpu, ClockCycles } from "./index";
+import { createRlR } from "./rl";
 
 class CbInstruction implements Instruction {
   public readonly opCode: OpCode;
@@ -41,6 +42,17 @@ const CB_INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
   [
     ...([[0x7b, "e"], [0x7c, "h"]] as ReadonlyArray<
       [OpCode, ByteRegister]
-    >).map(([opCode, register]) => createCbBit(opCode, register))
-  ].map((i: Instruction) => [i.opCode, i])
+    >).map(([opCode, register]) => createCbBit(opCode, register)),
+
+    ...([
+      [0x17, "a"],
+      [0x10, "b"],
+      [0x11, "c"],
+      [0x12, "d"],
+      [0x13, "e"],
+      [0x14, "h"],
+      [0x15, "l"],
+    ] as ReadonlyArray<[OpCode, ByteRegister]>
+    ).map(([opCode, register]) => createRlR(opCode, register))
+  ].map((i: Instruction) => [i.opCode, i]),
 );

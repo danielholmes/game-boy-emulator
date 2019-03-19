@@ -38,6 +38,45 @@ export class LoadRegister implements LowLevelOperation {
   }
 }
 
+export class RotateLeft implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 0;
+  private readonly register: ByteRegister;
+
+  public constructor(register: ByteRegister) {
+    this.register = register;
+  }
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    let t: number = (cpu.registers[this.register] << 1) + cpu.registers.fC;
+    let flag = 0x00;
+    flag += (((t & 0xFF) === 0) ? 1 : 0) << cpu.registers.fZ;
+    flag += (t > 0xFF ? 1 : 0) << cpu.registers.fC;
+    cpu.registers.f &= 0x00;
+    cpu.registers.f |= flag;
+    t &= 0xFF;
+    cpu.registers[this.register] = t;
+  }
+}
+
+export class ReadMemoryWord implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 8;
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error("value undefined");
+    }
+    return mmu.readBigEndianWord(value);
+  }
+}
+
 export class ReadMemory implements LowLevelOperation {
   public readonly cycles: ClockCycles = 4;
 
@@ -125,6 +164,9 @@ export class WordValueToSignedByte implements LowLevelOperation {
   }
 }
 
+/**
+ * @deprecated should be split
+ */
 export class WriteByteFromOperandAddress implements LowLevelOperation {
   public readonly cycles: ClockCycles = 12;
 
@@ -142,6 +184,9 @@ export class WriteByteFromOperandAddress implements LowLevelOperation {
   }
 }
 
+/**
+ * @deprecated should be split
+ */
 export class WriteWordFromOperandAddress implements LowLevelOperation {
   public readonly cycles: ClockCycles = 16;
 
@@ -192,7 +237,7 @@ export class WriteMemoryHighByteFromOperandAddress
       throw new Error("value undefined");
     }
     const operand = mmu.readByte(cpu.registers.pc);
-    mmu.writeWordBigEndian(0xff00 + operand + 1, value >> 8);
+    mmu.writeByte(0xff00 + operand + 1, value >> 8);
     return value;
   }
 }
@@ -209,7 +254,7 @@ export class WriteMemoryLowByteFromOperandAddress implements LowLevelOperation {
       throw new Error("value undefined");
     }
     const operand = mmu.readByte(cpu.registers.pc);
-    mmu.writeWordBigEndian(0xff00 + operand, value & 255);
+    mmu.writeByte(0xff00 + operand, value & 255);
     return value;
   }
 }
@@ -306,6 +351,9 @@ export class LoadOperand implements LowLevelOperation {
   }
 }
 
+/**
+ * @deprecated should be split
+ */
 export class LoadWordOperand implements LowLevelOperation {
   public readonly cycles: ClockCycles = 8;
 

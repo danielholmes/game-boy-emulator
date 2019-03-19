@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeft = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -41,6 +41,63 @@ function () {
 }();
 
 exports.LoadRegister = LoadRegister;
+
+var RotateLeft =
+/*#__PURE__*/
+function () {
+  function RotateLeft(register) {
+    _classCallCheck(this, RotateLeft);
+
+    _defineProperty(this, "cycles", 0);
+
+    _defineProperty(this, "register", void 0);
+
+    this.register = register;
+  }
+
+  _createClass(RotateLeft, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      var t = (cpu.registers[this.register] << 1) + cpu.registers.fC;
+      var flag = 0x00;
+      flag += ((t & 0xFF) === 0 ? 1 : 0) << cpu.registers.fZ;
+      flag += (t > 0xFF ? 1 : 0) << cpu.registers.fC;
+      cpu.registers.f &= 0x00;
+      cpu.registers.f |= flag;
+      t &= 0xFF;
+      cpu.registers[this.register] = t;
+    }
+  }]);
+
+  return RotateLeft;
+}();
+
+exports.RotateLeft = RotateLeft;
+
+var ReadMemoryWord =
+/*#__PURE__*/
+function () {
+  function ReadMemoryWord() {
+    _classCallCheck(this, ReadMemoryWord);
+
+    _defineProperty(this, "cycles", 8);
+  }
+
+  _createClass(ReadMemoryWord, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      if (value === undefined) {
+        throw new Error("value undefined");
+      }
+
+      return mmu.readBigEndianWord(value);
+    }
+  }]);
+
+  return ReadMemoryWord;
+}();
+
+exports.ReadMemoryWord = ReadMemoryWord;
 
 var ReadMemory =
 /*#__PURE__*/
@@ -175,6 +232,10 @@ function () {
 
   return WordValueToSignedByte;
 }();
+/**
+ * @deprecated should be split
+ */
+
 
 exports.WordValueToSignedByte = WordValueToSignedByte;
 
@@ -202,6 +263,10 @@ function () {
 
   return WriteByteFromOperandAddress;
 }();
+/**
+ * @deprecated should be split
+ */
+
 
 exports.WriteByteFromOperandAddress = WriteByteFromOperandAddress;
 
@@ -278,7 +343,7 @@ function () {
       }
 
       var operand = mmu.readByte(cpu.registers.pc);
-      mmu.writeWordBigEndian(0xff00 + operand + 1, value >> 8);
+      mmu.writeByte(0xff00 + operand + 1, value >> 8);
       return value;
     }
   }]);
@@ -305,7 +370,7 @@ function () {
       }
 
       var operand = mmu.readByte(cpu.registers.pc);
-      mmu.writeWordBigEndian(0xff00 + operand, value & 255);
+      mmu.writeByte(0xff00 + operand, value & 255);
       return value;
     }
   }]);
@@ -466,6 +531,10 @@ function () {
 
   return LoadOperand;
 }();
+/**
+ * @deprecated should be split
+ */
+
 
 exports.LoadOperand = LoadOperand;
 

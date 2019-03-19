@@ -33,6 +33,10 @@ var _call = require("./call");
 
 var _push = require("./push");
 
+var _rl = require("./rl");
+
+var _pop = require("./pop");
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -158,34 +162,40 @@ var INSTRUCTIONS = (0, _lodash.fromPairs)([(0, _special.createNop)(0x00)].concat
       value = _ref16[1];
 
   return (0, _rst.createRst)(opCode, value);
-})), [(0, _ld.createLdMNnSp)(0x08)], _toConsumableArray([[0x3d, "a"], [0x05, "b"], [0x0d, "c"], [0x15, "d"], [0x1d, "e"], [0x25, "h"], [0x2d, "l"]].map(function (_ref17) {
+})), [(0, _rl.createRlR)(0x17, 'a'), (0, _ld.createLdMNnSp)(0x08)], _toConsumableArray([[0xf1, 'af'], [0xc1, 'bc'], [0xd1, 'de'], [0xe1, 'hl']].map(function (_ref17) {
   var _ref18 = _slicedToArray(_ref17, 2),
       opCode = _ref18[0],
       register = _ref18[1];
 
-  return (0, _dec.createDecR)(opCode, register);
-})), _toConsumableArray([[0x03, "bc"], [0x13, "de"], [0x23, "hl"]].map(function (_ref19) {
+  return (0, _pop.createPopRr)(opCode, register);
+})), _toConsumableArray([[0x3d, "a"], [0x05, "b"], [0x0d, "c"], [0x15, "d"], [0x1d, "e"], [0x25, "h"], [0x2d, "l"]].map(function (_ref19) {
   var _ref20 = _slicedToArray(_ref19, 2),
       opCode = _ref20[0],
       register = _ref20[1];
 
-  return (0, _inc.createIncRr)(opCode, register);
-})), [(0, _inc.createIncSp)(0x33)], _toConsumableArray([[0x3c, "a"], [0x04, "b"], [0x0c, "c"], [0x14, "d"], [0x1c, "e"], [0x24, "h"], [0x2c, "l"]].map(function (_ref21) {
+  return (0, _dec.createDecR)(opCode, register);
+})), _toConsumableArray([[0x03, "bc"], [0x13, "de"], [0x23, "hl"]].map(function (_ref21) {
   var _ref22 = _slicedToArray(_ref21, 2),
       opCode = _ref22[0],
       register = _ref22[1];
 
-  return (0, _inc.createIncR)(opCode, register);
-})), _toConsumableArray([[0xaf, "a"], [0xa8, "b"], [0xa9, "c"], [0xaa, "d"], [0xab, "e"], [0xac, "h"], [0xad, "l"]].map(function (_ref23) {
+  return (0, _inc.createIncRr)(opCode, register);
+})), [(0, _inc.createIncSp)(0x33)], _toConsumableArray([[0x3c, "a"], [0x04, "b"], [0x0c, "c"], [0x14, "d"], [0x1c, "e"], [0x24, "h"], [0x2c, "l"]].map(function (_ref23) {
   var _ref24 = _slicedToArray(_ref23, 2),
       opCode = _ref24[0],
       register = _ref24[1];
 
-  return (0, _xor.createXorR)(opCode, register);
-})), [(0, _ld.createLddMHlA)(0x32), (0, _ld.createLdMCA)(0xe2), (0, _cb.createCb)(0xcb), (0, _jr.createJrNzN)(0x20)], _toConsumableArray([[0x9f, "a"], [0x98, "b"], [0x99, "c"], [0x9a, "d"], [0x9b, "e"], [0x9c, "h"], [0x9d, "l"]].map(function (_ref25) {
+  return (0, _inc.createIncR)(opCode, register);
+})), _toConsumableArray([[0xaf, "a"], [0xa8, "b"], [0xa9, "c"], [0xaa, "d"], [0xab, "e"], [0xac, "h"], [0xad, "l"]].map(function (_ref25) {
   var _ref26 = _slicedToArray(_ref25, 2),
       opCode = _ref26[0],
       register = _ref26[1];
+
+  return (0, _xor.createXorR)(opCode, register);
+})), [(0, _ld.createLddMHlA)(0x32), (0, _ld.createLdMCA)(0xe2), (0, _cb.createCb)(0xcb), (0, _jr.createJrNzN)(0x20)], _toConsumableArray([[0x9f, "a"], [0x98, "b"], [0x99, "c"], [0x9a, "d"], [0x9b, "e"], [0x9c, "h"], [0x9d, "l"]].map(function (_ref27) {
+  var _ref28 = _slicedToArray(_ref27, 2),
+      opCode = _ref28[0],
+      register = _ref28[1];
 
   return (0, _sbc.createSbcAR)(opCode, register);
 }))).map(function (i) {

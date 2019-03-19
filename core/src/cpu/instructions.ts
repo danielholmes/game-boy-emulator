@@ -22,7 +22,7 @@ import {
   WriteMemoryHighByteFromOperandAddress,
   InternalDelay,
   WriteMemoryWordHighByteFromStackPointer,
-  WriteMemoryWordLowByteFromStackPointer
+  WriteMemoryWordLowByteFromStackPointer, RotateLeft, ReadMemoryWord
 } from "./lowLevel";
 import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
 import { sum } from "lodash";
@@ -66,6 +66,10 @@ export class InstructionDefinition implements Instruction {
       undefined
     );
     return sum(this.operations.map(op => op.cycles));
+  }
+
+  public rotateLeft(register: ByteRegister): InstructionDefinition {
+    return this.withOperation(new RotateLeft(register))
   }
 
   public internalDelay(): InstructionDefinition {
@@ -138,6 +142,10 @@ export class InstructionDefinition implements Instruction {
 
   public readMemory(): InstructionDefinition {
     return this.withOperation(new ReadMemory());
+  }
+
+  public readMemoryWord(): InstructionDefinition {
+    return this.withOperation(new ReadMemoryWord());
   }
 
   public writeByteFromWordOperandAddress(): InstructionDefinition {

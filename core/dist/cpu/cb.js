@@ -11,6 +11,8 @@ var _lodash = require("lodash");
 
 var _types = require("../types");
 
+var _rl = require("./rl");
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -79,13 +81,19 @@ var createCbBit = function createCbBit(opCode, register) {
 };
 
 exports.createCbBit = createCbBit;
-var CB_INSTRUCTIONS = (0, _lodash.fromPairs)(_toConsumableArray([[0x7b, "e"], [0x7c, "h"]].map(function (_ref) {
+var CB_INSTRUCTIONS = (0, _lodash.fromPairs)([].concat(_toConsumableArray([[0x7b, "e"], [0x7c, "h"]].map(function (_ref) {
   var _ref2 = _slicedToArray(_ref, 2),
       opCode = _ref2[0],
       register = _ref2[1];
 
   return createCbBit(opCode, register);
-})).map(function (i) {
+})), _toConsumableArray([[0x17, "a"], [0x10, "b"], [0x11, "c"], [0x12, "d"], [0x13, "e"], [0x14, "h"], [0x15, "l"]].map(function (_ref3) {
+  var _ref4 = _slicedToArray(_ref3, 2),
+      opCode = _ref4[0],
+      register = _ref4[1];
+
+  return (0, _rl.createRlR)(opCode, register);
+}))).map(function (i) {
   return [i.opCode, i];
 }));
 //# sourceMappingURL=cb.js.map

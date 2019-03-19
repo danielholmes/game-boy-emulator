@@ -3,19 +3,26 @@ import { Mmu } from "./memory/mmu";
 import { Cpu } from "./cpu";
 import { Cartridge } from "./cartridge";
 
-const CLOCK_SPEED = 4194304; // MHz
+// clock cycles per second 4.19 MHz
+// approx 69,905 clock cycles per frame (60 fps)
+// = approx 17,476 machine cycles per frame
+const CLOCK_SPEED = 4194304;
+
+const CLOCK_CYCLES_PER_MACHINE_CYCLE = 4;
 
 export class Device {
   private readonly cpu: Cpu;
   private readonly gpu: Gpu;
   private readonly mmu: Mmu;
   private _isOn: boolean;
+  private nonUsedMs: number;
 
   public constructor(cpu: Cpu, gpu: Gpu, mmu: Mmu) {
     this.cpu = cpu;
     this.gpu = gpu;
     this.mmu = mmu;
     this._isOn = false;
+    this.nonUsedMs = 0;
   }
 
   public get isOn(): boolean {
@@ -59,7 +66,10 @@ export class Device {
       throw new Error("Not powered on");
     }
 
-    const numClockCycles = CLOCK_SPEED * ms;
+    this.nonUsedMs += ms;
+    const numMachineCycles = Math.floor(CLOCK_SPEED / CLOCK_CYCLES_PER_MACHINE_CYCLE * 0.001 * this.nonUsedMs);
+    const numClockCycles = numMachineCycles * CLOCK_CYCLES_PER_MACHINE_CYCLE;
+    this.nonUsedMs -= (numClockCycles / CLOCK_SPEED);
     // TODO:
     /*
       All are running in parallel so should:
