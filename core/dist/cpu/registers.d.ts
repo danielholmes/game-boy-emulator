@@ -9,11 +9,12 @@ export declare const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister>;
 export declare const BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
 export declare const NON_A_BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
 export declare const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<Readonly<[ByteRegister, ByteRegister]>>;
-export declare const FLAG_Z = 7;
+export declare const FLAG_Z_BIT = 7;
 export declare const FLAG_Z_MASK: number;
 export declare const FLAG_N_MASK: number;
 export declare const FLAG_H_MASK: number;
 export declare const FLAG_C_MASK: number;
+declare type BitIndicator = BitValue | boolean;
 export interface CpuRegisters {
     a: ByteValue;
     b: ByteValue;
@@ -35,6 +36,7 @@ export interface CpuRegisters {
     fH: BitValue;
     fC: BitValue;
     fNc: BitValue;
+    setFFromParts(z: BitIndicator, n: BitIndicator, h: BitIndicator, c: BitIndicator): void;
 }
 export declare class CpuRegistersImpl implements CpuRegisters {
     private _a;
@@ -48,6 +50,7 @@ export declare class CpuRegistersImpl implements CpuRegisters {
     private _pc;
     private _sp;
     constructor();
+    setFFromParts(z: BitIndicator, n: BitIndicator, h: BitIndicator, c: BitIndicator): void;
     readonly fNz: BitValue;
     fZ: BitValue;
     fN: BitValue;
@@ -69,4 +72,5 @@ export declare class CpuRegistersImpl implements CpuRegisters {
     af: ByteValue;
     hl: ByteValue;
 }
+export {};
 //# sourceMappingURL=registers.d.ts.map

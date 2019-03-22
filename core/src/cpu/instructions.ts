@@ -24,7 +24,7 @@ import {
   WriteMemoryWordHighByteFromStackPointer,
   WriteMemoryWordLowByteFromStackPointer,
   RotateLeftThroughCarry,
-  ReadMemoryWord, SubtractFromRegister
+  ReadMemoryWord, CompareToRegister
 } from "./lowLevel";
 import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
 import { sum } from "lodash";
@@ -90,8 +90,8 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new BitFlags(register));
   }
 
-  public subtractFromRegister(register: Register): InstructionDefinition {
-    return this.withOperation(new SubtractFromRegister(register));
+  public compareToRegister(register: Register): InstructionDefinition {
+    return this.withOperation(new CompareToRegister(register));
   }
 
   public loadRegister(register: Register): InstructionDefinition {

@@ -2,7 +2,7 @@ import { Mmu } from "../memory/mmu";
 import {
   ByteRegister,
   FLAG_C_MASK,
-  FLAG_Z,
+  FLAG_Z_BIT,
   FLAG_Z_MASK,
   NonAfGroupedWordRegister,
   Register
@@ -44,7 +44,7 @@ export class LoadRegister implements LowLevelOperation {
   }
 }
 
-export class SubtractFromRegister implements LowLevelOperation {
+export class CompareToRegister implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
   private readonly register: Register;
 
@@ -56,9 +56,15 @@ export class SubtractFromRegister implements LowLevelOperation {
     if (value === undefined) {
       throw new Error('Undefined value');
     }
-    cpu.registers[this.register] -= value;
-    cpu.registers.fZ = cpu.registers[this.register] === 0x00 ? 1 : 0;
-    cpu.registers.fN = 1;
+    const previous = cpu.registers[this.register];
+    const next = previous - value;
+    cpu.registers.setFFromParts(
+      next === 0x00,
+      1,
+      ((previous & 0xF) - (value & 0xF)) < 0,
+      next < 0
+    );
+    return next;
   }
 }
 
@@ -149,7 +155,7 @@ export class BitFlags implements LowLevelOperation {
 
   public execute(cpu: Cpu): LowLevelStateReturn {
     const t = cpu.registers[this.register] & FLAG_Z_MASK;
-    const flag = 0x20 + (((t & 0xff) === 0 ? 1 : 0) << FLAG_Z);
+    const flag = 0x20 + (((t & 0xff) === 0 ? 1 : 0) << FLAG_Z_BIT);
     cpu.registers.f &= 0x10;
     cpu.registers.f |= flag;
   }

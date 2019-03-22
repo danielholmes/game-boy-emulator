@@ -46,11 +46,16 @@ export const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<
 );
 
 // TODO: Shouldn't be exported, find a way to encapsulate this
-export const FLAG_Z = 7;
-export const FLAG_Z_MASK = 1 << 7;
-export const FLAG_N_MASK = 1 << 6;
-export const FLAG_H_MASK = 1 << 5;
-export const FLAG_C_MASK = 1 << 4;
+export const FLAG_Z_BIT = 7;
+const FLAG_N_BIT = 6;
+const FLAG_H_BIT = 5;
+const FLAG_C_BIT = 4;
+export const FLAG_Z_MASK = 1 << FLAG_Z_BIT;
+export const FLAG_N_MASK = 1 << FLAG_N_BIT;
+export const FLAG_H_MASK = 1 << FLAG_H_BIT;
+export const FLAG_C_MASK = 1 << FLAG_C_BIT;
+
+type BitIndicator = BitValue | boolean;
 
 export interface CpuRegisters {
   a: ByteValue;
@@ -77,6 +82,8 @@ export interface CpuRegisters {
   fH: BitValue;
   fC: BitValue;
   fNc: BitValue;
+
+  setFFromParts(z: BitIndicator, n: BitIndicator, h: BitIndicator, c: BitIndicator): void;
 }
 
 export class CpuRegistersImpl implements CpuRegisters {
@@ -106,6 +113,13 @@ export class CpuRegistersImpl implements CpuRegisters {
 
     this._pc = 0x0000;
     this._sp = 0xffff;
+  }
+
+  public setFFromParts (z: BitIndicator, n: BitIndicator, h: BitIndicator, c: BitIndicator): void {
+    this._f = (z ? FLAG_Z_MASK : 0) +
+      (n ? FLAG_N_MASK : 0) +
+      (h ? FLAG_H_MASK : 0) +
+      (c ? FLAG_C_MASK : 0)
   }
 
   public get fNz(): BitValue {

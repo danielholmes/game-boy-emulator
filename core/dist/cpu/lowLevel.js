@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.SubtractFromRegister = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -42,11 +42,11 @@ function () {
 
 exports.LoadRegister = LoadRegister;
 
-var SubtractFromRegister =
+var CompareToRegister =
 /*#__PURE__*/
 function () {
-  function SubtractFromRegister(register) {
-    _classCallCheck(this, SubtractFromRegister);
+  function CompareToRegister(register) {
+    _classCallCheck(this, CompareToRegister);
 
     _defineProperty(this, "cycles", 0);
 
@@ -55,23 +55,24 @@ function () {
     this.register = register;
   }
 
-  _createClass(SubtractFromRegister, [{
+  _createClass(CompareToRegister, [{
     key: "execute",
     value: function execute(cpu, mmu, value) {
       if (value === undefined) {
         throw new Error('Undefined value');
       }
 
-      cpu.registers[this.register] -= value;
-      cpu.registers.fZ = cpu.registers[this.register] === 0x00 ? 1 : 0;
-      cpu.registers.fN = 1;
+      var previous = cpu.registers[this.register];
+      var next = previous - value;
+      cpu.registers.setFFromParts(next === 0x00, 1, (previous & 0xF) - (value & 0xF) < 0, next < 0);
+      return next;
     }
   }]);
 
-  return SubtractFromRegister;
+  return CompareToRegister;
 }();
 
-exports.SubtractFromRegister = SubtractFromRegister;
+exports.CompareToRegister = CompareToRegister;
 
 var RotateLeftThroughCarry =
 /*#__PURE__*/
@@ -210,7 +211,7 @@ function () {
     key: "execute",
     value: function execute(cpu) {
       var t = cpu.registers[this.register] & _registers.FLAG_Z_MASK;
-      var flag = 0x20 + (((t & 0xff) === 0 ? 1 : 0) << _registers.FLAG_Z);
+      var flag = 0x20 + (((t & 0xff) === 0 ? 1 : 0) << _registers.FLAG_Z_BIT);
       cpu.registers.f &= 0x10;
       cpu.registers.f |= flag;
     }

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CpuRegistersImpl = exports.FLAG_C_MASK = exports.FLAG_H_MASK = exports.FLAG_N_MASK = exports.FLAG_Z_MASK = exports.FLAG_Z = exports.BYTE_REGISTER_PAIR_PERMUTATIONS = exports.NON_A_BYTE_REGISTERS = exports.BYTE_REGISTERS = exports.GROUPED_WORD_REGISTERS = exports.NON_AF_GROUPED_WORD_REGISTERS = void 0;
+exports.CpuRegistersImpl = exports.FLAG_C_MASK = exports.FLAG_H_MASK = exports.FLAG_N_MASK = exports.FLAG_Z_MASK = exports.FLAG_Z_BIT = exports.BYTE_REGISTER_PAIR_PERMUTATIONS = exports.NON_A_BYTE_REGISTERS = exports.BYTE_REGISTERS = exports.GROUPED_WORD_REGISTERS = exports.NON_AF_GROUPED_WORD_REGISTERS = void 0;
 
 var _lodash = require("lodash");
 
@@ -32,15 +32,18 @@ var BYTE_REGISTER_PAIR_PERMUTATIONS = (0, _lodash.flatMap)(BYTE_REGISTERS.map(fu
 })); // TODO: Shouldn't be exported, find a way to encapsulate this
 
 exports.BYTE_REGISTER_PAIR_PERMUTATIONS = BYTE_REGISTER_PAIR_PERMUTATIONS;
-var FLAG_Z = 7;
-exports.FLAG_Z = FLAG_Z;
-var FLAG_Z_MASK = 1 << 7;
+var FLAG_Z_BIT = 7;
+exports.FLAG_Z_BIT = FLAG_Z_BIT;
+var FLAG_N_BIT = 6;
+var FLAG_H_BIT = 5;
+var FLAG_C_BIT = 4;
+var FLAG_Z_MASK = 1 << FLAG_Z_BIT;
 exports.FLAG_Z_MASK = FLAG_Z_MASK;
-var FLAG_N_MASK = 1 << 6;
+var FLAG_N_MASK = 1 << FLAG_N_BIT;
 exports.FLAG_N_MASK = FLAG_N_MASK;
-var FLAG_H_MASK = 1 << 5;
+var FLAG_H_MASK = 1 << FLAG_H_BIT;
 exports.FLAG_H_MASK = FLAG_H_MASK;
-var FLAG_C_MASK = 1 << 4;
+var FLAG_C_MASK = 1 << FLAG_C_BIT;
 exports.FLAG_C_MASK = FLAG_C_MASK;
 
 var CpuRegistersImpl =
@@ -82,6 +85,11 @@ function () {
   }
 
   _createClass(CpuRegistersImpl, [{
+    key: "setFFromParts",
+    value: function setFFromParts(z, n, h, c) {
+      this._f = (z ? FLAG_Z_MASK : 0) + (n ? FLAG_N_MASK : 0) + (h ? FLAG_H_MASK : 0) + (c ? FLAG_C_MASK : 0);
+    }
+  }, {
     key: "fNz",
     get: function get() {
       return this.fZ ? 0 : 1;

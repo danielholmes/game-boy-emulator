@@ -112,4 +112,18 @@ describe("registers", () => {
       expect(registers.f).toBe(binaryToNumber("10010000"));
     });
   });
+
+  describe("setFFromParts", () => {
+    test("booleans", () => {
+      registers.setFFromParts(true, false, true, false)
+
+      expect(registers.f).toBe(binaryToNumber('10100000'));
+    });
+
+    test("bits", () => {
+      registers.setFFromParts(0, 1, 0, 1)
+
+      expect(registers.f).toBe(binaryToNumber('01010000'));
+    });
+  });
 });
