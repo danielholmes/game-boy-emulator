@@ -15,4 +15,5 @@ export declare const createLdMRA: (opCode: number, register: NonAfGroupedWordReg
 export declare const createLdMNnA: (opCode: number) => Instruction;
 export declare const createLdMNnSp: (opCode: number) => Instruction;
 export declare const createLddMHlA: (opCode: number) => Instruction;
+export declare const createLdiMHlA: (opCode: number) => Instruction;
 //# sourceMappingURL=ld.d.ts.map

@@ -18,7 +18,7 @@ export declare class RotateLeftThroughCarry implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly register;
     constructor(register: ByteRegister);
-    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
+    execute(cpu: Cpu): LowLevelStateReturn;
 }
 export declare class ReadMemoryWord implements LowLevelOperation {
     readonly cycles: ClockCycles;

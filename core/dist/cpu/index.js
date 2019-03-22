@@ -37,6 +37,8 @@ var _rl = require("./rl");
 
 var _pop = require("./pop");
 
+var _ret = require("./ret");
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -192,7 +194,7 @@ var INSTRUCTIONS = (0, _lodash.fromPairs)([(0, _special.createNop)(0x00)].concat
       register = _ref26[1];
 
   return (0, _xor.createXorR)(opCode, register);
-})), [(0, _ld.createLddMHlA)(0x32), (0, _ld.createLdMCA)(0xe2), (0, _cb.createCb)(0xcb), (0, _jr.createJrNzN)(0x20)], _toConsumableArray([[0x9f, "a"], [0x98, "b"], [0x99, "c"], [0x9a, "d"], [0x9b, "e"], [0x9c, "h"], [0x9d, "l"]].map(function (_ref27) {
+})), [(0, _ld.createLddMHlA)(0x32), (0, _ld.createLdiMHlA)(0x22), (0, _ld.createLdMCA)(0xe2), (0, _cb.createCb)(0xcb), (0, _ret.createRet)(0xc9), (0, _jr.createJrNzN)(0x20)], _toConsumableArray([[0x9f, "a"], [0x98, "b"], [0x99, "c"], [0x9a, "d"], [0x9b, "e"], [0x9c, "h"], [0x9d, "l"]].map(function (_ref27) {
   var _ref28 = _slicedToArray(_ref27, 2),
       opCode = _ref28[0],
       register = _ref28[1];

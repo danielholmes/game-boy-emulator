@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createLddMHlA = exports.createLdMNnSp = exports.createLdMNnA = exports.createLdMRA = exports.createLdAMNn = exports.createLdGrM = exports.createLdMNA = exports.createLdMCA = exports.createLdHlMN = exports.createLdHlMR = exports.createLdRHlM = exports.createLdRMRr = exports.createLdRN = exports.createLdRrNn = exports.createLdRR = void 0;
+exports.createLdiMHlA = exports.createLddMHlA = exports.createLdMNnSp = exports.createLdMNnA = exports.createLdMRA = exports.createLdAMNn = exports.createLdGrM = exports.createLdMNA = exports.createLdMCA = exports.createLdHlMN = exports.createLdHlMR = exports.createLdRHlM = exports.createLdRMRr = exports.createLdRN = exports.createLdRrNn = exports.createLdRR = void 0;
 
 var _instructions = require("./instructions");
 
@@ -96,4 +96,10 @@ var createLddMHlA = function createLddMHlA(opCode) {
 };
 
 exports.createLddMHlA = createLddMHlA;
+
+var createLdiMHlA = function createLdiMHlA(opCode) {
+  return new _instructions.InstructionDefinition(opCode, "LDI (hl),a").loadRegister("a").writeMemoryFromGroupedRegisterAddress("hl").incrementRegister("hl");
+};
+
+exports.createLdiMHlA = createLdiMHlA;
 //# sourceMappingURL=ld.js.map

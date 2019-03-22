@@ -106,3 +106,9 @@ export const createLddMHlA = (opCode: OpCode): Instruction =>
     .loadRegister("a")
     .writeMemoryFromGroupedRegisterAddress("hl")
     .decrementRegister("hl");
+
+export const createLdiMHlA = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LDI (hl),a`)
+    .loadRegister("a")
+    .writeMemoryFromGroupedRegisterAddress("hl")
+    .incrementRegister("hl");

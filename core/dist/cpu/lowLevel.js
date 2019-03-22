@@ -57,7 +57,7 @@ function () {
 
   _createClass(RotateLeftThroughCarry, [{
     key: "execute",
-    value: function execute(cpu, mmu, value) {
+    value: function execute(cpu) {
       var newFC = (cpu.registers[this.register] & 1 << 7) !== 0 ? 1 : 0;
       var newValue = (cpu.registers[this.register] << 1) + cpu.registers.fC;
       cpu.registers[this.register] = newValue;

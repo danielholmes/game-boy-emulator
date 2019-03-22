@@ -3,7 +3,7 @@ import { fromPairs } from "lodash";
 import { Instruction, OpCode } from "./instructions";
 import {
   createLddMHlA,
-  createLdHlMR,
+  createLdHlMR, createLdiMHlA,
   createLdMCA,
   createLdMNA,
   createLdMNnA,
@@ -35,6 +35,7 @@ import { createCallNn } from "./call";
 import { createPush } from "./push";
 import { createRlR } from "./rl";
 import { createPopRr } from "./pop";
+import { createRet } from "./ret";
 
 export type ClockCycles = number;
 
@@ -280,10 +281,13 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
     ),
 
     createLddMHlA(0x32),
+    createLdiMHlA(0x22),
 
     createLdMCA(0xe2),
 
     createCb(0xcb),
+
+    createRet(0xc9),
 
     createJrNzN(0x20),
 

@@ -109,11 +109,6 @@ export class Mmu {
     }
   }
 
-  /**
-   * @deprecated should always be split into byte operations
-   * @param address
-   * @param value
-   */
   public writeWordBigEndian(address: MemoryAddress, value: WordValue): void {
     this.writeByte(address + 1, value >> 8);
     this.writeByte(address, value & 255);

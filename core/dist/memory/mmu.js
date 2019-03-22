@@ -135,12 +135,6 @@ function () {
         throw new Error("Can't write address ".concat((0, _types.numberToWordHex)(address)));
       }
     }
-    /**
-     * @deprecated should always be split into byte operations
-     * @param address
-     * @param value
-     */
-
   }, {
     key: "writeWordBigEndian",
     value: function writeWordBigEndian(address, value) {

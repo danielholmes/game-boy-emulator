@@ -21,7 +21,7 @@ import {
   createLdRHlM,
   createLdRN,
   createLdRR,
-  createLdRrNn
+  createLdRrNn, createLdiMHlA
 } from "../ld";
 import {
   createCpuSnapshot,
@@ -343,6 +343,21 @@ describe("ld", () => {
 
       expect(cycles).toBe(4);
       expect(cpu).toEqual(createCpuWithRegisters({ a: 0xaf, hl: 0x9611 }));
+      expect(mmu).toEqual(createMmuWithValues({ 0x9612: 0xaf }));
+    });
+  });
+
+  describe("createLdiMHlA", () => {
+    test("LDI (HL),A", () => {
+      cpu.registers.hl = 0x9612;
+      cpu.registers.a = 0xaf;
+
+      const instruction = createLdiMHlA(0x3d);
+
+      const cycles = instruction.execute(cpu, mmu);
+
+      expect(cycles).toBe(4);
+      expect(cpu).toEqual(createCpuWithRegisters({ a: 0xaf, hl: 0x9613 }));
       expect(mmu).toEqual(createMmuWithValues({ 0x9612: 0xaf }));
     });
   });
