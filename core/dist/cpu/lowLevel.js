@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeft = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -42,11 +42,11 @@ function () {
 
 exports.LoadRegister = LoadRegister;
 
-var RotateLeft =
+var RotateLeftThroughCarry =
 /*#__PURE__*/
 function () {
-  function RotateLeft(register) {
-    _classCallCheck(this, RotateLeft);
+  function RotateLeftThroughCarry(register) {
+    _classCallCheck(this, RotateLeftThroughCarry);
 
     _defineProperty(this, "cycles", 0);
 
@@ -55,24 +55,32 @@ function () {
     this.register = register;
   }
 
-  _createClass(RotateLeft, [{
+  _createClass(RotateLeftThroughCarry, [{
     key: "execute",
     value: function execute(cpu, mmu, value) {
-      var t = (cpu.registers[this.register] << 1) + cpu.registers.fC;
-      var flag = 0x00;
-      flag += ((t & 0xFF) === 0 ? 1 : 0) << cpu.registers.fZ;
-      flag += (t > 0xFF ? 1 : 0) << cpu.registers.fC;
-      cpu.registers.f &= 0x00;
-      cpu.registers.f |= flag;
-      t &= 0xFF;
-      cpu.registers[this.register] = t;
+      var newFC = (cpu.registers[this.register] & 1 << 7) !== 0 ? 1 : 0;
+      var newValue = (cpu.registers[this.register] << 1) + cpu.registers.fC;
+      cpu.registers[this.register] = newValue;
+      var newF = 0x00;
+
+      if (newFC === 1) {
+        newF |= _registers.FLAG_C_MASK;
+      } else {
+        newF &= ~_registers.FLAG_C_MASK;
+      }
+
+      if (newValue === 0) {
+        newF |= _registers.FLAG_Z_MASK;
+      }
+
+      cpu.registers.f = newF;
     }
   }]);
 
-  return RotateLeft;
+  return RotateLeftThroughCarry;
 }();
 
-exports.RotateLeft = RotateLeft;
+exports.RotateLeftThroughCarry = RotateLeftThroughCarry;
 
 var ReadMemoryWord =
 /*#__PURE__*/

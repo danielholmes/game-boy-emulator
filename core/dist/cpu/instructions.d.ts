@@ -15,7 +15,7 @@ export declare class InstructionDefinition implements Instruction {
     private readonly operations;
     constructor(opCode: OpCode, label: string, operations?: ReadonlyArray<LowLevelOperation>);
     execute(cpu: Cpu, mmu: Mmu): ClockCycles;
-    rotateLeft(register: ByteRegister): InstructionDefinition;
+    rotateLeftThroughCarry(register: ByteRegister): InstructionDefinition;
     internalDelay(): InstructionDefinition;
     xOr(register: ByteRegister): InstructionDefinition;
     jrCheck(): InstructionDefinition;

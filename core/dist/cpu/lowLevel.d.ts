@@ -14,7 +14,7 @@ export declare class LoadRegister implements LowLevelOperation {
     constructor(register: Register);
     execute(cpu: Cpu): LowLevelStateReturn;
 }
-export declare class RotateLeft implements LowLevelOperation {
+export declare class RotateLeftThroughCarry implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly register;
     constructor(register: ByteRegister);

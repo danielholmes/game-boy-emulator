@@ -224,17 +224,17 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       createRst(opCode, value)
     ),
 
-    createRlR(0x17, 'a'),
+    createRlR(0x17, "a"),
 
     createLdMNnSp(0x08),
 
     ...([
-      [0xf1, 'af'],
-      [0xc1, 'bc'],
-      [0xd1, 'de'],
-      [0xe1, 'hl']
-    ] as ReadonlyArray<[OpCode, GroupedWordRegister]>).map(([opCode, register]) =>
-      createPopRr(opCode, register)
+      [0xf1, "af"],
+      [0xc1, "bc"],
+      [0xd1, "de"],
+      [0xe1, "hl"]
+    ] as ReadonlyArray<[OpCode, GroupedWordRegister]>).map(
+      ([opCode, register]) => createPopRr(opCode, register)
     ),
 
     ...([

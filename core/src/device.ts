@@ -67,9 +67,11 @@ export class Device {
     }
 
     this.nonUsedMs += ms;
-    const numMachineCycles = Math.floor(CLOCK_SPEED / CLOCK_CYCLES_PER_MACHINE_CYCLE * 0.001 * this.nonUsedMs);
+    const numMachineCycles = Math.floor(
+      (CLOCK_SPEED / CLOCK_CYCLES_PER_MACHINE_CYCLE) * 0.001 * this.nonUsedMs
+    );
     const numClockCycles = numMachineCycles * CLOCK_CYCLES_PER_MACHINE_CYCLE;
-    this.nonUsedMs -= (numClockCycles / CLOCK_SPEED);
+    this.nonUsedMs -= numClockCycles / CLOCK_SPEED;
     // TODO:
     /*
       All are running in parallel so should:

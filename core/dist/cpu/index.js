@@ -162,7 +162,7 @@ var INSTRUCTIONS = (0, _lodash.fromPairs)([(0, _special.createNop)(0x00)].concat
       value = _ref16[1];
 
   return (0, _rst.createRst)(opCode, value);
-})), [(0, _rl.createRlR)(0x17, 'a'), (0, _ld.createLdMNnSp)(0x08)], _toConsumableArray([[0xf1, 'af'], [0xc1, 'bc'], [0xd1, 'de'], [0xe1, 'hl']].map(function (_ref17) {
+})), [(0, _rl.createRlR)(0x17, "a"), (0, _ld.createLdMNnSp)(0x08)], _toConsumableArray([[0xf1, "af"], [0xc1, "bc"], [0xd1, "de"], [0xe1, "hl"]].map(function (_ref17) {
   var _ref18 = _slicedToArray(_ref17, 2),
       opCode = _ref18[0],
       register = _ref18[1];

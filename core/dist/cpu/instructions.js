@@ -60,9 +60,9 @@ function () {
       }));
     }
   }, {
-    key: "rotateLeft",
-    value: function rotateLeft(register) {
-      return this.withOperation(new _lowLevel.RotateLeft(register));
+    key: "rotateLeftThroughCarry",
+    value: function rotateLeftThroughCarry(register) {
+      return this.withOperation(new _lowLevel.RotateLeftThroughCarry(register));
     }
   }, {
     key: "internalDelay",

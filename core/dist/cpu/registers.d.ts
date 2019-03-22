@@ -28,12 +28,12 @@ export interface CpuRegisters {
     de: WordValue;
     hl: WordValue;
     af: WordValue;
-    readonly fZ: BitValue;
-    readonly fNz: BitValue;
-    readonly fN: BitValue;
-    readonly fH: BitValue;
-    readonly fC: BitValue;
-    readonly fNc: BitValue;
+    fZ: BitValue;
+    fNz: BitValue;
+    fN: BitValue;
+    fH: BitValue;
+    fC: BitValue;
+    fNc: BitValue;
 }
 export declare class CpuRegistersImpl implements CpuRegisters {
     private _a;
@@ -48,10 +48,10 @@ export declare class CpuRegistersImpl implements CpuRegisters {
     private _sp;
     constructor();
     readonly fNz: BitValue;
-    readonly fZ: BitValue;
-    readonly fN: BitValue;
-    readonly fH: BitValue;
-    readonly fC: BitValue;
+    fZ: BitValue;
+    fN: BitValue;
+    fH: BitValue;
+    fC: BitValue;
     readonly fNc: BitValue;
     a: ByteValue;
     b: ByteValue;

@@ -6,8 +6,8 @@ export const createPopRr = (
   register: GroupedWordRegister
 ): Instruction =>
   new InstructionDefinition(opCode, `POP ${register}`)
-    .loadRegister('sp')
+    .loadRegister("sp")
     .readMemoryWord()
     .storeInRegister(register)
-    .incrementRegister('sp')
-    .incrementRegister('sp');
+    .incrementRegister("sp")
+    .incrementRegister("sp");

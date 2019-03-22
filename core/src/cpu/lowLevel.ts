@@ -1,12 +1,18 @@
 import { Mmu } from "../memory/mmu";
 import {
   ByteRegister,
+  FLAG_C_MASK,
   FLAG_Z,
   FLAG_Z_MASK,
   NonAfGroupedWordRegister,
   Register
 } from "./registers";
-import { ByteValue, WordValue, byteValueToSignedByte } from "../types";
+import {
+  ByteValue,
+  WordValue,
+  byteValueToSignedByte,
+  BitValue
+} from "../types";
 import { Cpu, ClockCycles } from ".";
 
 export type LowLevelState = ByteValue | WordValue | undefined;
@@ -38,7 +44,7 @@ export class LoadRegister implements LowLevelOperation {
   }
 }
 
-export class RotateLeft implements LowLevelOperation {
+export class RotateLeftThroughCarry implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;
 
@@ -46,19 +52,21 @@ export class RotateLeft implements LowLevelOperation {
     this.register = register;
   }
 
-  public execute(
-    cpu: Cpu,
-    mmu: Mmu,
-    value: LowLevelState
-  ): LowLevelStateReturn {
-    let t: number = (cpu.registers[this.register] << 1) + cpu.registers.fC;
-    let flag = 0x00;
-    flag += (((t & 0xFF) === 0) ? 1 : 0) << cpu.registers.fZ;
-    flag += (t > 0xFF ? 1 : 0) << cpu.registers.fC;
-    cpu.registers.f &= 0x00;
-    cpu.registers.f |= flag;
-    t &= 0xFF;
-    cpu.registers[this.register] = t;
+  public execute(cpu: Cpu): LowLevelStateReturn {
+    const newFC: BitValue =
+      (cpu.registers[this.register] & (1 << 7)) !== 0 ? 1 : 0;
+    const newValue = (cpu.registers[this.register] << 1) + cpu.registers.fC;
+    cpu.registers[this.register] = newValue;
+    let newF = 0x00;
+    if (newFC === 1) {
+      newF |= FLAG_C_MASK;
+    } else {
+      newF &= ~FLAG_C_MASK;
+    }
+    if (newValue === 0) {
+      newF |= FLAG_Z_MASK;
+    }
+    cpu.registers.f = newF;
   }
 }
 

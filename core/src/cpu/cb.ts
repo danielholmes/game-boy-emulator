@@ -51,8 +51,9 @@ const CB_INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x12, "d"],
       [0x13, "e"],
       [0x14, "h"],
-      [0x15, "l"],
-    ] as ReadonlyArray<[OpCode, ByteRegister]>
-    ).map(([opCode, register]) => createRlR(opCode, register))
-  ].map((i: Instruction) => [i.opCode, i]),
+      [0x15, "l"]
+    ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
+      createRlR(opCode, register)
+    )
+  ].map((i: Instruction) => [i.opCode, i])
 );

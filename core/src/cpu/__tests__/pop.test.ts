@@ -1,7 +1,8 @@
 /* global describe, test, expect */
 
 import {
-  createCpuWithRegisters, createMemorySnapshot,
+  createCpuWithRegisters,
+  createMemorySnapshot,
   createMmu
 } from "../../test/help";
 import { Mmu } from "../../memory/mmu";
@@ -19,21 +20,26 @@ describe("pop", () => {
   });
 
   describe("createPopRr", () => {
-    test.each(GROUPED_WORD_REGISTERS.map(r => [r]))("POP %s", (register: GroupedWordRegister) => {
-      cpu.registers.sp = 0xf123;
-      mmu.writeWordBigEndian(0xf123, 0x142e);
+    test.each(GROUPED_WORD_REGISTERS.map(r => [r]))(
+      "POP %s",
+      (register: GroupedWordRegister) => {
+        cpu.registers.sp = 0xf123;
+        mmu.writeWordBigEndian(0xf123, 0x142e);
 
-      // Pop two bytes off stack into register pair nn.
-      //   Increment Stack Pointer (SP) twice.
+        // Pop two bytes off stack into register pair nn.
+        //   Increment Stack Pointer (SP) twice.
 
-      const mmuSnapshot = createMemorySnapshot(mmu);
-      const instruction = createPopRr(0x3d, register);
+        const mmuSnapshot = createMemorySnapshot(mmu);
+        const instruction = createPopRr(0x3d, register);
 
-      const cycles = instruction.execute(cpu, mmu);
+        const cycles = instruction.execute(cpu, mmu);
 
-      expect(cycles).toBe(8);
-      expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x142e, sp: 0xf125 }));
-      expect(createMemorySnapshot(mmu)).toEqual(mmuSnapshot);
-    });
+        expect(cycles).toBe(8);
+        expect(cpu).toEqual(
+          createCpuWithRegisters({ [register]: 0x142e, sp: 0xf125 })
+        );
+        expect(createMemorySnapshot(mmu)).toEqual(mmuSnapshot);
+      }
+    );
   });
 });

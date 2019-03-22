@@ -25,23 +25,7 @@ var BYTE_REGISTER_PAIR_PERMUTATIONS = (0, _lodash.flatMap)(BYTE_REGISTERS.map(fu
   return BYTE_REGISTERS.map(function (r2) {
     return [r1, r2];
   });
-}));
-/*const B_C_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['b', 'c']
-const D_E_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['d', 'e']
-const H_L_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['h', 'l']
-
-export const groupedWordByteRegisters = (register: NonAfGroupedWordRegister): Readonly<[ByteRegister, ByteRegister]> => {
-  switch (register)
-  {
-    case 'bc':
-      return B_C_REGISTERS
-    case 'de':
-      return D_E_REGISTERS
-    case 'hl':
-      return H_L_REGISTERS
-  }
-}*/
-// TODO: Shouldn't be exported, find a way to encapsulate this
+})); // TODO: Shouldn't be exported, find a way to encapsulate this
 
 exports.BYTE_REGISTER_PAIR_PERMUTATIONS = BYTE_REGISTER_PAIR_PERMUTATIONS;
 var FLAG_Z = 7;
@@ -102,21 +86,53 @@ function () {
     key: "fZ",
     get: function get() {
       return (this.f & FLAG_Z_MASK) !== 0 ? 1 : 0;
+    },
+    set: function set(value) {
+      if (value === 1) {
+        this.f |= FLAG_Z_MASK;
+        return;
+      }
+
+      this.f &= ~FLAG_Z_MASK;
     }
   }, {
     key: "fN",
     get: function get() {
       return (this.f & FLAG_N_MASK) !== 0 ? 1 : 0;
+    },
+    set: function set(value) {
+      if (value === 1) {
+        this.f |= FLAG_N_MASK;
+        return;
+      }
+
+      this.f &= ~FLAG_N_MASK;
     }
   }, {
     key: "fH",
     get: function get() {
       return (this.f & FLAG_H_MASK) !== 0 ? 1 : 0;
+    },
+    set: function set(value) {
+      if (value === 1) {
+        this.f |= FLAG_H_MASK;
+        return;
+      }
+
+      this.f &= ~FLAG_H_MASK;
     }
   }, {
     key: "fC",
     get: function get() {
       return (this.f & FLAG_C_MASK) !== 0 ? 1 : 0;
+    },
+    set: function set(value) {
+      if (value === 1) {
+        this.f |= FLAG_C_MASK;
+        return;
+      }
+
+      this.f &= ~FLAG_C_MASK;
     }
   }, {
     key: "fNc",

@@ -42,22 +42,6 @@ export const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<
   )
 );
 
-/*const B_C_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['b', 'c']
-const D_E_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['d', 'e']
-const H_L_REGISTERS: Readonly<[ByteRegister, ByteRegister]> = ['h', 'l']
-
-export const groupedWordByteRegisters = (register: NonAfGroupedWordRegister): Readonly<[ByteRegister, ByteRegister]> => {
-  switch (register)
-  {
-    case 'bc':
-      return B_C_REGISTERS
-    case 'de':
-      return D_E_REGISTERS
-    case 'hl':
-      return H_L_REGISTERS
-  }
-}*/
-
 // TODO: Shouldn't be exported, find a way to encapsulate this
 export const FLAG_Z = 7;
 export const FLAG_Z_MASK = 1 << 7;
@@ -84,12 +68,12 @@ export interface CpuRegisters {
   hl: WordValue;
   af: WordValue;
 
-  readonly fZ: BitValue;
-  readonly fNz: BitValue;
-  readonly fN: BitValue;
-  readonly fH: BitValue;
-  readonly fC: BitValue;
-  readonly fNc: BitValue;
+  fZ: BitValue;
+  fNz: BitValue;
+  fN: BitValue;
+  fH: BitValue;
+  fC: BitValue;
+  fNc: BitValue;
 }
 
 export class CpuRegistersImpl implements CpuRegisters {
@@ -128,17 +112,45 @@ export class CpuRegistersImpl implements CpuRegisters {
   public get fZ(): BitValue {
     return (this.f & FLAG_Z_MASK) !== 0 ? 1 : 0;
   }
+  public set fZ(value: BitValue) {
+    if (value === 1) {
+      this.f |= FLAG_Z_MASK;
+      return;
+    }
+    this.f &= ~FLAG_Z_MASK;
+  }
 
   public get fN(): BitValue {
     return (this.f & FLAG_N_MASK) !== 0 ? 1 : 0;
+  }
+  public set fN(value: BitValue) {
+    if (value === 1) {
+      this.f |= FLAG_N_MASK;
+      return;
+    }
+    this.f &= ~FLAG_N_MASK;
   }
 
   public get fH(): BitValue {
     return (this.f & FLAG_H_MASK) !== 0 ? 1 : 0;
   }
+  public set fH(value: BitValue) {
+    if (value === 1) {
+      this.f |= FLAG_H_MASK;
+      return;
+    }
+    this.f &= ~FLAG_H_MASK;
+  }
 
   public get fC(): BitValue {
     return (this.f & FLAG_C_MASK) !== 0 ? 1 : 0;
+  }
+  public set fC(value: BitValue) {
+    if (value === 1) {
+      this.f |= FLAG_C_MASK;
+      return;
+    }
+    this.f &= ~FLAG_C_MASK;
   }
 
   public get fNc(): BitValue {
