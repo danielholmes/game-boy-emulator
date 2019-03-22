@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CpuRegistersImpl = exports.FLAG_C_MASK = exports.FLAG_H_MASK = exports.FLAG_N_MASK = exports.FLAG_Z_MASK = exports.FLAG_Z = exports.BYTE_REGISTER_PAIR_PERMUTATIONS = exports.BYTE_REGISTERS = exports.GROUPED_WORD_REGISTERS = exports.NON_AF_GROUPED_WORD_REGISTERS = void 0;
+exports.CpuRegistersImpl = exports.FLAG_C_MASK = exports.FLAG_H_MASK = exports.FLAG_N_MASK = exports.FLAG_Z_MASK = exports.FLAG_Z = exports.BYTE_REGISTER_PAIR_PERMUTATIONS = exports.NON_A_BYTE_REGISTERS = exports.BYTE_REGISTERS = exports.GROUPED_WORD_REGISTERS = exports.NON_AF_GROUPED_WORD_REGISTERS = void 0;
 
 var _lodash = require("lodash");
 
@@ -21,6 +21,10 @@ var GROUPED_WORD_REGISTERS = ["af"].concat(NON_AF_GROUPED_WORD_REGISTERS);
 exports.GROUPED_WORD_REGISTERS = GROUPED_WORD_REGISTERS;
 var BYTE_REGISTERS = ["a", "b", "c", "d", "e", "h", "l"];
 exports.BYTE_REGISTERS = BYTE_REGISTERS;
+var NON_A_BYTE_REGISTERS = BYTE_REGISTERS.filter(function (r) {
+  return r !== 'a';
+});
+exports.NON_A_BYTE_REGISTERS = NON_A_BYTE_REGISTERS;
 var BYTE_REGISTER_PAIR_PERMUTATIONS = (0, _lodash.flatMap)(BYTE_REGISTERS.map(function (r1) {
   return BYTE_REGISTERS.map(function (r2) {
     return [r1, r2];

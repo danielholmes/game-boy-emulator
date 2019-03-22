@@ -20,6 +20,7 @@ export declare class InstructionDefinition implements Instruction {
     xOr(register: ByteRegister): InstructionDefinition;
     jrCheck(): InstructionDefinition;
     bitFlags(register: ByteRegister): InstructionDefinition;
+    subtractFromRegister(register: Register): InstructionDefinition;
     loadRegister(register: Register): InstructionDefinition;
     loadProgramCounter(): InstructionDefinition;
     writeMemoryFromOperandAddress(): InstructionDefinition;

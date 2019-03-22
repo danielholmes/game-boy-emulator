@@ -34,6 +34,9 @@ export const BYTE_REGISTERS: ReadonlyArray<ByteRegister> = [
   "l"
 ];
 
+export const NON_A_BYTE_REGISTERS: ReadonlyArray<ByteRegister> =
+  BYTE_REGISTERS.filter((r) => r !== 'a');
+
 export const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<
   Readonly<[ByteRegister, ByteRegister]>
 > = flatMap(

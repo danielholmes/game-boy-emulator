@@ -36,6 +36,7 @@ import { createPush } from "./push";
 import { createRlR } from "./rl";
 import { createPopRr } from "./pop";
 import { createRet } from "./ret";
+import { createSubMHl, createSubR } from "./sub";
 
 export type ClockCycles = number;
 
@@ -279,6 +280,19 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
     ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
       createXorR(opCode, register)
     ),
+
+    ...([
+      [0x97, "a"],
+      [0x90, "b"],
+      [0x91, "c"],
+      [0x92, "d"],
+      [0x93, "e"],
+      [0x94, "h"],
+      [0x95, "l"]
+    ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
+      createSubR(opCode, register)
+    ),
+    createSubMHl(0x96),
 
     createLddMHlA(0x32),
     createLdiMHlA(0x22),

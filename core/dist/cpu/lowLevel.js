@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.SubtractFromRegister = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -41,6 +41,37 @@ function () {
 }();
 
 exports.LoadRegister = LoadRegister;
+
+var SubtractFromRegister =
+/*#__PURE__*/
+function () {
+  function SubtractFromRegister(register) {
+    _classCallCheck(this, SubtractFromRegister);
+
+    _defineProperty(this, "cycles", 0);
+
+    _defineProperty(this, "register", void 0);
+
+    this.register = register;
+  }
+
+  _createClass(SubtractFromRegister, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      if (value === undefined) {
+        throw new Error('Undefined value');
+      }
+
+      cpu.registers[this.register] -= value;
+      cpu.registers.fZ = cpu.registers[this.register] === 0x00 ? 1 : 0;
+      cpu.registers.fN = 1;
+    }
+  }]);
+
+  return SubtractFromRegister;
+}();
+
+exports.SubtractFromRegister = SubtractFromRegister;
 
 var RotateLeftThroughCarry =
 /*#__PURE__*/

@@ -44,6 +44,24 @@ export class LoadRegister implements LowLevelOperation {
   }
 }
 
+export class SubtractFromRegister implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 0;
+  private readonly register: Register;
+
+  public constructor(register: Register) {
+    this.register = register;
+  }
+
+  public execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error('Undefined value');
+    }
+    cpu.registers[this.register] -= value;
+    cpu.registers.fZ = cpu.registers[this.register] === 0x00 ? 1 : 0;
+    cpu.registers.fN = 1;
+  }
+}
+
 export class RotateLeftThroughCarry implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;

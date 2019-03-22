@@ -85,6 +85,11 @@ function () {
       return this.withOperation(new _lowLevel.BitFlags(register));
     }
   }, {
+    key: "subtractFromRegister",
+    value: function subtractFromRegister(register) {
+      return this.withOperation(new _lowLevel.SubtractFromRegister(register));
+    }
+  }, {
     key: "loadRegister",
     value: function loadRegister(register) {
       return this.withOperation(new _lowLevel.LoadRegister(register));

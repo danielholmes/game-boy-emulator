@@ -7,6 +7,7 @@ export declare type Register = ByteRegister | "f" | GroupedWordRegister | Native
 export declare const NON_AF_GROUPED_WORD_REGISTERS: ReadonlyArray<NonAfGroupedWordRegister>;
 export declare const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister>;
 export declare const BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
+export declare const NON_A_BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
 export declare const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<Readonly<[ByteRegister, ByteRegister]>>;
 export declare const FLAG_Z = 7;
 export declare const FLAG_Z_MASK: number;
