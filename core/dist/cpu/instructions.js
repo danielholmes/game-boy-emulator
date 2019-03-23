@@ -122,12 +122,12 @@ function () {
   }, {
     key: "loadSignedByteOperand",
     value: function loadSignedByteOperand() {
-      return this.loadByteOperand().withOperation(new _lowLevel.WordValueToSignedByte());
+      return this.loadByteOperand().withOperation(new _lowLevel.ByteValueToSignedByte());
     }
   }, {
     key: "loadWordOperand",
     value: function loadWordOperand() {
-      return this.withOperation(new _lowLevel.LoadWordOperand());
+      return this.loadByteOperand().withOperation(new _lowLevel.LoadWordOperandHighByte());
     }
   }, {
     key: "decrementRegister",

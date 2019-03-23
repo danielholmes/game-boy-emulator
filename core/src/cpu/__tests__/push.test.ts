@@ -2,7 +2,6 @@
 
 import { Mmu } from "../../memory/mmu";
 import {
-  createCpuWithRegisters,
   createMmu,
   createMmuWithValues
 } from "../../test/help";
@@ -30,9 +29,7 @@ describe("push", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cpu).toEqual(
-          createCpuWithRegisters({ [register]: 0xde34, sp: 0xe442 })
-        );
+        expect(cpu).toEqualCpuWithRegisters({ [register]: 0xde34, sp: 0xe442 });
         expect(mmu).toEqual(
           createMmuWithValues({ 0xe442: 0x34, 0xe443: 0xde })
         );

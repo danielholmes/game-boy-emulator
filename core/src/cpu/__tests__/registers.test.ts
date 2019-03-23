@@ -1,6 +1,5 @@
 /* global describe, test, expect */
 
-import { createCpuRegistersWithRegisters } from "../../test/help";
 import { CpuRegisters, CpuRegistersImpl } from "../registers";
 import { binaryToNumber } from "../../types";
 
@@ -14,9 +13,7 @@ describe("registers", () => {
   test("set hl", () => {
     registers.hl = 0xfe12;
 
-    expect(registers).toEqual(
-      createCpuRegistersWithRegisters({ h: 0xfe, l: 0x12 })
-    );
+    expect(registers).toEqualCpuRegisters({ h: 0xfe, l: 0x12 });
   });
 
   describe("fZ", () => {

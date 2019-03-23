@@ -141,6 +141,11 @@ function () {
       this.writeByte(address + 1, value >> 8);
       this.writeByte(address, value & 255);
     }
+  }, {
+    key: "workingRamValues",
+    get: function get() {
+      return this.workingRam.getValues();
+    }
   }]);
 
   return Mmu;

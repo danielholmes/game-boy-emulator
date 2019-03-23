@@ -54,7 +54,7 @@ export declare class JrCheck implements LowLevelOperation {
     constructor(flag: JrFlag);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare class WordValueToSignedByte implements LowLevelOperation {
+export declare class ByteValueToSignedByte implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
@@ -109,9 +109,9 @@ export declare class LoadOperand implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu): LowLevelStateReturn;
 }
-export declare class LoadWordOperand implements LowLevelOperation {
+export declare class LoadWordOperandHighByte implements LowLevelOperation {
     readonly cycles: ClockCycles;
-    execute(cpu: Cpu, mmu: Mmu): LowLevelStateReturn;
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class IncrementRegister implements LowLevelOperation {
     readonly cycles: ClockCycles;

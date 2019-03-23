@@ -3,7 +3,6 @@
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "../";
 import {
-  createCpuWithRegisters,
   createMmu,
   createMmuWithCartridgeAndValues
 } from "../../test/help";
@@ -30,9 +29,7 @@ describe("cpu", () => {
 
       cpu.tickCycle(mmu);
 
-      expect(cpu.registers).toEqual(
-        createCpuWithRegisters({ pc: 0x0001 }).registers
-      );
+      expect(cpu).toEqualCpuWithRegisters({ pc: 0x0001 });
       expect(mmu).toEqual(createMmuWithCartridgeAndValues(cartridge));
     });
 
@@ -43,9 +40,7 @@ describe("cpu", () => {
 
       cpu.tickCycle(mmu);
 
-      expect(cpu.registers).toEqual(
-        createCpuWithRegisters({ b: 0x66, pc: 0x0002 }).registers
-      );
+      expect(cpu).toEqualCpuWithRegisters({ b: 0x66, pc: 0x0002 });
       expect(mmu).toEqual(createMmuWithCartridgeAndValues(cartridge));
     });
 
@@ -80,20 +75,18 @@ describe("cpu", () => {
         0xcb,
         0x20
       ]);
-      expect(cpu.registers).toEqual(
-        createCpuWithRegisters({
-          a: 0x00,
-          b: 0x00,
-          c: 0x00,
-          d: 0x00,
-          e: 0x00,
-          h: 0xff,
-          l: 0x26,
-          f: 0xa0,
-          pc: 0x000f,
-          sp: 0xfffe
-        }).registers
-      );
+      expect(cpu).toEqualCpuWithRegisters({
+        a: 0x00,
+        b: 0x00,
+        c: 0x00,
+        d: 0x00,
+        e: 0x00,
+        h: 0xff,
+        l: 0x26,
+        f: 0xa0,
+        pc: 0x000f,
+        sp: 0xfffe
+      });
       // Bios clears out vram to all 0
       expect(vRam.getValues()).toEqual(new Uint8Array(V_RAM_SIZE));
       // A lot of memory, not easy to specify/check it

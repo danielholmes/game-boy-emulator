@@ -2,13 +2,11 @@
 
 import { Mmu } from "../../memory/mmu";
 import {
-  createCpuWithRegisters,
   createMmuSnapshot,
   createMmu
 } from "../../test/help";
 import { Cpu } from "..";
 import { createRet } from "../ret";
-import "../../test/defs";
 
 describe("ret", () => {
   let cpu: Cpu;
@@ -31,7 +29,7 @@ describe("ret", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(12);
-      expect(cpu).toEqual(createCpuWithRegisters({ sp: 0x8816, pc: 0x5432 }));
+      expect(cpu).toEqualCpuWithRegisters({ sp: 0x8816, pc: 0x5432 });
       expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
     });
   });

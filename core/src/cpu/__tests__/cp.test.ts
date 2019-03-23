@@ -2,12 +2,10 @@
 
 import { Mmu } from "../../memory/mmu";
 import {
-  createCpuWithRegisters,
   createMmuSnapshot,
   createMmu,
   EMPTY_MEMORY
 } from "../../test/help";
-import "../../test/defs";
 import { Cpu } from "..";
 import { ByteRegister, NON_A_BYTE_REGISTERS } from "../registers";
 import { createCpMHl, createCpN, createCpR } from "../cp";
@@ -33,15 +31,13 @@ describe("cp", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(0);
-      expect(cpu).toEqual(
-        createCpuWithRegisters({
-          a: 0x99,
-          fZ: 1,
-          fN: 1,
-          fH: 0,
-          fC: 0
-        })
-      );
+      expect(cpu).toEqualCpuWithRegisters({
+        a: 0x99,
+        fZ: 1,
+        fN: 1,
+        fH: 0,
+        fC: 0
+      });
       expect(mmu).toEqual(EMPTY_MEMORY);
     });
 
@@ -57,16 +53,14 @@ describe("cp", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({
-            a: 0x99,
-            [register]: 0x07,
-            fZ: 0,
-            fN: 1,
-            fH: 0,
-            fC: 0
-          })
-        );
+        expect(cpu).toEqualCpuWithRegisters({
+          a: 0x99,
+          [register]: 0x07,
+          fZ: 0,
+          fN: 1,
+          fH: 0,
+          fC: 0
+        });
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
@@ -83,16 +77,14 @@ describe("cp", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({
-            a: 0x16,
-            [register]: 0x27,
-            fZ: 0,
-            fN: 1,
-            fH: 1,
-            fC: 1
-          })
-        );
+        expect(cpu).toEqualCpuWithRegisters({
+          a: 0x16,
+          [register]: 0x27,
+          fZ: 0,
+          fN: 1,
+          fH: 1,
+          fC: 1
+        });
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
@@ -111,16 +103,14 @@ describe("cp", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
-      expect(cpu).toEqual(
-        createCpuWithRegisters({
-          a: 0x99,
-          hl: 0x9876,
-          fZ: 0,
-          fN: 1,
-          fH: 0,
-          fC: 0
-        })
-      );
+      expect(cpu).toEqualCpuWithRegisters({
+        a: 0x99,
+        hl: 0x9876,
+        fZ: 0,
+        fN: 1,
+        fH: 0,
+        fC: 0
+      });
       expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });
@@ -138,16 +128,14 @@ describe("cp", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
-      expect(cpu).toEqual(
-        createCpuWithRegisters({
-          a: 0x99,
-          pc: 0x0001,
-          fZ: 0,
-          fN: 1,
-          fH: 0,
-          fC: 0
-        })
-      );
+      expect(cpu).toEqualCpuWithRegisters({
+        a: 0x99,
+        pc: 0x0001,
+        fZ: 0,
+        fN: 1,
+        fH: 0,
+        fC: 0
+      });
       expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });

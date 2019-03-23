@@ -1,6 +1,5 @@
 /* global describe, test, expect */
 import {
-  createCpuWithRegisters,
   createMmuSnapshot,
   createMmu
 } from "../../test/help";
@@ -9,7 +8,6 @@ import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import { Cartridge } from "../../cartridge";
 import { JR_FLAGS, JrFlag } from "../lowLevel";
-import "../../test/defs";
 
 describe("jr", () => {
   let cpu: Cpu;
@@ -32,7 +30,7 @@ describe("jr", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
-      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0005, [flag]: 0 }));
+      expect(cpu).toEqualCpuWithRegisters({ pc: 0x0005, [flag]: 0 });
       expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
 
@@ -50,7 +48,7 @@ describe("jr", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
-      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, [flag]: 0 }));
+      expect(cpu).toEqualCpuWithRegisters({ pc: 0x0002, [flag]: 0 });
       expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
 
@@ -66,7 +64,7 @@ describe("jr", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
-      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0001, [flag]: 1 }));
+      expect(cpu).toEqualCpuWithRegisters({ pc: 0x0001, [flag]: 1 });
       expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });

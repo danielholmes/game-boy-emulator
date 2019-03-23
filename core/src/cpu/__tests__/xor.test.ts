@@ -2,7 +2,6 @@
 
 import { Mmu } from "../../memory/mmu";
 import {
-  createCpuWithRegisters,
   createMmu,
   EMPTY_MEMORY
 } from "../../test/help";
@@ -31,9 +30,7 @@ describe("xor", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({ a: 0x12, [register]: 0x12 })
-        );
+        expect(cpu).toEqualCpuWithRegisters({ a: 0x12, [register]: 0x12 });
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );

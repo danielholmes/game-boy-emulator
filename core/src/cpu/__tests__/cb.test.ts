@@ -2,7 +2,6 @@
 
 import { Mmu } from "../../memory/mmu";
 import {
-  createCpuWithRegisters,
   createMmu,
   EMPTY_MEMORY
 } from "../../test/help";
@@ -30,9 +29,7 @@ describe("cb", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({ [register]: 0x14, f: 0xa0 })
-        );
+        expect(cpu).toEqualCpuWithRegisters({ [register]: 0x14, f: 0xa0 });
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );

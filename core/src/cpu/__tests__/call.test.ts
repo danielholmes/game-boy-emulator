@@ -2,7 +2,6 @@
 
 import { Mmu } from "../../memory/mmu";
 import {
-  createCpuWithRegisters,
   createMmu,
   createMmuWithCartridgeAndValues
 } from "../../test/help";
@@ -32,7 +31,7 @@ describe("call", () => {
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x7654, sp: 0xe442 }));
+      expect(cpu).toEqualCpuWithRegisters({ pc: 0x7654, sp: 0xe442 });
       expect(mmu).toEqual(
         createMmuWithCartridgeAndValues(cart, { 0xe442: 0x0001 })
       );

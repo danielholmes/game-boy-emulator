@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.JR_FLAGS = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperandHighByte = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.ByteValueToSignedByte = exports.JrCheck = exports.JR_FLAGS = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -256,16 +256,16 @@ function () {
 
 exports.JrCheck = JrCheck;
 
-var WordValueToSignedByte =
+var ByteValueToSignedByte =
 /*#__PURE__*/
 function () {
-  function WordValueToSignedByte() {
-    _classCallCheck(this, WordValueToSignedByte);
+  function ByteValueToSignedByte() {
+    _classCallCheck(this, ByteValueToSignedByte);
 
     _defineProperty(this, "cycles", 0);
   }
 
-  _createClass(WordValueToSignedByte, [{
+  _createClass(ByteValueToSignedByte, [{
     key: "execute",
     value: function execute(cpu, mmu, value) {
       if (value === undefined) {
@@ -276,14 +276,14 @@ function () {
     }
   }]);
 
-  return WordValueToSignedByte;
+  return ByteValueToSignedByte;
 }();
 /**
  * @deprecated should be split
  */
 
 
-exports.WordValueToSignedByte = WordValueToSignedByte;
+exports.ByteValueToSignedByte = ByteValueToSignedByte;
 
 var WriteByteFromOperandAddress =
 /*#__PURE__*/
@@ -552,8 +552,7 @@ function () {
   }]);
 
   return SetRegister;
-}(); // TODO: Can be done in terms of lower level ops
-
+}();
 
 exports.SetRegister = SetRegister;
 
@@ -577,35 +576,35 @@ function () {
 
   return LoadOperand;
 }();
-/**
- * @deprecated should be split
- */
-
 
 exports.LoadOperand = LoadOperand;
 
-var LoadWordOperand =
+var LoadWordOperandHighByte =
 /*#__PURE__*/
 function () {
-  function LoadWordOperand() {
-    _classCallCheck(this, LoadWordOperand);
+  function LoadWordOperandHighByte() {
+    _classCallCheck(this, LoadWordOperandHighByte);
 
-    _defineProperty(this, "cycles", 8);
+    _defineProperty(this, "cycles", 4);
   }
 
-  _createClass(LoadWordOperand, [{
+  _createClass(LoadWordOperandHighByte, [{
     key: "execute",
-    value: function execute(cpu, mmu) {
-      var byte = mmu.readBigEndianWord(cpu.registers.pc);
-      cpu.registers.pc += 2;
-      return byte;
+    value: function execute(cpu, mmu, value) {
+      if (value === undefined) {
+        throw new Error('value undefined');
+      }
+
+      var byte = mmu.readByte(cpu.registers.pc);
+      cpu.registers.pc++;
+      return (byte << 8) + value;
     }
   }]);
 
-  return LoadWordOperand;
+  return LoadWordOperandHighByte;
 }();
 
-exports.LoadWordOperand = LoadWordOperand;
+exports.LoadWordOperandHighByte = LoadWordOperandHighByte;
 
 var IncrementRegister =
 /*#__PURE__*/

@@ -1,7 +1,6 @@
 /* global describe, test, expect */
 
 import {
-  createCpuWithRegisters,
   createMmu,
   EMPTY_MEMORY
 } from "../../test/help";
@@ -32,12 +31,10 @@ describe("rl", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({
-            [register]: binaryToNumber("01110001"),
-            f: binaryToNumber("00000000")
-          })
-        );
+        expect(cpu).toEqualCpuWithRegisters({
+          [register]: binaryToNumber("01110001"),
+          f: binaryToNumber("00000000")
+        });
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
@@ -53,12 +50,10 @@ describe("rl", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({
-            [register]: binaryToNumber("10100100"),
-            f: binaryToNumber("00010000")
-          })
-        );
+        expect(cpu).toEqualCpuWithRegisters({
+          [register]: binaryToNumber("10100100"),
+          f: binaryToNumber("00010000")
+        });
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
@@ -74,12 +69,10 @@ describe("rl", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({
-            [register]: 0x00,
-            f: binaryToNumber("10000000")
-          })
-        );
+        expect(cpu).toEqualCpuWithRegisters({
+          [register]: 0x00,
+          f: binaryToNumber("10000000")
+        });
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );

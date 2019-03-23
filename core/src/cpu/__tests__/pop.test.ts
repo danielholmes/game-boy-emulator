@@ -1,7 +1,6 @@
 /* global describe, test, expect */
 
 import {
-  createCpuWithRegisters,
   createMmuSnapshot,
   createMmu
 } from "../../test/help";
@@ -9,7 +8,6 @@ import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import { GROUPED_WORD_REGISTERS, GroupedWordRegister } from "../registers";
 import { createPopRr } from "../pop";
-import "../../test/defs";
 
 describe("pop", () => {
   let cpu: Cpu;
@@ -36,9 +34,7 @@ describe("pop", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(8);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({ [register]: 0x142e, sp: 0xf125 })
-        );
+        expect(cpu).toEqualCpuWithRegisters({ [register]: 0x142e, sp: 0xf125 });
         expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
       }
     );

@@ -2,7 +2,6 @@
 
 import { Mmu } from "../../memory/mmu";
 import {
-  createCpuWithRegisters,
   createMmuSnapshot,
   createMmu,
   EMPTY_MEMORY
@@ -12,7 +11,6 @@ import { ByteRegister, NON_A_BYTE_REGISTERS } from "../registers";
 import { createSubMHl, createSubN, createSubR } from "../sub";
 import { binaryToNumber } from "../../types";
 import { Cartridge } from "../../cartridge";
-import "../../test/defs";
 
 describe("sub", () => {
   let cpu: Cpu;
@@ -33,15 +31,13 @@ describe("sub", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(0);
-      expect(cpu).toEqual(
-        createCpuWithRegisters({
-          a: 0x00,
-          fZ: 1,
-          fN: 1,
-          fH: 0,
-          fC: 0
-        })
-      );
+      expect(cpu).toEqualCpuWithRegisters({
+        a: 0x00,
+        fZ: 1,
+        fN: 1,
+        fH: 0,
+        fC: 0
+      });
       expect(mmu).toEqual(EMPTY_MEMORY);
     });
 
@@ -57,16 +53,14 @@ describe("sub", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(
-          createCpuWithRegisters({
-            a: 0x92,
-            [register]: 0x07,
-            fZ: 0,
-            fN: 1,
-            fH: 0,
-            fC: 0
-          })
-        );
+        expect(cpu).toEqualCpuWithRegisters({
+          a: 0x92,
+          [register]: 0x07,
+          fZ: 0,
+          fN: 1,
+          fH: 0,
+          fC: 0
+        });
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
@@ -84,16 +78,14 @@ describe("sub", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(0);
-      expect(cpu).toEqual(
-        createCpuWithRegisters({
-          a: 0xef,
-          [register]: 0x27,
-          fZ: 0,
-          fN: 1,
-          fH: 1,
-          fC: 1
-        })
-      );
+      expect(cpu).toEqualCpuWithRegisters({
+        a: 0xef,
+        [register]: 0x27,
+        fZ: 0,
+        fN: 1,
+        fH: 1,
+        fC: 1
+      });
       expect(mmu).toEqual(EMPTY_MEMORY);
     }
   );
@@ -111,16 +103,14 @@ describe("sub", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
-      expect(cpu).toEqual(
-        createCpuWithRegisters({
-          a: 0x92,
-          hl: 0x9876,
-          fZ: 0,
-          fN: 1,
-          fH: 0,
-          fC: 0
-        })
-      );
+      expect(cpu).toEqualCpuWithRegisters({
+        a: 0x92,
+        hl: 0x9876,
+        fZ: 0,
+        fN: 1,
+        fH: 0,
+        fC: 0
+      });
       expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });
@@ -138,16 +128,14 @@ describe("sub", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
-      expect(cpu).toEqual(
-        createCpuWithRegisters({
-          a: 0x92,
-          pc: 0x0001,
-          fZ: 0,
-          fN: 1,
-          fH: 0,
-          fC: 0
-        })
-      );
+      expect(cpu).toEqualCpuWithRegisters({
+        a: 0x92,
+        pc: 0x0001,
+        fZ: 0,
+        fN: 1,
+        fH: 0,
+        fC: 0
+      });
       expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });

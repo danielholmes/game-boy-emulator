@@ -3,7 +3,6 @@
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import {
-  createCpuWithRegisters,
   createMmu,
   EMPTY_MEMORY
 } from "../../test/help";
@@ -30,7 +29,7 @@ describe("dec", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(0);
-        expect(cpu).toEqual(createCpuWithRegisters({ [register]: 0x0013 }));
+        expect(cpu).toEqualCpuWithRegisters({ [register]: 0x0013 });
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
