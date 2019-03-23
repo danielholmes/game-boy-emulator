@@ -48,6 +48,10 @@ export declare class JrCheck implements LowLevelOperation {
     constructor(flag: JrFlag);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
+export declare class Jr implements LowLevelOperation {
+    readonly cycles: ClockCycles;
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
+}
 export declare class ByteValueToSignedByte implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;

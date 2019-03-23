@@ -22,7 +22,7 @@ import {
   createLdRN,
   createLdRR,
   createLdRrNn,
-  createLdiMHlA
+  createLdiMHlA, createLdAMFfN
 } from "../ld";
 import {
   createCpuSnapshot,
@@ -348,4 +348,22 @@ describe("ld", () => {
       expect(mmu).toEqual(createMmuWithValues({ 0x9612: 0xaf }));
     });
   });
+
+  describe("createLdAMFfN", () => {
+    test("LDI a, (#ff00+n)", () => {
+      cpu.registers.pc = 0x0000;
+      const cart = new Cartridge(new Uint8Array([0x72]));
+      mmu.loadCartridge(cart);
+      mmu.writeByte(0xff72, 0x62);
+
+      const mmuSnapshot = createMmuSnapshot(mmu);
+      const instruction = createLdAMFfN(0x3d);
+
+      const cycles = instruction.execute(cpu, mmu);
+
+      expect(cycles).toBe(8);
+      expect(cpu).toEqualCpuWithRegisters({ a: 0x62, pc: 0x0001 });
+      expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
+    });
+  })
 });

@@ -388,6 +388,22 @@ export class SetRegister implements LowLevelOperation {
   }
 }
 
+export class AddToValue implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 0;
+  private readonly amount: WordValue | ByteValue;
+
+  public constructor(amount: WordValue | ByteValue) {
+    this.amount = amount;
+  }
+
+  public execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error('value undefined');
+    }
+    return value + this.amount;
+  }
+}
+
 export class LoadOperand implements LowLevelOperation {
   public readonly cycles: ClockCycles = 4;
 

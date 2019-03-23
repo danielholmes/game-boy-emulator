@@ -215,8 +215,8 @@ var INSTRUCTIONS = (0, _lodash.fromPairs)([(0, _special.createNop)(0x00)].concat
       opCode = _ref32[0],
       flag = _ref32[1];
 
-  return (0, _jr.createJrN)(opCode, flag);
-})), _toConsumableArray([[0x9f, "a"], [0x98, "b"], [0x99, "c"], [0x9a, "d"], [0x9b, "e"], [0x9c, "h"], [0x9d, "l"]].map(function (_ref33) {
+  return (0, _jr.createJrCcN)(opCode, flag);
+})), [(0, _jr.createJrN)(0x18)], _toConsumableArray([[0x9f, "a"], [0x98, "b"], [0x99, "c"], [0x9a, "d"], [0x9b, "e"], [0x9c, "h"], [0x9d, "l"]].map(function (_ref33) {
   var _ref34 = _slicedToArray(_ref33, 2),
       opCode = _ref34[0],
       register = _ref34[1];

@@ -80,6 +80,11 @@ function () {
       return this.withOperation(new _lowLevel.JrCheck(flag));
     }
   }, {
+    key: "jr",
+    value: function jr() {
+      return this.withOperation(new _lowLevel.Jr());
+    }
+  }, {
     key: "bitFlags",
     value: function bitFlags(position) {
       return this.withOperation(new _lowLevel.BitFlags(position));

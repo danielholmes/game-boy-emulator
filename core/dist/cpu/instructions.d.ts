@@ -19,6 +19,7 @@ export declare class InstructionDefinition implements Instruction {
     internalDelay(): InstructionDefinition;
     xOr(register: ByteRegister): InstructionDefinition;
     jrCheck(flag: JrFlag): InstructionDefinition;
+    jr(): InstructionDefinition;
     bitFlags(position: ByteBitPosition): InstructionDefinition;
     compareToRegister(register: Register): InstructionDefinition;
     loadRegister(register: Register): InstructionDefinition;

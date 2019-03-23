@@ -68,6 +68,13 @@ export const createLdMNA = (opCode: OpCode): Instruction =>
     .loadRegister("a")
     .writeMemoryFromOperandAddress();
 
+export const createLdAMFfN = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LD a,(0xff00+n)`)
+    .loadByteOperand()
+    .addToValue(0xff00)
+    .readMemory()
+    .storeInRegister('a');
+
 export const createLdGrM = (
   opCode: OpCode,
   register: NonAfGroupedWordRegister

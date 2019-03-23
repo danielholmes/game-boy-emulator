@@ -2,6 +2,7 @@ import { Mmu } from "../memory/mmu";
 import { fromPairs } from "lodash";
 import { Instruction, OpCode } from "./instructions";
 import {
+  createLdAMFfN,
   createLddMHlA,
   createLdHlMR,
   createLdiMHlA,
@@ -318,6 +319,7 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
     createLdiMHlA(0x22),
 
     createLdMFfCA(0xe2),
+    createLdAMFfN(0xf0),
 
     createCb(0xcb),
 

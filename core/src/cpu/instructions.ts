@@ -28,11 +28,11 @@ import {
   CompareToRegister,
   JrFlag,
   IncrementByteRegisterWithFlags,
-  IncrementWordRegisterWithFlags, Jr
+  IncrementWordRegisterWithFlags, Jr, AddToValue
 } from "./lowLevel";
 import { ByteRegister, Register, WordRegister } from "./registers";
 import { sum } from "lodash";
-import { ByteBitPosition, MemoryAddress } from "../types";
+import { ByteBitPosition, ByteValue, MemoryAddress, WordValue } from "../types";
 import { Cpu, ClockCycles } from "./index";
 
 export type OpCode = number;
@@ -132,6 +132,10 @@ export class InstructionDefinition implements Instruction {
 
   public loadByteOperand(): InstructionDefinition {
     return this.withOperation(new LoadOperand());
+  }
+
+  public addToValue(value: WordValue | ByteValue): InstructionDefinition {
+    return this.withOperation(new AddToValue(value));
   }
 
   public loadSignedByteOperand(): InstructionDefinition {
