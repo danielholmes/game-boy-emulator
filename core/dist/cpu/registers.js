@@ -90,6 +90,34 @@ function () {
       this._f = (z ? FLAG_Z_MASK : 0) + (n ? FLAG_N_MASK : 0) + (h ? FLAG_H_MASK : 0) + (c ? FLAG_C_MASK : 0);
     }
   }, {
+    key: "setFHFromByteAdd",
+    value: function setFHFromByteAdd(original, add) {
+      this.fH = ((original & 0xf) + (add & 0xf) & 0x10) === 0x10 ? 1 : 0;
+    }
+  }, {
+    key: "setFHFromWordAdd",
+    value: function setFHFromWordAdd(original, add) {
+      this.fH = ((original & 0xff) + (add & 0xff) & 0x100) === 0x100 ? 1 : 0;
+    }
+  }, {
+    key: "setFHFromByteSubtract",
+    value: function setFHFromByteSubtract(original, subtract) {
+      if (subtract !== 1) {
+        throw new Error('Not impl');
+      }
+
+      this.fH = (original & 0xf) === 0 ? 1 : 0;
+    }
+  }, {
+    key: "setFHFromWordSubtract",
+    value: function setFHFromWordSubtract(original, subtract) {
+      if (subtract !== 1) {
+        throw new Error('Not impl');
+      }
+
+      this.fH = (original & 0xff) === 0 ? 1 : 0;
+    }
+  }, {
     key: "fNz",
     get: function get() {
       return this.fZ ? 0 : 1;

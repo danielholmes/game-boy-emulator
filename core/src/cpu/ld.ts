@@ -51,17 +51,17 @@ export const createLdHlMR = (
 ): Instruction =>
   new InstructionDefinition(opCode, `LD (hl),${register}`)
     .loadRegister(register)
-    .writeMemoryFromGroupedRegisterAddress("hl");
+    .writeMemoryFromWordRegisterAddress("hl");
 
 export const createLdHlMN = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (hl),n`)
     .loadByteOperand()
-    .writeMemoryFromGroupedRegisterAddress("hl");
+    .writeMemoryFromWordRegisterAddress("hl");
 
-export const createLdMCA = (opCode: OpCode): Instruction =>
+export const createLdMFfCA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (0xff00+c),a`)
     .loadRegister("a")
-    .writeMemoryFromRegisterAddress("c");
+    .writeMemoryFromFf00PlusRegisterAddress("c");
 
 export const createLdMNA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (0xff00+n),a`)
@@ -89,7 +89,7 @@ export const createLdMRA = (
 ): Instruction =>
   new InstructionDefinition(opCode, `LD (r),a`)
     .loadRegister("a")
-    .writeMemoryFromGroupedRegisterAddress(register);
+    .writeMemoryFromWordRegisterAddress(register);
 
 export const createLdMNnA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (nn),a`)
@@ -104,11 +104,11 @@ export const createLdMNnSp = (opCode: OpCode): Instruction =>
 export const createLddMHlA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LDD (hl),a`)
     .loadRegister("a")
-    .writeMemoryFromGroupedRegisterAddress("hl")
+    .writeMemoryFromWordRegisterAddress("hl")
     .decrementRegister("hl");
 
 export const createLdiMHlA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LDI (hl),a`)
     .loadRegister("a")
-    .writeMemoryFromGroupedRegisterAddress("hl")
+    .writeMemoryFromWordRegisterAddress("hl")
     .incrementRegister("hl");

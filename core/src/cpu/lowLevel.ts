@@ -130,27 +130,6 @@ export class ReadMemory implements LowLevelOperation {
   }
 }
 
-export class WriteWordFromGroupedRegisterAddress implements LowLevelOperation {
-  public readonly cycles: ClockCycles = 4;
-  private readonly register: NonAfGroupedWordRegister;
-
-  public constructor(register: NonAfGroupedWordRegister) {
-    this.register = register;
-  }
-
-  public execute(
-    cpu: Cpu,
-    mmu: Mmu,
-    value: LowLevelState
-  ): LowLevelStateReturn {
-    if (value === undefined) {
-      throw new Error("value undefined");
-    }
-    const address = cpu.registers[this.register];
-    mmu.writeByte(address, value);
-  }
-}
-
 export class BitFlags implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
   private readonly position: ByteBitPosition;
@@ -315,9 +294,11 @@ export class WriteMemoryLowByteFromOperandAddress implements LowLevelOperation {
 export class WriteMemoryFromRegisterAddress implements LowLevelOperation {
   public readonly cycles: ClockCycles = 4;
   private readonly register: Register;
+  private readonly add: WordValue;
 
-  public constructor(register: Register) {
+  public constructor(register: Register, add: WordValue = 0x0000) {
     this.register = register;
+    this.add = add;
   }
 
   public execute(
@@ -328,7 +309,7 @@ export class WriteMemoryFromRegisterAddress implements LowLevelOperation {
     if (value === undefined) {
       throw new Error("value undefined");
     }
-    mmu.writeWordBigEndian(0xff00 + cpu.registers[this.register], value);
+    mmu.writeByte(cpu.registers[this.register] + this.add, value);
   }
 }
 

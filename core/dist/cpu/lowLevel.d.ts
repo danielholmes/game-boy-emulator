@@ -1,5 +1,5 @@
 import { Mmu } from "../memory/mmu";
-import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
+import { ByteRegister, Register, WordRegister } from "./registers";
 import { ByteValue, WordValue, ByteBitPosition } from "../types";
 import { Cpu, ClockCycles } from ".";
 export declare type LowLevelState = ByteValue | WordValue | undefined;
@@ -32,12 +32,6 @@ export declare class ReadMemoryWord implements LowLevelOperation {
 }
 export declare class ReadMemory implements LowLevelOperation {
     readonly cycles: ClockCycles;
-    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
-}
-export declare class WriteWordFromGroupedRegisterAddress implements LowLevelOperation {
-    readonly cycles: ClockCycles;
-    private readonly register;
-    constructor(register: NonAfGroupedWordRegister);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class BitFlags implements LowLevelOperation {
@@ -83,7 +77,8 @@ export declare class WriteMemoryLowByteFromOperandAddress implements LowLevelOpe
 export declare class WriteMemoryFromRegisterAddress implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly register;
-    constructor(register: Register);
+    private readonly add;
+    constructor(register: Register, add?: WordValue);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class InternalDelay implements LowLevelOperation {
@@ -113,6 +108,18 @@ export declare class LoadWordOperandHighByte implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
+export declare class IncrementWordRegisterWithFlags implements LowLevelOperation {
+    readonly cycles: ClockCycles;
+    private readonly register;
+    constructor(register: WordRegister);
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
+}
+export declare class IncrementByteRegisterWithFlags implements LowLevelOperation {
+    readonly cycles: ClockCycles;
+    private readonly register;
+    constructor(register: ByteRegister);
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
+}
 export declare class IncrementRegister implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly register;
@@ -125,6 +132,12 @@ export declare class XOrRegister implements LowLevelOperation {
     private readonly register;
     constructor(register: ByteRegister);
     execute(cpu: Cpu): LowLevelStateReturn;
+}
+export declare class DecrementByteRegisterWithFlags implements LowLevelOperation {
+    readonly cycles: ClockCycles;
+    private readonly register;
+    constructor(register: ByteRegister);
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class DecrementRegister implements LowLevelOperation {
     readonly cycles: ClockCycles;

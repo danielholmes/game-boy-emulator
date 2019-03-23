@@ -13,7 +13,6 @@ import {
   ReadMemory,
   SetRegister,
   StoreInRegister,
-  WriteWordFromGroupedRegisterAddress,
   WriteByteFromOperandAddress,
   XOrRegister,
   ByteValueToSignedByte,
@@ -33,7 +32,6 @@ import {
 } from "./lowLevel";
 import {
   ByteRegister,
-  NonAfGroupedWordRegister,
   Register,
   WordRegister
 } from "./registers";
@@ -118,17 +116,15 @@ export class InstructionDefinition implements Instruction {
       .incrementRegister("pc");
   }
 
-  public writeMemoryFromRegisterAddress(
-    register: Register
+  public writeMemoryFromFf00PlusRegisterAddress(
+    register: ByteRegister
   ): InstructionDefinition {
-    return this.withOperation(new WriteMemoryFromRegisterAddress(register));
+    return this.withOperation(new WriteMemoryFromRegisterAddress(register, 0xff00));
   }
 
-  public writeMemoryFromGroupedRegisterAddress(
-    register: NonAfGroupedWordRegister
-  ): InstructionDefinition {
+  public writeMemoryFromWordRegisterAddress(register: WordRegister): InstructionDefinition {
     return this.withOperation(
-      new WriteWordFromGroupedRegisterAddress(register)
+      new WriteMemoryFromRegisterAddress(register)
     );
   }
 

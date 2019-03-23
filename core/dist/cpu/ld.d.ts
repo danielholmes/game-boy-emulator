@@ -7,7 +7,7 @@ export declare const createLdRMRr: (opCode: number, register1: ByteRegister, reg
 export declare const createLdRHlM: (opCode: number, register: ByteRegister) => Instruction;
 export declare const createLdHlMR: (opCode: number, register: ByteRegister) => Instruction;
 export declare const createLdHlMN: (opCode: number) => Instruction;
-export declare const createLdMCA: (opCode: number) => Instruction;
+export declare const createLdMFfCA: (opCode: number) => Instruction;
 export declare const createLdMNA: (opCode: number) => Instruction;
 export declare const createLdGrM: (opCode: number, register: NonAfGroupedWordRegister) => Instruction;
 export declare const createLdAMNn: (opCode: number) => Instruction;

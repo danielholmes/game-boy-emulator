@@ -1,6 +1,6 @@
 import { Mmu } from "../memory/mmu";
 import { LowLevelOperation, JrFlag } from "./lowLevel";
-import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
+import { ByteRegister, Register, WordRegister } from "./registers";
 import { ByteBitPosition, MemoryAddress } from "../types";
 import { Cpu, ClockCycles } from "./index";
 export declare type OpCode = number;
@@ -24,12 +24,15 @@ export declare class InstructionDefinition implements Instruction {
     loadRegister(register: Register): InstructionDefinition;
     loadProgramCounter(): InstructionDefinition;
     writeMemoryFromOperandAddress(): InstructionDefinition;
-    writeMemoryFromRegisterAddress(register: Register): InstructionDefinition;
-    writeMemoryFromGroupedRegisterAddress(register: NonAfGroupedWordRegister): InstructionDefinition;
+    writeMemoryFromFf00PlusRegisterAddress(register: ByteRegister): InstructionDefinition;
+    writeMemoryFromWordRegisterAddress(register: WordRegister): InstructionDefinition;
     loadByteOperand(): InstructionDefinition;
     loadSignedByteOperand(): InstructionDefinition;
     loadWordOperand(): InstructionDefinition;
+    decrementByteRegisterWithFlags(register: ByteRegister): InstructionDefinition;
     decrementRegister(register: Register): InstructionDefinition;
+    incrementWordRegisterWithFlags(register: WordRegister): InstructionDefinition;
+    incrementByteRegisterWithFlags(register: ByteRegister): InstructionDefinition;
     incrementRegister(register: Register): InstructionDefinition;
     storeInRegister(register: Register): InstructionDefinition;
     readMemory(): InstructionDefinition;

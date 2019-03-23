@@ -13,7 +13,7 @@ import {
   createLdGrM,
   createLdHlMN,
   createLdHlMR,
-  createLdMCA,
+  createLdMFfCA,
   createLdMNA,
   createLdMNnA,
   createLdMNnSp,
@@ -182,13 +182,13 @@ describe("ld", () => {
     });
   });
 
-  describe("createLdMCA", () => {
+  describe("createLdMFfCA", () => {
     test("LD (0xff00+c),a", () => {
       cpu.registers.a = 0x12;
       cpu.registers.c = 0x77;
 
       const cpuSnapshot = createCpuSnapshot(cpu);
-      const instruction = createLdMCA(0x3d);
+      const instruction = createLdMFfCA(0x3d);
 
       const cycles = instruction.execute(cpu, mmu);
 

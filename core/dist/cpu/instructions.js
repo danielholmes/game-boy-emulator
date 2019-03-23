@@ -105,14 +105,14 @@ function () {
       return this.withOperation(new _lowLevel.WriteMemoryHighByteFromOperandAddress()).withOperation(new _lowLevel.WriteMemoryLowByteFromOperandAddress()).incrementRegister("pc");
     }
   }, {
-    key: "writeMemoryFromRegisterAddress",
-    value: function writeMemoryFromRegisterAddress(register) {
-      return this.withOperation(new _lowLevel.WriteMemoryFromRegisterAddress(register));
+    key: "writeMemoryFromFf00PlusRegisterAddress",
+    value: function writeMemoryFromFf00PlusRegisterAddress(register) {
+      return this.withOperation(new _lowLevel.WriteMemoryFromRegisterAddress(register, 0xff00));
     }
   }, {
-    key: "writeMemoryFromGroupedRegisterAddress",
-    value: function writeMemoryFromGroupedRegisterAddress(register) {
-      return this.withOperation(new _lowLevel.WriteWordFromGroupedRegisterAddress(register));
+    key: "writeMemoryFromWordRegisterAddress",
+    value: function writeMemoryFromWordRegisterAddress(register) {
+      return this.withOperation(new _lowLevel.WriteMemoryFromRegisterAddress(register));
     }
   }, {
     key: "loadByteOperand",
@@ -130,9 +130,24 @@ function () {
       return this.loadByteOperand().withOperation(new _lowLevel.LoadWordOperandHighByte());
     }
   }, {
+    key: "decrementByteRegisterWithFlags",
+    value: function decrementByteRegisterWithFlags(register) {
+      return this.withOperation(new _lowLevel.DecrementByteRegisterWithFlags(register));
+    }
+  }, {
     key: "decrementRegister",
     value: function decrementRegister(register) {
       return this.withOperation(new _lowLevel.DecrementRegister(register));
+    }
+  }, {
+    key: "incrementWordRegisterWithFlags",
+    value: function incrementWordRegisterWithFlags(register) {
+      return this.withOperation(new _lowLevel.IncrementWordRegisterWithFlags(register));
+    }
+  }, {
+    key: "incrementByteRegisterWithFlags",
+    value: function incrementByteRegisterWithFlags(register) {
+      return this.withOperation(new _lowLevel.IncrementByteRegisterWithFlags(register));
     }
   }, {
     key: "incrementRegister",

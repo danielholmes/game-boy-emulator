@@ -5,7 +5,7 @@ import {
   createLddMHlA,
   createLdHlMR,
   createLdiMHlA,
-  createLdMCA,
+  createLdMFfCA,
   createLdMNA,
   createLdMNnA,
   createLdMNnSp,
@@ -317,7 +317,7 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
     createLddMHlA(0x32),
     createLdiMHlA(0x22),
 
-    createLdMCA(0xe2),
+    createLdMFfCA(0xe2),
 
     createCb(0xcb),
 

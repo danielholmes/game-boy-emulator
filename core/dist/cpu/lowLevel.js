@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperandHighByte = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.ByteValueToSignedByte = exports.JrCheck = exports.JR_FLAGS = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.DecrementByteRegisterWithFlags = exports.XOrRegister = exports.IncrementRegister = exports.IncrementByteRegisterWithFlags = exports.IncrementWordRegisterWithFlags = exports.LoadWordOperandHighByte = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.ByteValueToSignedByte = exports.JrCheck = exports.JR_FLAGS = exports.BitFlags = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -164,36 +164,6 @@ function () {
 
 exports.ReadMemory = ReadMemory;
 
-var WriteWordFromGroupedRegisterAddress =
-/*#__PURE__*/
-function () {
-  function WriteWordFromGroupedRegisterAddress(register) {
-    _classCallCheck(this, WriteWordFromGroupedRegisterAddress);
-
-    _defineProperty(this, "cycles", 4);
-
-    _defineProperty(this, "register", void 0);
-
-    this.register = register;
-  }
-
-  _createClass(WriteWordFromGroupedRegisterAddress, [{
-    key: "execute",
-    value: function execute(cpu, mmu, value) {
-      if (value === undefined) {
-        throw new Error("value undefined");
-      }
-
-      var address = cpu.registers[this.register];
-      mmu.writeByte(address, value);
-    }
-  }]);
-
-  return WriteWordFromGroupedRegisterAddress;
-}();
-
-exports.WriteWordFromGroupedRegisterAddress = WriteWordFromGroupedRegisterAddress;
-
 var BitFlags =
 /*#__PURE__*/
 function () {
@@ -211,7 +181,7 @@ function () {
     key: "execute",
     value: function execute(cpu, mmu, value) {
       if (value === undefined) {
-        throw new Error('value undefined');
+        throw new Error("value undefined");
       }
 
       var bit = value & 1 << this.position;
@@ -434,13 +404,18 @@ var WriteMemoryFromRegisterAddress =
 /*#__PURE__*/
 function () {
   function WriteMemoryFromRegisterAddress(register) {
+    var add = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0x0000;
+
     _classCallCheck(this, WriteMemoryFromRegisterAddress);
 
     _defineProperty(this, "cycles", 4);
 
     _defineProperty(this, "register", void 0);
 
+    _defineProperty(this, "add", void 0);
+
     this.register = register;
+    this.add = add;
   }
 
   _createClass(WriteMemoryFromRegisterAddress, [{
@@ -450,7 +425,7 @@ function () {
         throw new Error("value undefined");
       }
 
-      mmu.writeWordBigEndian(0xff00 + cpu.registers[this.register], value);
+      mmu.writeByte(cpu.registers[this.register] + this.add, value);
     }
   }]);
 
@@ -610,6 +585,64 @@ function () {
 
 exports.LoadWordOperandHighByte = LoadWordOperandHighByte;
 
+var IncrementWordRegisterWithFlags =
+/*#__PURE__*/
+function () {
+  function IncrementWordRegisterWithFlags(register) {
+    _classCallCheck(this, IncrementWordRegisterWithFlags);
+
+    _defineProperty(this, "cycles", 0);
+
+    _defineProperty(this, "register", void 0);
+
+    this.register = register;
+  }
+
+  _createClass(IncrementWordRegisterWithFlags, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      cpu.registers.setFHFromWordAdd(cpu.registers[this.register], 1);
+      cpu.registers[this.register]++;
+      cpu.registers.fZ = cpu.registers[this.register] === 0x0000 ? 1 : 0;
+      cpu.registers.fN = 0;
+      return value;
+    }
+  }]);
+
+  return IncrementWordRegisterWithFlags;
+}();
+
+exports.IncrementWordRegisterWithFlags = IncrementWordRegisterWithFlags;
+
+var IncrementByteRegisterWithFlags =
+/*#__PURE__*/
+function () {
+  function IncrementByteRegisterWithFlags(register) {
+    _classCallCheck(this, IncrementByteRegisterWithFlags);
+
+    _defineProperty(this, "cycles", 0);
+
+    _defineProperty(this, "register", void 0);
+
+    this.register = register;
+  }
+
+  _createClass(IncrementByteRegisterWithFlags, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      cpu.registers.setFHFromByteAdd(cpu.registers[this.register], 1);
+      cpu.registers[this.register]++;
+      cpu.registers.fZ = cpu.registers[this.register] === 0x00 ? 1 : 0;
+      cpu.registers.fN = 0;
+      return value;
+    }
+  }]);
+
+  return IncrementByteRegisterWithFlags;
+}();
+
+exports.IncrementByteRegisterWithFlags = IncrementByteRegisterWithFlags;
+
 var IncrementRegister =
 /*#__PURE__*/
 function () {
@@ -662,7 +695,36 @@ function () {
 
 exports.XOrRegister = XOrRegister;
 
-_defineProperty(XOrRegister, "F_Z_SET", (0, _types.binaryToNumber)('10000000'));
+_defineProperty(XOrRegister, "F_Z_SET", (0, _types.binaryToNumber)("10000000"));
+
+var DecrementByteRegisterWithFlags =
+/*#__PURE__*/
+function () {
+  function DecrementByteRegisterWithFlags(register) {
+    _classCallCheck(this, DecrementByteRegisterWithFlags);
+
+    _defineProperty(this, "cycles", 0);
+
+    _defineProperty(this, "register", void 0);
+
+    this.register = register;
+  }
+
+  _createClass(DecrementByteRegisterWithFlags, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      cpu.registers.setFHFromByteSubtract(cpu.registers[this.register], 1);
+      cpu.registers[this.register]--;
+      cpu.registers.fZ = cpu.registers[this.register] === 0x00 ? 1 : 0;
+      cpu.registers.fN = 1;
+      return value;
+    }
+  }]);
+
+  return DecrementByteRegisterWithFlags;
+}();
+
+exports.DecrementByteRegisterWithFlags = DecrementByteRegisterWithFlags;
 
 var DecrementRegister =
 /*#__PURE__*/

@@ -180,13 +180,13 @@ var INSTRUCTIONS = (0, _lodash.fromPairs)([(0, _special.createNop)(0x00)].concat
       register = _ref20[1];
 
   return (0, _dec.createDecR)(opCode, register);
-})), _toConsumableArray([[0x03, "bc"], [0x13, "de"], [0x23, "hl"]].map(function (_ref21) {
+})), _toConsumableArray([[0x03, "bc"], [0x13, "de"], [0x23, "hl"], [0x33, "sp"]].map(function (_ref21) {
   var _ref22 = _slicedToArray(_ref21, 2),
       opCode = _ref22[0],
       register = _ref22[1];
 
   return (0, _inc.createIncRr)(opCode, register);
-})), [(0, _inc.createIncSp)(0x33)], _toConsumableArray([[0x3c, "a"], [0x04, "b"], [0x0c, "c"], [0x14, "d"], [0x1c, "e"], [0x24, "h"], [0x2c, "l"]].map(function (_ref23) {
+})), _toConsumableArray([[0x3c, "a"], [0x04, "b"], [0x0c, "c"], [0x14, "d"], [0x1c, "e"], [0x24, "h"], [0x2c, "l"]].map(function (_ref23) {
   var _ref24 = _slicedToArray(_ref23, 2),
       opCode = _ref24[0],
       register = _ref24[1];
@@ -210,7 +210,7 @@ var INSTRUCTIONS = (0, _lodash.fromPairs)([(0, _special.createNop)(0x00)].concat
       register = _ref30[1];
 
   return (0, _cp.createCpR)(opCode, register);
-})), [(0, _cp.createCpMHl)(0xbe), (0, _cp.createCpN)(0xfe), (0, _ld.createLddMHlA)(0x32), (0, _ld.createLdiMHlA)(0x22), (0, _ld.createLdMCA)(0xe2), (0, _cb.createCb)(0xcb), (0, _ret.createRet)(0xc9)], _toConsumableArray([[0x20, "fNZ"], [0x28, "fZ"], [0x30, "fNc"], [0x38, "fC"]].map(function (_ref31) {
+})), [(0, _cp.createCpMHl)(0xbe), (0, _cp.createCpN)(0xfe), (0, _ld.createLddMHlA)(0x32), (0, _ld.createLdiMHlA)(0x22), (0, _ld.createLdMFfCA)(0xe2), (0, _cb.createCb)(0xcb), (0, _ret.createRet)(0xc9)], _toConsumableArray([[0x20, "fNZ"], [0x28, "fZ"], [0x30, "fNc"], [0x38, "fC"]].map(function (_ref31) {
   var _ref32 = _slicedToArray(_ref31, 2),
       opCode = _ref32[0],
       flag = _ref32[1];

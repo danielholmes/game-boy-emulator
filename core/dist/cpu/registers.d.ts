@@ -2,8 +2,9 @@ import { BitValue, ByteValue, WordValue } from "../types";
 export declare type ByteRegister = "a" | "b" | "c" | "d" | "e" | "h" | "l";
 export declare type NonAfGroupedWordRegister = "bc" | "de" | "hl";
 export declare type GroupedWordRegister = "af" | NonAfGroupedWordRegister;
-export declare type NativeWordRegister = "sp" | "pc";
-export declare type Register = ByteRegister | "f" | GroupedWordRegister | NativeWordRegister;
+declare type NativeWordRegister = "sp" | "pc";
+export declare type WordRegister = GroupedWordRegister | NativeWordRegister;
+export declare type Register = ByteRegister | "f" | WordRegister;
 export declare const NON_AF_GROUPED_WORD_REGISTERS: ReadonlyArray<NonAfGroupedWordRegister>;
 export declare const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister>;
 export declare const BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
@@ -37,6 +38,10 @@ export interface CpuRegisters {
     fC: BitValue;
     fNc: BitValue;
     setFFromParts(z: BitIndicator, n: BitIndicator, h: BitIndicator, c: BitIndicator): void;
+    setFHFromByteAdd(original: ByteValue, add: ByteValue): void;
+    setFHFromWordAdd(original: WordValue, add: WordValue): void;
+    setFHFromByteSubtract(original: ByteValue, subtract: ByteValue): void;
+    setFHFromWordSubtract(original: WordValue, subtract: WordValue): void;
 }
 export declare class CpuRegistersImpl implements CpuRegisters {
     private _a;
@@ -51,6 +56,10 @@ export declare class CpuRegistersImpl implements CpuRegisters {
     private _sp;
     constructor();
     setFFromParts(z: BitIndicator, n: BitIndicator, h: BitIndicator, c: BitIndicator): void;
+    setFHFromByteAdd(original: ByteValue, add: ByteValue): void;
+    setFHFromWordAdd(original: ByteValue, add: ByteValue): void;
+    setFHFromByteSubtract(original: ByteValue, subtract: ByteValue): void;
+    setFHFromWordSubtract(original: ByteValue, subtract: ByteValue): void;
     fNz: BitValue;
     fZ: BitValue;
     fN: BitValue;

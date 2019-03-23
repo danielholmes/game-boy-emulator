@@ -86,7 +86,11 @@ for (var i = 0; i < 1000001; i++) {
     }
 
     var addresses = Object.keys(filled).sort();
-    console.log("MEM", addresses.length.toString(16), "0x" + addresses.sort()[0].toString(16), "(0x" + filled[addresses[0]].toString(16) + ")", "-", "0x" + addresses[addresses.length - 1].toString(16)); // console.log(
+    console.log("MEM", addresses.length.toString(16));
+
+    if (addresses.length > 0) {
+      console.log("  0x" + addresses.sort()[0].toString(16), "(0x" + filled[addresses[0]].toString(16) + ")", "-", "0x" + addresses[addresses.length - 1].toString(16));
+    } // console.log(
     //   sortBy(
     //     toPairs(filled),
     //     ([address, ]) => address
@@ -96,6 +100,7 @@ for (var i = 0; i < 1000001; i++) {
     //     )
     //     .join(' ')
     // );
+
   }
 }
 

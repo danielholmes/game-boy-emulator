@@ -83,7 +83,7 @@ var createCbBitBR = function createCbBitBR(opCode, position, register) {
 exports.createCbBitBR = createCbBitBR;
 
 var createCbBitBMHl = function createCbBitBMHl(opCode, position) {
-  return new _instructions.InstructionDefinition(opCode, "BIT ".concat(position, ", (hl)")).loadRegister('hl').readMemory().bitFlags(position);
+  return new _instructions.InstructionDefinition(opCode, "BIT ".concat(position, ", (hl)")).loadRegister("hl").readMemory().bitFlags(position);
 };
 
 exports.createCbBitBMHl = createCbBitBMHl;
@@ -106,7 +106,7 @@ var CB_INSTRUCTIONS = (0, _lodash.fromPairs)([].concat(_toConsumableArray([[0x40
       register = _ref6[1];
 
   return (0, _rl.createRlR)(opCode, register);
-}))).map(function (i) {
+})), [(0, _rl.createRlMHl)(0x16)]).map(function (i) {
   return [i.opCode, i];
 }));
 //# sourceMappingURL=cb.js.map

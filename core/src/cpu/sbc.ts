@@ -14,7 +14,7 @@ class SbcAR implements LowLevelOperation {
   public execute(cpu: Cpu): LowLevelStateReturn {
     const oldA = cpu.registers.a;
     cpu.registers.a -= cpu.registers[this.register];
-    cpu.registers.a -= cpu.registers.f & 0x10 ? 1 : 0;
+    cpu.registers.a -= (cpu.registers.f & 0x10) === 1 ? 1 : 0;
     cpu.registers.f = cpu.registers.a < 0 ? 0x50 : 0x40;
     cpu.registers.a &= 0xff;
     if (!cpu.registers.a) {

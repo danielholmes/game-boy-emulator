@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createLdiMHlA = exports.createLddMHlA = exports.createLdMNnSp = exports.createLdMNnA = exports.createLdMRA = exports.createLdAMNn = exports.createLdGrM = exports.createLdMNA = exports.createLdMCA = exports.createLdHlMN = exports.createLdHlMR = exports.createLdRHlM = exports.createLdRMRr = exports.createLdRN = exports.createLdRrNn = exports.createLdRR = void 0;
+exports.createLdiMHlA = exports.createLddMHlA = exports.createLdMNnSp = exports.createLdMNnA = exports.createLdMRA = exports.createLdAMNn = exports.createLdGrM = exports.createLdMNA = exports.createLdMFfCA = exports.createLdHlMN = exports.createLdHlMR = exports.createLdRHlM = exports.createLdRMRr = exports.createLdRN = exports.createLdRrNn = exports.createLdRR = void 0;
 
 var _instructions = require("./instructions");
 
@@ -38,22 +38,22 @@ var createLdRHlM = function createLdRHlM(opCode, register) {
 exports.createLdRHlM = createLdRHlM;
 
 var createLdHlMR = function createLdHlMR(opCode, register) {
-  return new _instructions.InstructionDefinition(opCode, "LD (hl),".concat(register)).loadRegister(register).writeMemoryFromGroupedRegisterAddress("hl");
+  return new _instructions.InstructionDefinition(opCode, "LD (hl),".concat(register)).loadRegister(register).writeMemoryFromWordRegisterAddress("hl");
 };
 
 exports.createLdHlMR = createLdHlMR;
 
 var createLdHlMN = function createLdHlMN(opCode) {
-  return new _instructions.InstructionDefinition(opCode, "LD (hl),n").loadByteOperand().writeMemoryFromGroupedRegisterAddress("hl");
+  return new _instructions.InstructionDefinition(opCode, "LD (hl),n").loadByteOperand().writeMemoryFromWordRegisterAddress("hl");
 };
 
 exports.createLdHlMN = createLdHlMN;
 
-var createLdMCA = function createLdMCA(opCode) {
-  return new _instructions.InstructionDefinition(opCode, "LD (0xff00+c),a").loadRegister("a").writeMemoryFromRegisterAddress("c");
+var createLdMFfCA = function createLdMFfCA(opCode) {
+  return new _instructions.InstructionDefinition(opCode, "LD (0xff00+c),a").loadRegister("a").writeMemoryFromFf00PlusRegisterAddress("c");
 };
 
-exports.createLdMCA = createLdMCA;
+exports.createLdMFfCA = createLdMFfCA;
 
 var createLdMNA = function createLdMNA(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LD (0xff00+n),a").loadRegister("a").writeMemoryFromOperandAddress();
@@ -74,7 +74,7 @@ var createLdAMNn = function createLdAMNn(opCode) {
 exports.createLdAMNn = createLdAMNn;
 
 var createLdMRA = function createLdMRA(opCode, register) {
-  return new _instructions.InstructionDefinition(opCode, "LD (r),a").loadRegister("a").writeMemoryFromGroupedRegisterAddress(register);
+  return new _instructions.InstructionDefinition(opCode, "LD (r),a").loadRegister("a").writeMemoryFromWordRegisterAddress(register);
 };
 
 exports.createLdMRA = createLdMRA;
@@ -92,13 +92,13 @@ var createLdMNnSp = function createLdMNnSp(opCode) {
 exports.createLdMNnSp = createLdMNnSp;
 
 var createLddMHlA = function createLddMHlA(opCode) {
-  return new _instructions.InstructionDefinition(opCode, "LDD (hl),a").loadRegister("a").writeMemoryFromGroupedRegisterAddress("hl").decrementRegister("hl");
+  return new _instructions.InstructionDefinition(opCode, "LDD (hl),a").loadRegister("a").writeMemoryFromWordRegisterAddress("hl").decrementRegister("hl");
 };
 
 exports.createLddMHlA = createLddMHlA;
 
 var createLdiMHlA = function createLdiMHlA(opCode) {
-  return new _instructions.InstructionDefinition(opCode, "LDI (hl),a").loadRegister("a").writeMemoryFromGroupedRegisterAddress("hl").incrementRegister("hl");
+  return new _instructions.InstructionDefinition(opCode, "LDI (hl),a").loadRegister("a").writeMemoryFromWordRegisterAddress("hl").incrementRegister("hl");
 };
 
 exports.createLdiMHlA = createLdiMHlA;
