@@ -4,7 +4,7 @@ import { createJrCcN, createJrN } from "../jr";
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import { Cartridge } from "../../cartridge";
-import { JR_FLAGS, JrFlag } from "../lowLevel";
+import { CHECK_FLAGS, CheckFlag } from "../lowLevel";
 
 describe("jr", () => {
   let cpu: Cpu;
@@ -16,7 +16,7 @@ describe("jr", () => {
   });
 
   describe("createJrCcN", () => {
-    describe.each(JR_FLAGS.map(f => [f]))("JR %s,n", (flag: JrFlag) => {
+    describe.each(CHECK_FLAGS.map(f => [f]))("JR %s,n", (flag: CheckFlag) => {
       test("pass positive", () => {
         cpu.registers.pc = 0x0001;
         cpu.registers[flag] = 1;

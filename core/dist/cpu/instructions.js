@@ -75,14 +75,19 @@ function () {
       return this.withOperation(new _lowLevel.XOrRegister(register));
     }
   }, {
-    key: "jrCheck",
-    value: function jrCheck(flag) {
-      return this.withOperation(new _lowLevel.JrCheck(flag));
+    key: "setToPcIfFlag",
+    value: function setToPcIfFlag(flag) {
+      return this.withOperation(new _lowLevel.SetToPcIfFlag(flag));
     }
   }, {
-    key: "jr",
-    value: function jr() {
-      return this.withOperation(new _lowLevel.Jr());
+    key: "addToRegister",
+    value: function addToRegister(register) {
+      return this.withOperation(new _lowLevel.AddToRegister(register));
+    }
+  }, {
+    key: "addToPcIfFlag",
+    value: function addToPcIfFlag(flag) {
+      return this.withOperation(new _lowLevel.AddToPcIfFlag(flag));
     }
   }, {
     key: "bitFlags",

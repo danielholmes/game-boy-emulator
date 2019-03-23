@@ -1,5 +1,5 @@
 import { Mmu } from "../memory/mmu";
-import { LowLevelOperation, JrFlag } from "./lowLevel";
+import { LowLevelOperation, CheckFlag } from "./lowLevel";
 import { ByteRegister, Register, WordRegister } from "./registers";
 import { ByteBitPosition, ByteValue, MemoryAddress, WordValue } from "../types";
 import { Cpu, ClockCycles } from "./index";
@@ -18,8 +18,9 @@ export declare class InstructionDefinition implements Instruction {
     rotateLeftThroughCarry(register: ByteRegister): InstructionDefinition;
     internalDelay(): InstructionDefinition;
     xOr(register: ByteRegister): InstructionDefinition;
-    jrCheck(flag: JrFlag): InstructionDefinition;
-    jr(): InstructionDefinition;
+    setToPcIfFlag(flag: CheckFlag): InstructionDefinition;
+    addToRegister(register: Register): InstructionDefinition;
+    addToPcIfFlag(flag: CheckFlag): InstructionDefinition;
     bitFlags(position: ByteBitPosition): InstructionDefinition;
     compareToRegister(register: Register): InstructionDefinition;
     loadRegister(register: Register): InstructionDefinition;

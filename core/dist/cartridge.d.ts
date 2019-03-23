@@ -6,4 +6,5 @@ export declare class Cartridge {
     readByte(address: MemoryAddress): ByteValue;
     static newWithNintendoLogo(bytes: Uint8Array): Cartridge;
 }
+export declare const isValid: (cartridge: Cartridge) => Boolean;
 //# sourceMappingURL=cartridge.d.ts.map

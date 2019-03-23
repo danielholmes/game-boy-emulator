@@ -40,16 +40,18 @@ export declare class BitFlags implements LowLevelOperation {
     constructor(position: ByteBitPosition);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare type JrFlag = "fNz" | "fZ" | "fC" | "fNc";
-export declare const JR_FLAGS: ReadonlyArray<JrFlag>;
-export declare class JrCheck implements LowLevelOperation {
+export declare type CheckFlag = "fNz" | "fZ" | "fC" | "fNc";
+export declare const CHECK_FLAGS: ReadonlyArray<CheckFlag>;
+export declare class SetToPcIfFlag implements LowLevelOperation {
     readonly cycles: ClockCycles;
     private readonly flag;
-    constructor(flag: JrFlag);
+    constructor(flag: CheckFlag);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare class Jr implements LowLevelOperation {
+export declare class AddToPcIfFlag implements LowLevelOperation {
     readonly cycles: ClockCycles;
+    private readonly flag;
+    constructor(flag: CheckFlag);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class ByteValueToSignedByte implements LowLevelOperation {
@@ -62,6 +64,12 @@ export declare class WriteByteFromOperandAddress implements LowLevelOperation {
 }
 export declare class WriteWordFromOperandAddress implements LowLevelOperation {
     readonly cycles: ClockCycles;
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
+}
+export declare class AddToRegister implements LowLevelOperation {
+    readonly cycles: ClockCycles;
+    private readonly register;
+    constructor(register: Register);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class StoreInRegister implements LowLevelOperation {

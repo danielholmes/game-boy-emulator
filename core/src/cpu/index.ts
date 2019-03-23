@@ -33,14 +33,14 @@ import { numberToByteHex } from "../types";
 import { createCb } from "./cb";
 import { createJrCcN, createJrN } from "./jr";
 import { createSbcAR } from "./sbc";
-import { createCallNn } from "./call";
+import { createCallFNn, createCallNn } from "./call";
 import { createPush } from "./push";
 import { createRlR } from "./rl";
 import { createPopRr } from "./pop";
 import { createRet } from "./ret";
 import { createSubMHl, createSubN, createSubR } from "./sub";
 import { createCpMHl, createCpN, createCpR } from "./cp";
-import { JrFlag } from "./lowLevel";
+import { CheckFlag } from "./lowLevel";
 import { createAdcN } from "./add";
 
 export type ClockCycles = number;
@@ -163,6 +163,14 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
     createLdMNnA(0xea),
 
     createCallNn(0xcd),
+    ...([
+      [0xc4, "fNz"],
+      [0xcc, "fZ"],
+      [0xd4, "fNc"],
+      [0xdc, "fC"]
+    ] as ReadonlyArray<[OpCode, CheckFlag]>).map(
+      ([opCode, flag]) => createCallFNn(opCode, flag)
+    ),
 
     ...([
       [0xf5, "af"],
@@ -344,7 +352,7 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x28, "fZ"],
       [0x30, "fNc"],
       [0x38, "fC"]
-    ] as ReadonlyArray<[OpCode, JrFlag]>).map(([opCode, flag]) =>
+    ] as ReadonlyArray<[OpCode, CheckFlag]>).map(([opCode, flag]) =>
       createJrCcN(opCode, flag)
     ),
     createJrN(0x18),

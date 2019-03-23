@@ -4,7 +4,7 @@ import {
   DecrementRegister,
   DecrementByteRegisterWithFlags,
   IncrementRegister,
-  JrCheck,
+  AddToPcIfFlag,
   LoadOperand,
   LoadWordOperandHighByte,
   LoadRegister,
@@ -26,11 +26,10 @@ import {
   RotateLeftThroughCarry,
   ReadMemoryWord,
   CompareToRegister,
-  JrFlag,
+  CheckFlag,
   IncrementByteRegisterWithFlags,
   IncrementWordRegisterWithFlags,
-  Jr,
-  AddToValue, AddWithCarryToA
+  AddToValue, AddWithCarryToA, AddToRegister, SetToPcIfFlag
 } from "./lowLevel";
 import { ByteRegister, Register, WordRegister } from "./registers";
 import { sum } from "lodash";
@@ -88,12 +87,16 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new XOrRegister(register));
   }
 
-  public jrCheck(flag: JrFlag): InstructionDefinition {
-    return this.withOperation(new JrCheck(flag));
+  public setToPcIfFlag(flag: CheckFlag): InstructionDefinition {
+    return this.withOperation(new SetToPcIfFlag(flag));
   }
 
-  public jr(): InstructionDefinition {
-    return this.withOperation(new Jr());
+  public addToRegister(register: Register): InstructionDefinition {
+    return this.withOperation(new AddToRegister(register));
+  }
+
+  public addToPcIfFlag(flag: CheckFlag): InstructionDefinition {
+    return this.withOperation(new AddToPcIfFlag(flag));
   }
 
   public bitFlags(position: ByteBitPosition): InstructionDefinition {

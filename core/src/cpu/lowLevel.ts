@@ -152,14 +152,37 @@ export class BitFlags implements LowLevelOperation {
   }
 }
 
-export type JrFlag = "fNz" | "fZ" | "fC" | "fNc";
-export const JR_FLAGS: ReadonlyArray<JrFlag> = ["fNz", "fZ", "fC", "fNc"];
+export type CheckFlag = "fNz" | "fZ" | "fC" | "fNc";
+export const CHECK_FLAGS: ReadonlyArray<CheckFlag> = ["fNz", "fZ", "fC", "fNc"];
 
-export class JrCheck implements LowLevelOperation {
+export class SetToPcIfFlag implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
-  private readonly flag: JrFlag;
+  private readonly flag: CheckFlag;
 
-  public constructor(flag: JrFlag) {
+  public constructor(flag: CheckFlag) {
+    this.flag = flag;
+  }
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error("value undefined");
+    }
+
+    if (cpu.registers[this.flag]) {
+      cpu.registers.pc = value;
+    }
+  }
+}
+
+export class AddToPcIfFlag implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 0;
+  private readonly flag: CheckFlag;
+
+  public constructor(flag: CheckFlag) {
     this.flag = flag;
   }
 
@@ -175,22 +198,6 @@ export class JrCheck implements LowLevelOperation {
     if (cpu.registers[this.flag]) {
       cpu.registers.pc += value;
     }
-  }
-}
-
-export class Jr implements LowLevelOperation {
-  public readonly cycles: ClockCycles = 0;
-
-  public execute(
-    cpu: Cpu,
-    mmu: Mmu,
-    value: LowLevelState
-  ): LowLevelStateReturn {
-    if (value === undefined) {
-      throw new Error("value undefined");
-    }
-
-    cpu.registers.pc += value;
   }
 }
 
@@ -247,6 +254,26 @@ export class WriteWordFromOperandAddress implements LowLevelOperation {
     const address = mmu.readBigEndianWord(cpu.registers.pc);
     mmu.writeWordBigEndian(address, value);
     cpu.registers.pc += 2;
+  }
+}
+
+export class AddToRegister implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 0;
+  private readonly register: Register;
+
+  public constructor(register: Register) {
+    this.register = register;
+  }
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error("value not defined");
+    }
+    cpu.registers[this.register] += value;
   }
 }
 

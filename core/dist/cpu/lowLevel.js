@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementRegister = exports.DecrementByteRegisterWithFlags = exports.XOrRegister = exports.IncrementRegister = exports.IncrementByteRegisterWithFlags = exports.IncrementWordRegisterWithFlags = exports.LoadWordOperandHighByte = exports.LoadOperand = exports.AddToValue = exports.AddWithCarryToA = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.ByteValueToSignedByte = exports.Jr = exports.JrCheck = exports.JR_FLAGS = exports.BitFlags = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.DecrementByteRegisterWithFlags = exports.XOrRegister = exports.IncrementRegister = exports.IncrementByteRegisterWithFlags = exports.IncrementWordRegisterWithFlags = exports.LoadWordOperandHighByte = exports.LoadOperand = exports.AddToValue = exports.AddWithCarryToA = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.AddToRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.ByteValueToSignedByte = exports.AddToPcIfFlag = exports.SetToPcIfFlag = exports.CHECK_FLAGS = exports.BitFlags = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -195,14 +195,14 @@ function () {
 }();
 
 exports.BitFlags = BitFlags;
-var JR_FLAGS = ["fNz", "fZ", "fC", "fNc"];
-exports.JR_FLAGS = JR_FLAGS;
+var CHECK_FLAGS = ["fNz", "fZ", "fC", "fNc"];
+exports.CHECK_FLAGS = CHECK_FLAGS;
 
-var JrCheck =
+var SetToPcIfFlag =
 /*#__PURE__*/
 function () {
-  function JrCheck(flag) {
-    _classCallCheck(this, JrCheck);
+  function SetToPcIfFlag(flag) {
+    _classCallCheck(this, SetToPcIfFlag);
 
     _defineProperty(this, "cycles", 0);
 
@@ -211,7 +211,38 @@ function () {
     this.flag = flag;
   }
 
-  _createClass(JrCheck, [{
+  _createClass(SetToPcIfFlag, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      if (value === undefined) {
+        throw new Error("value undefined");
+      }
+
+      if (cpu.registers[this.flag]) {
+        cpu.registers.pc = value;
+      }
+    }
+  }]);
+
+  return SetToPcIfFlag;
+}();
+
+exports.SetToPcIfFlag = SetToPcIfFlag;
+
+var AddToPcIfFlag =
+/*#__PURE__*/
+function () {
+  function AddToPcIfFlag(flag) {
+    _classCallCheck(this, AddToPcIfFlag);
+
+    _defineProperty(this, "cycles", 0);
+
+    _defineProperty(this, "flag", void 0);
+
+    this.flag = flag;
+  }
+
+  _createClass(AddToPcIfFlag, [{
     key: "execute",
     value: function execute(cpu, mmu, value) {
       if (value === undefined) {
@@ -224,35 +255,10 @@ function () {
     }
   }]);
 
-  return JrCheck;
+  return AddToPcIfFlag;
 }();
 
-exports.JrCheck = JrCheck;
-
-var Jr =
-/*#__PURE__*/
-function () {
-  function Jr() {
-    _classCallCheck(this, Jr);
-
-    _defineProperty(this, "cycles", 0);
-  }
-
-  _createClass(Jr, [{
-    key: "execute",
-    value: function execute(cpu, mmu, value) {
-      if (value === undefined) {
-        throw new Error("value undefined");
-      }
-
-      cpu.registers.pc += value;
-    }
-  }]);
-
-  return Jr;
-}();
-
-exports.Jr = Jr;
+exports.AddToPcIfFlag = AddToPcIfFlag;
 
 var ByteValueToSignedByte =
 /*#__PURE__*/
@@ -340,6 +346,35 @@ function () {
 }();
 
 exports.WriteWordFromOperandAddress = WriteWordFromOperandAddress;
+
+var AddToRegister =
+/*#__PURE__*/
+function () {
+  function AddToRegister(register) {
+    _classCallCheck(this, AddToRegister);
+
+    _defineProperty(this, "cycles", 0);
+
+    _defineProperty(this, "register", void 0);
+
+    this.register = register;
+  }
+
+  _createClass(AddToRegister, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      if (value === undefined) {
+        throw new Error("value not defined");
+      }
+
+      cpu.registers[this.register] += value;
+    }
+  }]);
+
+  return AddToRegister;
+}();
+
+exports.AddToRegister = AddToRegister;
 
 var StoreInRegister =
 /*#__PURE__*/

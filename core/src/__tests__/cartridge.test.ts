@@ -1,12 +1,16 @@
 /* global describe, test, expect */
 
-import { Cartridge } from "../cartridge";
+import { Cartridge, isValid } from "../cartridge";
 import nintendoLogo from "../nintendoLogo";
 
 describe("cartridge", () => {
-  describe("Cartridge", () => {
+  describe("isValid", () => {
     test("empty", () => {
-      expect(() => new Cartridge(new Uint8Array())).toThrow();
+      const cart = new Cartridge(new Uint8Array());
+
+      const result = isValid(cart);
+
+      expect(result).toBe(false);
     });
 
     test("valid", () => {
@@ -22,6 +26,9 @@ describe("cartridge", () => {
         )
       );
 
+      const result = isValid(cart);
+
+      expect(result).toBe(true);
       expect(cart.readByte(0x0004)).toEqual(0xce); // first byte of logo
     });
   });

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Cartridge = void 0;
+exports.isValid = exports.Cartridge = void 0;
 
 var _lodash = require("lodash");
 
@@ -36,11 +36,6 @@ function () {
 
     _defineProperty(this, "bytes", void 0);
 
-    // TODO: Should allow this, this check should be somewhere else, not sure where
-    if (!(0, _lodash.isEqual)(_toConsumableArray(bytes.slice(0x0004, 0x0033 + 1)), _nintendoLogo.default)) {
-      throw new Error("invalid rom");
-    }
-
     this.bytes = bytes;
   }
 
@@ -65,4 +60,12 @@ function () {
 exports.Cartridge = Cartridge;
 
 _defineProperty(Cartridge, "PC_START", 4 + _nintendoLogo.default.length);
+
+var isValid = function isValid(cartridge) {
+  return (0, _lodash.isEqual)((0, _lodash.range)(0x0004, 0x0033 + 1).map(function (address) {
+    return cartridge.readByte(address);
+  }), _nintendoLogo.default);
+};
+
+exports.isValid = isValid;
 //# sourceMappingURL=cartridge.js.map
