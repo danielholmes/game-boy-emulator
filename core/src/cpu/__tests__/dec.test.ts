@@ -1,4 +1,4 @@
-/* global describe, expect */
+/* global describe, expect, test */
 
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
@@ -16,18 +16,84 @@ describe("dec", () => {
   });
 
   describe("createDecR", () => {
-    test.each(BYTE_REGISTERS.map(r => [r]))(
+    describe.each(BYTE_REGISTERS.map(r => [r]))(
       "DEC %s",
       (register: ByteRegister) => {
-        cpu.registers[register] = 0x0014;
+        test("positive", () => {
+          cpu.registers[register] = 0x03;
+          cpu.registers.setFFromParts(1, 0, 1, 1);
 
-        const instruction = createDecR(0x3d, register);
+          const instruction = createDecR(0x3d, register);
 
-        const cycles = instruction.execute(cpu, mmu);
+          const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(0);
-        expect(cpu).toEqualCpuWithRegisters({ [register]: 0x0013 });
-        expect(mmu).toEqual(EMPTY_MEMORY);
+          expect(cycles).toBe(0);
+          expect(cpu).toEqualCpuWithRegisters({
+            [register]: 0x02,
+            fZ: 0,
+            fN: 1,
+            fH: 0,
+            fC: 1
+          });
+          expect(mmu).toEqual(EMPTY_MEMORY);
+        });
+
+        test("zero", () => {
+          cpu.registers[register] = 0x01;
+          cpu.registers.setFFromParts(0, 1, 1, 0);
+
+          const instruction = createDecR(0x3d, register);
+
+          const cycles = instruction.execute(cpu, mmu);
+
+          expect(cycles).toBe(0);
+          expect(cpu).toEqualCpuWithRegisters({
+            [register]: 0x00,
+            fZ: 1,
+            fN: 1,
+            fH: 0,
+            fC: 0
+          });
+          expect(mmu).toEqual(EMPTY_MEMORY);
+        });
+
+        test("half carry", () => {
+          cpu.registers[register] = 0x10;
+          cpu.registers.setFFromParts(0, 1, 0, 1);
+
+          const instruction = createDecR(0x3d, register);
+
+          const cycles = instruction.execute(cpu, mmu);
+
+          expect(cycles).toBe(0);
+          expect(cpu).toEqualCpuWithRegisters({
+            [register]: 0x0f,
+            fZ: 0,
+            fN: 1,
+            fH: 1,
+            fC: 1
+          });
+          expect(mmu).toEqual(EMPTY_MEMORY);
+        });
+
+        test("rotate", () => {
+          cpu.registers[register] = 0x00;
+          cpu.registers.setFFromParts(0, 1, 1, 0);
+
+          const instruction = createDecR(0x3d, register);
+
+          const cycles = instruction.execute(cpu, mmu);
+
+          expect(cycles).toBe(0);
+          expect(cpu).toEqualCpuWithRegisters({
+            [register]: 0xff,
+            fZ: 0,
+            fN: 1,
+            fH: 1,
+            fC: 0
+          });
+          expect(mmu).toEqual(EMPTY_MEMORY);
+        });
       }
     );
   });

@@ -15,7 +15,12 @@ const isRegister = (name: string): name is Register => !!name;
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
-export type WithRegisters = Partial<Omit<CpuRegisters, "setFFromParts">>;
+export type WithRegisters = Partial<
+  Omit<
+    CpuRegisters,
+    "setFFromParts" | "setFHFromByteAdd" | "setFHFromWordAdd" | "setFHFromByteSubtract" | "setFHFromWordSubtract"
+  >
+>;
 
 const createCpuWithRegisters = (withRegisters: WithRegisters): Cpu => {
   const cpu = new Cpu();
@@ -35,8 +40,8 @@ const createCpuWithRegisters = (withRegisters: WithRegisters): Cpu => {
 function toEqualCpuRegisters(
   utils: { isNot: boolean },
   received: CpuRegisters,
-  withRegisters: Partial<Omit<CpuRegisters, "setFFromParts">>
-): { pass: boolean, message: string | (() => string) } {
+  withRegisters: WithRegisters
+): { pass: boolean; message: string | (() => string) } {
   if (received === null) {
     return {
       pass: true,
@@ -83,17 +88,11 @@ expect.extend({
     return { pass: !this.isNot, message: "" };
   },
 
-  toEqualCpuWithRegisters(
-    received: Cpu,
-    withRegisters: Partial<Omit<CpuRegisters, "setFFromParts">>
-  ) {
+  toEqualCpuWithRegisters(received: Cpu, withRegisters: WithRegisters) {
     return toEqualCpuRegisters(this, received.registers, withRegisters);
   },
 
-  toEqualCpuRegisters(
-    received: CpuRegisters,
-    withRegisters: Partial<Omit<CpuRegisters, "setFFromParts">>
-  ) {
+  toEqualCpuRegisters(received: CpuRegisters, withRegisters: WithRegisters) {
     return toEqualCpuRegisters(this, received, withRegisters);
   }
 });

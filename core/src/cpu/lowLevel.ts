@@ -2,17 +2,18 @@ import { Mmu } from "../memory/mmu";
 import {
   ByteRegister,
   FLAG_C_MASK,
-  FLAG_Z_BIT,
   FLAG_Z_MASK,
   NonAfGroupedWordRegister,
-  Register
+  Register,
+  WordRegister
 } from "./registers";
 import {
   ByteValue,
   WordValue,
   byteValueToSignedByte,
   BitValue,
-  ByteBitPosition
+  ByteBitPosition,
+  binaryToNumber
 } from "../types";
 import { Cpu, ClockCycles } from ".";
 
@@ -158,9 +159,13 @@ export class BitFlags implements LowLevelOperation {
     this.position = position;
   }
 
-  public execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn {
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
     if (value === undefined) {
-      throw new Error('value undefined');
+      throw new Error("value undefined");
     }
     const bit = value & (1 << this.position);
     cpu.registers.fZ = bit === 0 ? 1 : 0;
@@ -415,6 +420,48 @@ export class LoadWordOperandHighByte implements LowLevelOperation {
   }
 }
 
+export class IncrementWordRegisterWithFlags implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 0;
+  private readonly register: WordRegister;
+
+  public constructor(register: WordRegister) {
+    this.register = register;
+  }
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    cpu.registers.setFHFromWordAdd(cpu.registers[this.register], 1);
+    cpu.registers[this.register]++;
+    cpu.registers.fZ = cpu.registers[this.register] === 0x0000 ? 1 : 0;
+    cpu.registers.fN = 0;
+    return value;
+  }
+}
+
+export class IncrementByteRegisterWithFlags implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 0;
+  private readonly register: ByteRegister;
+
+  public constructor(register: ByteRegister) {
+    this.register = register;
+  }
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    cpu.registers.setFHFromByteAdd(cpu.registers[this.register], 1);
+    cpu.registers[this.register]++;
+    cpu.registers.fZ = cpu.registers[this.register] === 0x00 ? 1 : 0;
+    cpu.registers.fN = 0;
+    return value;
+  }
+}
+
 export class IncrementRegister implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
   private readonly register: Register;
@@ -434,6 +481,7 @@ export class IncrementRegister implements LowLevelOperation {
 }
 
 export class XOrRegister implements LowLevelOperation {
+  private static readonly F_Z_SET: number = binaryToNumber("10000000");
   public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;
 
@@ -442,8 +490,29 @@ export class XOrRegister implements LowLevelOperation {
   }
 
   public execute(cpu: Cpu): LowLevelStateReturn {
-    cpu.registers.a = cpu.registers[this.register] & 0xff;
-    cpu.registers.f = cpu.registers.a ? 0x00 : 0x80;
+    cpu.registers.a ^= cpu.registers[this.register];
+    cpu.registers.f = cpu.registers.a ? 0x00 : XOrRegister.F_Z_SET;
+  }
+}
+
+export class DecrementByteRegisterWithFlags implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 0;
+  private readonly register: ByteRegister;
+
+  public constructor(register: ByteRegister) {
+    this.register = register;
+  }
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    cpu.registers.setFHFromByteSubtract(cpu.registers[this.register], 1);
+    cpu.registers[this.register]--;
+    cpu.registers.fZ = cpu.registers[this.register] === 0x00 ? 1 : 0;
+    cpu.registers.fN = 1;
+    return value;
   }
 }
 

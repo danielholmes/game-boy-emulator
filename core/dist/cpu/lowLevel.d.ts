@@ -120,6 +120,7 @@ export declare class IncrementRegister implements LowLevelOperation {
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class XOrRegister implements LowLevelOperation {
+    private static readonly F_Z_SET;
     readonly cycles: ClockCycles;
     private readonly register;
     constructor(register: ByteRegister);

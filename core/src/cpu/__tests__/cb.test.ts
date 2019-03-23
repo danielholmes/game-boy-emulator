@@ -72,55 +72,50 @@ describe("cb", () => {
   });
 
   describe("createCbBitBMHl", () => {
-    test.each(flatMap(
-      BYTE_BIT_POSITIONS.map(p => BYTE_REGISTERS.map(r => [p, r]))
-    ) as [ByteBitPosition, ByteRegister][])(
-      "CB %s, %s true",
-      (position: ByteBitPosition, register: ByteRegister) => {
-        cpu.registers.hl = 0xef37;
-        cpu.registers.fC = 1;
-        mmu.writeByte(0xef37, binaryToNumber('11111111'));
+    describe.each(BYTE_BIT_POSITIONS.map(p => [p]))(
+      "CB %s, (hl)",
+      (position: ByteBitPosition) => {
+        test("true", () => {
+          cpu.registers.hl = 0xef37;
+          cpu.registers.fC = 1;
+          mmu.writeByte(0xef37, binaryToNumber("11111111"));
 
-        const mmuSnapshot = createMmuSnapshot(mmu);
-        const instruction = createCbBitBMHl(0x3d, position);
+          const mmuSnapshot = createMmuSnapshot(mmu);
+          const instruction = createCbBitBMHl(0x3d, position);
 
-        const cycles = instruction.execute(cpu, mmu);
+          const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(4);
-        expect(cpu).toEqualCpuWithRegisters({
-          hl: 0xef37,
-          fZ: 0,
-          fN: 0,
-          fH: 1,
-          fC: 1
+          expect(cycles).toBe(4);
+          expect(cpu).toEqualCpuWithRegisters({
+            hl: 0xef37,
+            fZ: 0,
+            fN: 0,
+            fH: 1,
+            fC: 1
+          });
+          expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
         });
-        expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
-      }
-    );
 
-    test.each(flatMap(
-      BYTE_BIT_POSITIONS.map(p => BYTE_REGISTERS.map(r => [p, r]))
-    ) as [ByteBitPosition, ByteRegister][])(
-      "CB %s, %s false",
-      (position: ByteBitPosition, register: ByteRegister) => {
-        cpu.registers.hl = 0xef37;
-        cpu.registers.fC = 0;
-        mmu.writeByte(0xef37, binaryToNumber('00000000'));
+        test("false", () => {
+          cpu.registers.hl = 0xef37;
+          cpu.registers.fC = 0;
+          mmu.writeByte(0xef37, binaryToNumber("00000000"));
 
-        const mmuSnapshot = createMmuSnapshot(mmu);
-        const instruction = createCbBitBMHl(0x3d, position);
+          const mmuSnapshot = createMmuSnapshot(mmu);
+          const instruction = createCbBitBMHl(0x3d, position);
 
-        const cycles = instruction.execute(cpu, mmu);
+          const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(4);
-        expect(cpu).toEqualCpuWithRegisters({
-          hl: 0xef37,
-          fZ: 1,
-          fN: 0,
-          fH: 1,
-          fC: 0
+          expect(cycles).toBe(4);
+          expect(cpu).toEqualCpuWithRegisters({
+            hl: 0xef37,
+            fZ: 1,
+            fN: 0,
+            fH: 1,
+            fC: 0
+          });
+          expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
         });
-        expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
       }
     );
   });

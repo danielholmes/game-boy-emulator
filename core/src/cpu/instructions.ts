@@ -2,6 +2,7 @@ import { Mmu } from "../memory/mmu";
 import {
   BitFlags,
   DecrementRegister,
+  DecrementByteRegisterWithFlags,
   IncrementRegister,
   JrCheck,
   LoadOperand,
@@ -26,9 +27,16 @@ import {
   RotateLeftThroughCarry,
   ReadMemoryWord,
   CompareToRegister,
-  JrFlag
+  JrFlag,
+  IncrementByteRegisterWithFlags,
+  IncrementWordRegisterWithFlags
 } from "./lowLevel";
-import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
+import {
+  ByteRegister,
+  NonAfGroupedWordRegister,
+  Register,
+  WordRegister
+} from "./registers";
 import { sum } from "lodash";
 import { ByteBitPosition, MemoryAddress } from "../types";
 import { Cpu, ClockCycles } from "./index";
@@ -136,8 +144,24 @@ export class InstructionDefinition implements Instruction {
     return this.loadByteOperand().withOperation(new LoadWordOperandHighByte());
   }
 
+  public decrementByteRegisterWithFlags(register: ByteRegister): InstructionDefinition {
+    return this.withOperation(new DecrementByteRegisterWithFlags(register));
+  }
+
   public decrementRegister(register: Register): InstructionDefinition {
     return this.withOperation(new DecrementRegister(register));
+  }
+
+  public incrementWordRegisterWithFlags(
+    register: WordRegister
+  ): InstructionDefinition {
+    return this.withOperation(new IncrementWordRegisterWithFlags(register));
+  }
+
+  public incrementByteRegisterWithFlags(
+    register: ByteRegister
+  ): InstructionDefinition {
+    return this.withOperation(new IncrementByteRegisterWithFlags(register));
   }
 
   public incrementRegister(register: Register): InstructionDefinition {

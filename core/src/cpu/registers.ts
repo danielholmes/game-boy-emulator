@@ -7,13 +7,11 @@ export type NonAfGroupedWordRegister = "bc" | "de" | "hl";
 
 export type GroupedWordRegister = "af" | NonAfGroupedWordRegister;
 
-export type NativeWordRegister = "sp" | "pc";
+type NativeWordRegister = "sp" | "pc";
 
-export type Register =
-  | ByteRegister
-  | "f"
-  | GroupedWordRegister
-  | NativeWordRegister;
+export type WordRegister = GroupedWordRegister | NativeWordRegister;
+
+export type Register = ByteRegister | "f" | WordRegister;
 
 export const NON_AF_GROUPED_WORD_REGISTERS: ReadonlyArray<
   NonAfGroupedWordRegister
@@ -90,6 +88,12 @@ export interface CpuRegisters {
     h: BitIndicator,
     c: BitIndicator
   ): void;
+
+  setFHFromByteAdd(original: ByteValue, add: ByteValue): void;
+  setFHFromWordAdd(original: WordValue, add: WordValue): void;
+
+  setFHFromByteSubtract(original: ByteValue, subtract: ByteValue): void;
+  setFHFromWordSubtract(original: WordValue, subtract: WordValue): void;
 }
 
 export class CpuRegistersImpl implements CpuRegisters {
@@ -132,6 +136,28 @@ export class CpuRegistersImpl implements CpuRegisters {
       (n ? FLAG_N_MASK : 0) +
       (h ? FLAG_H_MASK : 0) +
       (c ? FLAG_C_MASK : 0);
+  }
+
+  public setFHFromByteAdd(original: ByteValue, add: ByteValue): void {
+    this.fH = (((original & 0xf) + (add & 0xf)) & 0x10) === 0x10 ? 1 : 0;
+  }
+
+  public setFHFromWordAdd(original: ByteValue, add: ByteValue): void {
+    this.fH = (((original & 0xff) + (add & 0xff)) & 0x100) === 0x100 ? 1 : 0;
+  }
+
+  public setFHFromByteSubtract(original: ByteValue, subtract: ByteValue): void {
+    if (subtract !== 1) {
+      throw new Error('Not impl')
+    }
+    this.fH = ((original & 0xf) === 0) ? 1 : 0;
+  }
+
+  public setFHFromWordSubtract(original: ByteValue, subtract: ByteValue): void {
+    if (subtract !== 1) {
+      throw new Error('Not impl')
+    }
+    this.fH = ((original & 0xff) === 0) ? 1 : 0;
   }
 
   public get fNz(): BitValue {

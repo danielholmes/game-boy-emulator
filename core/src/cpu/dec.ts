@@ -5,6 +5,7 @@ export const createDecR = (
   opCode: OpCode,
   register: ByteRegister
 ): Instruction =>
-  new InstructionDefinition(opCode, `DEC ${register}`).decrementRegister(
-    register
-  );
+  new InstructionDefinition(
+    opCode,
+    `DEC ${register}`
+  ).decrementByteRegisterWithFlags(register);

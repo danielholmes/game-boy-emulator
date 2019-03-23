@@ -103,7 +103,7 @@ for (let i = 0; i < 1000001; i++) {
       mmu.readByte(cpu.registers.pc).toString(16)
   );
   device.tickCycle();
-  if (i % 200 === 0) {
+  if (i % 10 === 0) {
     const values = vRam.getValues();
     const filled: { [address: number]: number } = {};
     for (let j = 0; j < values.length; j++) {
@@ -111,7 +111,15 @@ for (let i = 0; i < 1000001; i++) {
         filled[j] = values[j];
       }
     }
-    console.log("-------- " + Object.keys(filled).length.toString(16));
+    const addresses = Object.keys(filled).sort();
+    console.log(
+      "MEM",
+      addresses.length.toString(16),
+      "0x" + addresses.sort()[0].toString(16),
+      "(0x" + filled[addresses[0]].toString(16) + ")",
+      "-",
+      "0x" + addresses[addresses.length - 1].toString(16)
+    );
     // console.log(
     //   sortBy(
     //     toPairs(filled),

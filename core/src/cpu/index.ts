@@ -20,12 +20,11 @@ import {
   CpuRegisters,
   CpuRegistersImpl,
   GroupedWordRegister,
-  NonAfGroupedWordRegister,
-  Register
+  NonAfGroupedWordRegister
 } from "./registers";
 import { createRst, RstAddress } from "./rst";
 import { createDecR } from "./dec";
-import { createIncR, createIncRr, createIncSp } from "./inc";
+import { createIncR, createIncRr } from "./inc";
 import { createNop } from "./special";
 import { createXorR } from "./xor";
 import { numberToByteHex } from "../types";
@@ -254,11 +253,14 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       createDecR(opCode, register)
     ),
 
-    ...([[0x03, "bc"], [0x13, "de"], [0x23, "hl"]] as ReadonlyArray<
-      [OpCode, NonAfGroupedWordRegister]
-    >).map(([opCode, register]) => createIncRr(opCode, register)),
-
-    createIncSp(0x33),
+    ...([
+      [0x03, "bc"],
+      [0x13, "de"],
+      [0x23, "hl"],
+      [0x33, "sp"]
+    ] as ReadonlyArray<[OpCode, NonAfGroupedWordRegister]>).map(
+      ([opCode, register]) => createIncRr(opCode, register)
+    ),
 
     ...([
       [0x3c, "a"],
@@ -268,7 +270,7 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x1c, "e"],
       [0x24, "h"],
       [0x2c, "l"]
-    ] as ReadonlyArray<[OpCode, Register]>).map(([opCode, register]) =>
+    ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
       createIncR(opCode, register)
     ),
 

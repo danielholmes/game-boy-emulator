@@ -52,14 +52,17 @@ yarn
  - http://imrannazar.com/GameBoy-Emulation-in-JavaScript
  - https://media.ccc.de/v/33c3-8029-the_ultimate_game_boy_talk
  - http://blog.rekawek.eu/2017/02/09/coffee-gb/
- - https://github.com/trekawek/coffee-gb/
- - https://github.com/gbdev/awesome-gbdev
  - https://www.youtube.com/watch?v=RZUDEaLa5Nw
- - see source: http://gb.alexaladren.net/
- - https://github.com/juchi/gameboy.js
+ - http://nnarain.github.io/2016/07/21/Gameboy-Specs.html
+ - https://robdor.com/2016/08/10/gameboy-emulator-half-carry-flag/
+ 
+### Implementations
+
+ - https://github.com/gbdev/awesome-gbdev
+ - https://github.com/trekawek/coffee-gb/
+ - https://github.com/alexaladren/jsgameboy
  - https://github.com/nakardo/node-gameboy
  - https://github.com/riperiperi/amebo
- - http://nnarain.github.io/2016/07/21/Gameboy-Specs.html
  - https://github.com/nnarain/gameboycore
  
 ## Making games

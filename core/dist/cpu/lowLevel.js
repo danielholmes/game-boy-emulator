@@ -652,8 +652,8 @@ function () {
   _createClass(XOrRegister, [{
     key: "execute",
     value: function execute(cpu) {
-      cpu.registers.a = cpu.registers[this.register] & 0xff;
-      cpu.registers.f = cpu.registers.a ? 0x00 : 0x80;
+      cpu.registers.a ^= cpu.registers[this.register];
+      cpu.registers.f = cpu.registers.a ? 0x00 : XOrRegister.F_Z_SET;
     }
   }]);
 
@@ -661,6 +661,8 @@ function () {
 }();
 
 exports.XOrRegister = XOrRegister;
+
+_defineProperty(XOrRegister, "F_Z_SET", (0, _types.binaryToNumber)('10000000'));
 
 var DecrementRegister =
 /*#__PURE__*/

@@ -75,7 +75,7 @@ for (var i = 0; i < 1000001; i++) {
   console.log(i.toString() + ") 0x" + cpu.registers.pc.toString(16) + " 0x" + mmu.readByte(cpu.registers.pc).toString(16));
   device.tickCycle();
 
-  if (i % 200 === 0) {
+  if (i % 10 === 0) {
     var values = vRam.getValues();
     var filled = {};
 
@@ -85,7 +85,8 @@ for (var i = 0; i < 1000001; i++) {
       }
     }
 
-    console.log("-------- " + Object.keys(filled).length.toString(16)); // console.log(
+    var addresses = Object.keys(filled).sort();
+    console.log("MEM", addresses.length.toString(16), "0x" + addresses.sort()[0].toString(16), "(0x" + filled[addresses[0]].toString(16) + ")", "-", "0x" + addresses[addresses.length - 1].toString(16)); // console.log(
     //   sortBy(
     //     toPairs(filled),
     //     ([address, ]) => address

@@ -46,7 +46,7 @@ export const createCbBitBMHl = (
   position: ByteBitPosition
 ): Instruction =>
   new InstructionDefinition(opCode, `BIT ${position}, (hl)`)
-    .loadRegister('hl')
+    .loadRegister("hl")
     .readMemory()
     .bitFlags(position);
 
@@ -121,7 +121,6 @@ const CB_INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
         createCbBitBR(opCode, position, register)
     ),
 
-
     ...([
       [0x46, 0],
       [0x4e, 1],
@@ -131,9 +130,8 @@ const CB_INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x6e, 5],
       [0x76, 6],
       [0x7e, 7]
-    ] as ReadonlyArray<[OpCode, ByteBitPosition]>).map(
-      ([opCode, position]) =>
-        createCbBitBMHl(opCode, position)
+    ] as ReadonlyArray<[OpCode, ByteBitPosition]>).map(([opCode, position]) =>
+      createCbBitBMHl(opCode, position)
     ),
 
     ...([

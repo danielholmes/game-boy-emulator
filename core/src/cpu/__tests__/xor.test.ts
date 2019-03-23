@@ -16,19 +16,71 @@ describe("xor", () => {
   });
 
   describe("createXorR", () => {
-    test.each(BYTE_REGISTERS.map(r => [r]))(
+    describe.each(BYTE_REGISTERS.map(r => [r]))(
       "XOR %s",
       (register: ByteRegister) => {
-        cpu.registers.a = 0x01;
-        cpu.registers[register] = 0x12;
+        test("positive and zero", () => {
+          cpu.registers.a = 0x12;
+          cpu.registers[register] = 0x00;
+          cpu.registers.setFFromParts(1, 1, 1, 1);
 
-        const instruction = createXorR(0x3d, register);
+          const instruction = createXorR(0x3d, register);
 
-        const cycles = instruction.execute(cpu, mmu);
+          const cycles = instruction.execute(cpu, mmu);
 
-        expect(cycles).toBe(0);
-        expect(cpu).toEqualCpuWithRegisters({ a: 0x12, [register]: 0x12 });
-        expect(mmu).toEqual(EMPTY_MEMORY);
+          expect(cycles).toBe(0);
+          expect(cpu).toEqualCpuWithRegisters({
+            a: 0x12,
+            [register]: 0x00,
+            fZ: register === "a" ? 1 : 0,
+            fC: 0,
+            fH: 0,
+            fN: 0
+          });
+          expect(mmu).toEqual(EMPTY_MEMORY);
+        });
+
+        test("0 false", () => {
+          cpu.registers.a = 0x00;
+          cpu.registers[register] = 0x00;
+          cpu.registers.setFFromParts(1, 1, 1, 1);
+
+          const instruction = createXorR(0x3d, register);
+
+          const cycles = instruction.execute(cpu, mmu);
+
+          expect(cycles).toBe(0);
+          expect(cpu).toEqualCpuWithRegisters({
+            a: 0x00,
+            [register]: 0x00,
+            fZ: 1,
+            fC: 0,
+            fH: 0,
+            fN: 0
+          });
+          expect(mmu).toEqual(EMPTY_MEMORY);
+        });
+
+        test("positive false", () => {
+          cpu.registers.a = 0xfe;
+          cpu.registers[register] = 0x05;
+          cpu.registers.setFFromParts(1, 1, 1, 1);
+
+          const instruction = createXorR(0x3d, register);
+
+          const cycles = instruction.execute(cpu, mmu);
+
+          expect(cycles).toBe(0);
+          expect(cpu).toEqualCpuWithRegisters({
+            a: 0xfb,
+            [register]: register === "a" ? 0x00 : 0x05,
+            fZ: register === "a" ? 1 : 0,
+            fC: 0,
+            fH: 0,
+            fN: 0
+          });
+          expect(mmu).toEqual(EMPTY_MEMORY);
+        });
       }
     );
   });

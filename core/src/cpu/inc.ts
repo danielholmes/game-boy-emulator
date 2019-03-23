@@ -1,20 +1,19 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
-import { NonAfGroupedWordRegister, Register } from "./registers";
+import { ByteRegister, NonAfGroupedWordRegister } from "./registers";
 
 export const createIncRr = (
   opCode: OpCode,
-  register: NonAfGroupedWordRegister
+  register: NonAfGroupedWordRegister | "sp"
 ): Instruction =>
-  new InstructionDefinition(opCode, `INC ${register}`).incrementRegister(
-    register
-  );
-
-export const createIncR = (opCode: OpCode, register: Register): Instruction =>
-  new InstructionDefinition(opCode, `INC ${register}`).incrementRegister(
-    register
-  );
-
-export const createIncSp = (opCode: OpCode): Instruction =>
-  new InstructionDefinition(opCode, "INC sp")
-    .incrementRegister("sp")
+  new InstructionDefinition(opCode, `INC ${register}`)
+    .incrementWordRegisterWithFlags(register)
     .internalDelay();
+
+export const createIncR = (
+  opCode: OpCode,
+  register: ByteRegister
+): Instruction =>
+  new InstructionDefinition(
+    opCode,
+    `INC ${register}`
+  ).incrementByteRegisterWithFlags(register);
