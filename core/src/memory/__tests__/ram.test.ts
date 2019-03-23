@@ -95,10 +95,10 @@ describe("ram", () => {
           "00000000",
           "00000000"
         ].forEach((value, address) =>
-          vRam.writeByte(0x0800 + address + 16 * 0, binaryToNumber(value))
+          vRam.writeByte(0x0800 + address + 16 * 10, binaryToNumber(value))
         );
 
-        const tile = vRam.getTileDataFromTable2(0);
+        const tile = vRam.getTileDataFromTable2(10);
 
         expect(tile).toEqual([
           [3, 3, 3, 3, 3, 3, 3, 3],
@@ -119,6 +119,37 @@ describe("ram", () => {
       test("too small address", () => {
         expect(() => vRam.getTileDataFromTable2(-1)).toThrow();
       });
+    });
+
+    describe("bgMap1", () => {
+      test("normal", () => {
+        [
+          "11111111",
+          "00000000"
+        ].forEach((value, address) =>
+          vRam.writeByte(address + 0x1800, binaryToNumber(value))
+        );
+
+        const result = vRam.bgMap1;
+
+        expect(result.length).toEqual(32);
+        expect(result[0].length).toEqual(32);
+        expect(result[31].length).toEqual(32);
+        expect(result[0][0]).toEqual({
+          bGPNum: 7,
+          tileTableNumber: 1,
+          horizontalFlip: true,
+          verticalFlip: true,
+          useBgPriority: true
+        });
+        expect(result[0][1]).toEqual({
+          bGPNum: 0,
+          tileTableNumber: 0,
+          horizontalFlip: false,
+          verticalFlip: false,
+          useBgPriority: false
+        });
+      })
     });
   });
 });

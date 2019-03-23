@@ -1,4 +1,4 @@
-import { ByteValue, MemoryAddress, PixelColor } from "../types";
+import { ByteValue, ColorNumber, MemoryAddress } from "../types";
 declare class Ram {
     protected readonly raw: Uint8Array;
     private readonly size;
@@ -17,7 +17,17 @@ export declare class WorkingRam extends Ram {
     constructor();
 }
 export declare const V_RAM_SIZE = 8192;
-export declare type Tile = ReadonlyArray<ReadonlyArray<PixelColor>>;
+export declare type Tile = ReadonlyArray<ReadonlyArray<ColorNumber>>;
+declare type TileTableNumber = 0 | 1;
+interface BackgroundTile {
+    readonly bGPNum: number;
+    readonly tileTableNumber: TileTableNumber;
+    readonly horizontalFlip: boolean;
+    readonly verticalFlip: boolean;
+    readonly useBgPriority: boolean;
+}
+export declare type BackgroundMap = ReadonlyArray<ReadonlyArray<BackgroundTile>>;
+declare type TileDataIndex = number;
 export declare class VRam extends Ram {
     private static readonly TILE_DATA_TABLE_1_RANGE;
     private static readonly TILE_DATA_TABLE_2_RANGE;
@@ -25,9 +35,20 @@ export declare class VRam extends Ram {
     private static readonly TILE_DATA_DIMENSION;
     private static readonly TILE_DATA_INDICES;
     private static readonly TILE_DATA_BIT_MASKS;
+    private static readonly BG_MAP_1_RANGE;
+    private static readonly BG_MAP_2_RANGE;
+    private static readonly BG_MAP_DIMENSION;
+    private static readonly BG_MAP_TILE_TABLE_NUMBER_MASK;
+    private static readonly BG_MAP_HORIZONTAL_FLIP_MASK;
+    private static readonly BG_MAP_VERTICAL_FLIP_MASK;
+    private static readonly BG_MAP_PRIORITY_MASK;
+    private static readonly BG_MAP_INDICES;
     constructor();
-    getTileDataFromTable1(index: number): Tile;
-    getTileDataFromTable2(index: number): Tile;
+    readonly bgMap1: BackgroundMap;
+    readonly bgMap2: BackgroundMap;
+    private getBackgroundMap;
+    getTileDataFromTable1(index: TileDataIndex): Tile;
+    getTileDataFromTable2(index: TileDataIndex): Tile;
     private getTileData;
     static initializeRandomly(): VRam;
 }

@@ -1,6 +1,7 @@
 import bios from "./bios";
+import nintendoLogo from "./nintendoLogo";
 
-export { bios };
+export { bios, nintendoLogo };
 export { Bios } from "./bios";
 export {
   IOMemory,

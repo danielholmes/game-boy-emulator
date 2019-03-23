@@ -4,61 +4,19 @@ var _core = require("@gebby/core");
 
 var _lodash = require("lodash");
 
-/* const cartridge = new Cartridge(
-  new Uint8Array([
-    0x00, // 0x0100
-    0x00, // 0x0101
-    0x00, // 0x0102
-    0xce, // 0x0104
-    0xed,
-    0x66,
-    0x66,
-    0xcc,
-    0x0d,
-    0x00,
-    0x0b,
-    0x03,
-    0x73,
-    0x00,
-    0x83,
-    0x00,
-    0x0c,
-    0x00,
-    0x0d,
-    0x00,
-    0x08,
-    0x11,
-    0x1f,
-    0x88,
-    0x89,
-    0x00,
-    0x0e,
-    0xdc,
-    0xcc,
-    0x6e,
-    0xe6,
-    0xdd,
-    0xdd,
-    0xd9,
-    0x99,
-    0xbb,
-    0xbb,
-    0x67,
-    0x63,
-    0x6e,
-    0x0e,
-    0xec,
-    0xcc,
-    0xdd,
-    0xdc,
-    0x99,
-    0x9f,
-    0xbb,
-    0xb9,
-    0x33,
-    0x3e
-  ])
-);*/
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+var cartridge = new _core.Cartridge(new Uint8Array([0x00, // 0x0100
+0x00, // 0x0101
+0x00, // 0x0102
+0x00].concat(_toConsumableArray(_core.nintendoLogo))));
+
 var vRam = _core.VRam.initializeRandomly();
 
 var mmu = new _core.Mmu(_core.bios, new _core.WorkingRam(), vRam, new _core.IOMemory(), new _core.OamMemory(), new _core.ZeroPageRam());
@@ -68,6 +26,7 @@ var screen = {
 };
 var cpu = new _core.Cpu();
 var device = new _core.Device(cpu, new _core.Gpu(mmu, screen), mmu);
+device.insertCartridge(cartridge);
 device.turnOn(); // process.stdout.write instead of console.log
 // Clear: console.log('\033c')
 // Alt: console.log('\033c\033[3J')
@@ -76,14 +35,13 @@ device.turnOn(); // process.stdout.write instead of console.log
 var TOTAL = 250000;
 
 for (var i = 0; i < TOTAL; i++) {
-  var opCode = mmu.readByte(cpu.registers.pc);
-  /*console.log(
+  /*const opCode = mmu.readByte(cpu.registers.pc);
+  console.log(
     i.toString() + ")",
     "@0x" + cpu.registers.pc.toString(16),
     "0x" + opCode.toString(16),
     cpu.getInstructionLabel(opCode)
   );*/
-
   device.tickCycle(); // if (i % 1000 === 0 || i === (TOTAL - 1)) {
   //   const values = vRam.getValues();
   //   const filled: { [address: number]: number } = {};
@@ -137,9 +95,8 @@ var tileToString = function tileToString(tile) {
   }).join("\n");
 };
 
-console.log("\u2591", "\u2592", "\u2588");
-console.log("bg & window palette", mmu.bGP.toString(2));
-console.log("table 1 tiles:");
+console.log("BG & window palette", mmu.bGP.toString(2));
+console.log("Table 1 tiles:");
 (0, _lodash.range)(0, 255).forEach(function (i) {
   var tile = vRam.getTileDataFromTable1(i);
 
@@ -150,7 +107,7 @@ console.log("table 1 tiles:");
     console.log(tileToString(tile));
   }
 });
-console.log("table 2 tiles:");
+console.log("Table 2 tiles:");
 (0, _lodash.range)(0, 255).forEach(function (i) {
   var tile = vRam.getTileDataFromTable2(i);
 

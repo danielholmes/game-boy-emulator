@@ -2,6 +2,8 @@ import { padStart } from "lodash";
 
 export type PixelColor = 0 | 1 | 2 | 3; // off (white) -> on/black
 
+export type ColorNumber = 0 | 1 | 2 | 3;
+
 export type ByteValue = number;
 export type SignedByteValue = number;
 export type WordValue = number;

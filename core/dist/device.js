@@ -51,6 +51,7 @@ function () {
         throw new Error("Can't insert cartridge while on");
       }
 
+      this.mmu.loadCartridge(cartridge);
       console.log("TODO: Cart insert if not present", _typeof(cartridge));
     }
   }, {

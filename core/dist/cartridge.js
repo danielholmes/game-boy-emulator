@@ -5,6 +5,20 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Cartridge = void 0;
 
+var _lodash = require("lodash");
+
+var _nintendoLogo = _interopRequireDefault(require("./nintendoLogo"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -21,6 +35,11 @@ function () {
     _classCallCheck(this, Cartridge);
 
     _defineProperty(this, "bytes", void 0);
+
+    // TODO: Should allow this, this check should be somewhere else, not sure where
+    if (!(0, _lodash.isEqual)(_toConsumableArray(bytes.slice(0x0004, 0x0033 + 1)), _nintendoLogo.default)) {
+      throw new Error("invalid rom");
+    }
 
     this.bytes = bytes;
   }

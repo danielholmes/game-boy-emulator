@@ -145,6 +145,30 @@ function (_Ram3) {
   }
 
   _createClass(VRam, [{
+    key: "getBackgroundMap",
+    value: function getBackgroundMap(_ref) {
+      var _this = this;
+
+      var _ref2 = _slicedToArray(_ref, 1),
+          startAddress = _ref2[0];
+
+      return VRam.BG_MAP_INDICES.map(function (y) {
+        return VRam.BG_MAP_INDICES.map(function (x) {
+          var address = startAddress + x + y * VRam.BG_MAP_DIMENSION;
+
+          var byte = _this.readByte(address);
+
+          return {
+            bGPNum: byte & 0x7,
+            tileTableNumber: (byte & VRam.BG_MAP_TILE_TABLE_NUMBER_MASK) !== 0 ? 1 : 0,
+            horizontalFlip: (byte & VRam.BG_MAP_HORIZONTAL_FLIP_MASK) !== 0,
+            verticalFlip: (byte & VRam.BG_MAP_VERTICAL_FLIP_MASK) !== 0,
+            useBgPriority: (byte & VRam.BG_MAP_PRIORITY_MASK) !== 0
+          };
+        });
+      });
+    }
+  }, {
     key: "getTileDataFromTable1",
     value: function getTileDataFromTable1(index) {
       return this.getTileData(VRam.TILE_DATA_TABLE_1_RANGE, index);
@@ -156,10 +180,10 @@ function (_Ram3) {
     }
   }, {
     key: "getTileData",
-    value: function getTileData(_ref, index) {
-      var _ref2 = _slicedToArray(_ref, 2),
-          startAddress = _ref2[0],
-          endAddress = _ref2[1];
+    value: function getTileData(_ref3, index) {
+      var _ref4 = _slicedToArray(_ref3, 2),
+          startAddress = _ref4[0],
+          endAddress = _ref4[1];
 
       var address = startAddress + index * VRam.TILE_DATA_BYTES;
 
@@ -167,10 +191,10 @@ function (_Ram3) {
         throw new Error("Tile data index ".concat(index, " is invalid"));
       }
 
-      return (0, _lodash.chunk)(this.readBytes(address, VRam.TILE_DATA_BYTES), 2).map(function (_ref3) {
-        var _ref4 = _slicedToArray(_ref3, 2),
-            lowerBits = _ref4[0],
-            upperBits = _ref4[1];
+      return (0, _lodash.chunk)(this.readBytes(address, VRam.TILE_DATA_BYTES), 2).map(function (_ref5) {
+        var _ref6 = _slicedToArray(_ref5, 2),
+            lowerBits = _ref6[0],
+            upperBits = _ref6[1];
 
         return VRam.TILE_DATA_INDICES.map(function (i) {
           var lower = (lowerBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
@@ -191,6 +215,16 @@ function (_Ram3) {
           return 0;
         });
       });
+    }
+  }, {
+    key: "bgMap1",
+    get: function get() {
+      return this.getBackgroundMap(VRam.BG_MAP_1_RANGE);
+    }
+  }, {
+    key: "bgMap2",
+    get: function get() {
+      return this.getBackgroundMap(VRam.BG_MAP_2_RANGE);
     }
   }], [{
     key: "initializeRandomly",
@@ -223,6 +257,22 @@ _defineProperty(VRam, "TILE_DATA_INDICES", (0, _lodash.range)(0, VRam.TILE_DATA_
 _defineProperty(VRam, "TILE_DATA_BIT_MASKS", VRam.TILE_DATA_INDICES.map(function (i) {
   return 1 << VRam.TILE_DATA_DIMENSION - i - 1;
 }));
+
+_defineProperty(VRam, "BG_MAP_1_RANGE", [0x1800, 0x1c00]);
+
+_defineProperty(VRam, "BG_MAP_2_RANGE", [0x1c00, 0x2000]);
+
+_defineProperty(VRam, "BG_MAP_DIMENSION", 32);
+
+_defineProperty(VRam, "BG_MAP_TILE_TABLE_NUMBER_MASK", 1 << 3);
+
+_defineProperty(VRam, "BG_MAP_HORIZONTAL_FLIP_MASK", 1 << 5);
+
+_defineProperty(VRam, "BG_MAP_VERTICAL_FLIP_MASK", 1 << 6);
+
+_defineProperty(VRam, "BG_MAP_PRIORITY_MASK", 1 << 7);
+
+_defineProperty(VRam, "BG_MAP_INDICES", (0, _lodash.range)(0, VRam.BG_MAP_DIMENSION));
 
 var OamMemory =
 /*#__PURE__*/
