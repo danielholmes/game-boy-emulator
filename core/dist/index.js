@@ -45,6 +45,12 @@ Object.defineProperty(exports, "OamMemory", {
     return _ram.OamMemory;
   }
 });
+Object.defineProperty(exports, "Tile", {
+  enumerable: true,
+  get: function get() {
+    return _ram.Tile;
+  }
+});
 Object.defineProperty(exports, "Cpu", {
   enumerable: true,
   get: function get() {
@@ -75,6 +81,12 @@ Object.defineProperty(exports, "Cartridge", {
     return _cartridge.Cartridge;
   }
 });
+Object.defineProperty(exports, "PixelColor", {
+  enumerable: true,
+  get: function get() {
+    return _types.PixelColor;
+  }
+});
 
 var _bios = _interopRequireWildcard(require("./bios"));
 
@@ -89,6 +101,8 @@ var _mmu = require("./memory/mmu");
 var _device = require("./device");
 
 var _cartridge = require("./cartridge");
+
+var _types = require("./types");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 //# sourceMappingURL=index.js.map

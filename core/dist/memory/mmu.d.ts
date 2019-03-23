@@ -11,6 +11,7 @@ export declare class Mmu {
     private readonly zeroPage;
     private cartridge?;
     constructor(bios: Bios, ram: WorkingRam, vRam: VRam, io: IOMemory, oam: OamMemory, zeroPage: ZeroPageRam, cartridge?: Cartridge);
+    readonly bGP: ByteValue;
     readonly workingRamValues: Uint8Array;
     loadCartridge(cartridge: Cartridge): void;
     readByte(address: MemoryAddress): ByteValue;

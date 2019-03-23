@@ -2,8 +2,9 @@ import {
   ByteValue,
   MemoryAddress,
   numberToHex,
-  numberToWordHex
+  numberToWordHex, PixelColor
 } from "../types";
+import { range, chunk, flatMap } from "lodash";
 
 class Ram {
   protected readonly raw: Uint8Array;
@@ -39,6 +40,12 @@ class Ram {
     return this.raw[address];
   }
 
+  protected readBytes(address: MemoryAddress, length: number): Uint8Array {
+    this.assertValidAddress(address);
+    this.assertValidAddress(address + length - 1);
+    return this.raw.slice(address, address + length);
+  }
+
   public writeByte(address: MemoryAddress, value: ByteValue): void {
     this.assertValidAddress(address);
     this.assertByte(value);
@@ -60,9 +67,51 @@ export class WorkingRam extends Ram {
 
 export const V_RAM_SIZE = 0x2000;
 
+export type Tile = ReadonlyArray<ReadonlyArray<PixelColor>>;
+
 export class VRam extends Ram {
+  private static readonly TILE_DATA_TABLE_1_RANGE: Readonly<[MemoryAddress, MemoryAddress]> = [0x0000, 0x1000];
+  private static readonly TILE_DATA_TABLE_2_RANGE: Readonly<[MemoryAddress, MemoryAddress]> = [0x0800, 0x1800];
+  private static readonly TILE_DATA_BYTES: number = 16;
+  private static readonly TILE_DATA_DIMENSION: number = 8;
+  private static readonly TILE_DATA_INDICES: ReadonlyArray<number> = range(0, VRam.TILE_DATA_DIMENSION);
+  private static readonly TILE_DATA_BIT_MASKS: ReadonlyArray<number> =
+    VRam.TILE_DATA_INDICES.map((i) => 1 << (VRam.TILE_DATA_DIMENSION - i - 1));
+
   public constructor() {
     super(V_RAM_SIZE);
+  }
+
+  public getTileDataFromTable1(index: number): Tile {
+    return this.getTileData(VRam.TILE_DATA_TABLE_1_RANGE, index);
+  }
+
+  public getTileDataFromTable2(index: number): Tile {
+    return this.getTileData(VRam.TILE_DATA_TABLE_2_RANGE, index);
+  }
+
+  private getTileData([startAddress, endAddress]: Readonly<[MemoryAddress, MemoryAddress]>, index: number): Tile {
+    const address = startAddress + index * VRam.TILE_DATA_BYTES;
+    if (address < startAddress || address >= endAddress) {
+      throw new Error(`Tile data index ${index} is invalid`);
+    }
+    return chunk(this.readBytes(address, VRam.TILE_DATA_BYTES), 2)
+      .map(([lowerBits, upperBits]) =>
+        VRam.TILE_DATA_INDICES.map((i) => {
+          const lower = (lowerBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
+          const upper = (upperBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
+          if (upper === 1 && lower === 1) {
+            return 3;
+          }
+          if (upper === 1 && lower === 0) {
+            return 2;
+          }
+          if (upper === 0 && lower === 1) {
+            return 1;
+          }
+          return 0;
+        })
+      );
   }
 
   public static initializeRandomly(): VRam {

@@ -30,6 +30,10 @@ export class Mmu {
     this.cartridge = cartridge;
   }
 
+  public get bGP(): ByteValue {
+    return this.readByte(0xff47);
+  }
+
   public get workingRamValues(): Uint8Array {
     return this.workingRam.getValues();
   }

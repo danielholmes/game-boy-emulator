@@ -1,3 +1,4 @@
+export declare type PixelColor = 0 | 1 | 2 | 3;
 export declare type ByteValue = number;
 export declare type SignedByteValue = number;
 export declare type WordValue = number;

@@ -1,4 +1,4 @@
-export type PixelColor = 0 | 1 | 2 | 3; // off (white) -> on/black
+import { PixelColor } from "./types";
 
 export interface Screen {
   setPixel(x: number, y: number, pixelColor: PixelColor): void;

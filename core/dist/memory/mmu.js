@@ -142,6 +142,11 @@ function () {
       this.writeByte(address, value & 255);
     }
   }, {
+    key: "bGP",
+    get: function get() {
+      return this.readByte(0xff47);
+    }
+  }, {
     key: "workingRamValues",
     get: function get() {
       return this.workingRam.getValues();

@@ -2,6 +2,8 @@
 
 var _core = require("@gebby/core");
 
+var _lodash = require("lodash");
+
 /* const cartridge = new Cartridge(
   new Uint8Array([
     0x00, // 0x0100
@@ -71,41 +73,93 @@ device.turnOn(); // process.stdout.write instead of console.log
 // Alt: console.log('\033c\033[3J')
 // Console pixels: console.log('\u2591', '\u2592', '\u2588');
 
-var TOTAL = 10000000;
+var TOTAL = 250000;
 
 for (var i = 0; i < TOTAL; i++) {
   var opCode = mmu.readByte(cpu.registers.pc);
-  console.log(i.toString() + ")", "@0x" + cpu.registers.pc.toString(16), "0x" + opCode.toString(16), cpu.getInstructionLabel(opCode));
-  device.tickCycle();
+  /*console.log(
+    i.toString() + ")",
+    "@0x" + cpu.registers.pc.toString(16),
+    "0x" + opCode.toString(16),
+    cpu.getInstructionLabel(opCode)
+  );*/
 
-  if (i % 1000 === 0 || i === TOTAL - 1) {
-    var values = vRam.getValues();
-    var filled = {};
-
-    for (var j = 0; j < values.length; j++) {
-      if (values[j] !== 0) {
-        filled[j] = values[j];
-      }
-    }
-
-    var addresses = Object.keys(filled).sort();
-    console.log("MEM", addresses.length);
-
-    if (addresses.length > 0) {
-      console.log("  0x" + addresses.sort()[0].toString(16), "(0x" + filled[addresses[0]].toString(16) + ")", "-", "0x" + addresses[addresses.length - 1].toString(16));
-    } // console.log(
-    //   sortBy(
-    //     toPairs(filled),
-    //     ([address, ]) => address
-    //   )
-    //     .map(([address, value]) =>
-    //       `0x${parseInt(address).toString(16)}: 0x${value.toString(16)}`
-    //     )
-    //     .join(' ')
-    // );
-
-  }
+  device.tickCycle(); // if (i % 1000 === 0 || i === (TOTAL - 1)) {
+  //   const values = vRam.getValues();
+  //   const filled: { [address: number]: number } = {};
+  //   for (let j = 0; j < values.length; j++) {
+  //     if (values[j] !== 0) {
+  //       filled[j] = values[j];
+  //     }
+  //   }
+  //   const addresses = Object.keys(filled).map((k) => parseInt(k)).sort();
+  //   console.log("MEM", addresses.length);
+  //   if (addresses.length > 0) {
+  //     const V_RAM_BASE = 0x8000;
+  //     console.log(
+  //       "  0x" + (addresses.sort()[0] + V_RAM_BASE).toString(16),
+  //       "(0x" + filled[addresses[0]].toString(16) + ")",
+  //       "-",
+  //       "0x" + (addresses[addresses.length - 1] + V_RAM_BASE).toString(16)
+  //     );
+  //   }
+  //   // console.log(
+  //   //   sortBy(
+  //   //     toPairs(filled),
+  //   //     ([address, ]) => address
+  //   //   )
+  //   //     .map(([address, value]) =>
+  //   //       `0x${parseInt(address).toString(16)}: 0x${value.toString(16)}`
+  //   //     )
+  //   //     .join(' ')
+  //   // );
+  // }
 }
 
+var pixelToOutChar = function pixelToOutChar(color) {
+  switch (color) {
+    case 3:
+      return "\u2588";
+
+    case 2:
+      return "\u2592";
+
+    case 1:
+      return "\u2591";
+  }
+
+  return " ";
+};
+
+var tileToString = function tileToString(tile) {
+  return tile.map(function (r) {
+    return r.map(pixelToOutChar).join('');
+  }).join("\n");
+};
+
+console.log("\u2591", "\u2592", "\u2588");
+console.log("bg & window palette", mmu.bGP.toString(2));
+console.log("table 1 tiles:");
+(0, _lodash.range)(0, 255).forEach(function (i) {
+  var tile = vRam.getTileDataFromTable1(i);
+
+  if ((0, _lodash.flatMap)(tile).some(function (c) {
+    return c !== 0;
+  })) {
+    console.log(i + ')');
+    console.log(tileToString(tile));
+  }
+});
+console.log("table 2 tiles:");
+(0, _lodash.range)(0, 255).forEach(function (i) {
+  var tile = vRam.getTileDataFromTable2(i);
+
+  if ((0, _lodash.flatMap)(tile).some(function (c) {
+    return c !== 0;
+  })) {
+    console.log(i + ')');
+    console.log(tileToString(tile));
+  }
+});
 console.log("done");
 //# sourceMappingURL=index.js.map

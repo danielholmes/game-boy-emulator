@@ -7,10 +7,12 @@ export {
   VRam,
   WorkingRam,
   ZeroPageRam,
-  OamMemory
+  OamMemory,
+  Tile
 } from "./memory/ram";
 export { Cpu } from "./cpu";
 export { Gpu } from "./gpu";
 export { Mmu } from "./memory/mmu";
 export { Device } from "./device";
 export { Cartridge } from "./cartridge";
+export { PixelColor } from "./types";

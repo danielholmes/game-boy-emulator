@@ -7,11 +7,21 @@ exports.IOMemory = exports.OamMemory = exports.VRam = exports.V_RAM_SIZE = expor
 
 var _types = require("../types");
 
+var _lodash = require("lodash");
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
 
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
@@ -71,6 +81,13 @@ function () {
       return this.raw[address];
     }
   }, {
+    key: "readBytes",
+    value: function readBytes(address, length) {
+      this.assertValidAddress(address);
+      this.assertValidAddress(address + length - 1);
+      return this.raw.slice(address, address + length);
+    }
+  }, {
     key: "writeByte",
     value: function writeByte(address, value) {
       this.assertValidAddress(address);
@@ -127,7 +144,55 @@ function (_Ram3) {
     return _possibleConstructorReturn(this, _getPrototypeOf(VRam).call(this, V_RAM_SIZE));
   }
 
-  _createClass(VRam, null, [{
+  _createClass(VRam, [{
+    key: "getTileDataFromTable1",
+    value: function getTileDataFromTable1(index) {
+      return this.getTileData(VRam.TILE_DATA_TABLE_1_RANGE, index);
+    }
+  }, {
+    key: "getTileDataFromTable2",
+    value: function getTileDataFromTable2(index) {
+      return this.getTileData(VRam.TILE_DATA_TABLE_2_RANGE, index);
+    }
+  }, {
+    key: "getTileData",
+    value: function getTileData(_ref, index) {
+      var _ref2 = _slicedToArray(_ref, 2),
+          startAddress = _ref2[0],
+          endAddress = _ref2[1];
+
+      var address = startAddress + index * VRam.TILE_DATA_BYTES;
+
+      if (address < startAddress || address >= endAddress) {
+        throw new Error("Tile data index ".concat(index, " is invalid"));
+      }
+
+      return (0, _lodash.chunk)(this.readBytes(address, VRam.TILE_DATA_BYTES), 2).map(function (_ref3) {
+        var _ref4 = _slicedToArray(_ref3, 2),
+            lowerBits = _ref4[0],
+            upperBits = _ref4[1];
+
+        return VRam.TILE_DATA_INDICES.map(function (i) {
+          var lower = (lowerBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
+          var upper = (upperBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
+
+          if (upper === 1 && lower === 1) {
+            return 3;
+          }
+
+          if (upper === 1 && lower === 0) {
+            return 2;
+          }
+
+          if (upper === 0 && lower === 1) {
+            return 1;
+          }
+
+          return 0;
+        });
+      });
+    }
+  }], [{
     key: "initializeRandomly",
     value: function initializeRandomly() {
       var vRam = new VRam();
@@ -144,6 +209,20 @@ function (_Ram3) {
 }(Ram);
 
 exports.VRam = VRam;
+
+_defineProperty(VRam, "TILE_DATA_TABLE_1_RANGE", [0x0000, 0x1000]);
+
+_defineProperty(VRam, "TILE_DATA_TABLE_2_RANGE", [0x0800, 0x1800]);
+
+_defineProperty(VRam, "TILE_DATA_BYTES", 16);
+
+_defineProperty(VRam, "TILE_DATA_DIMENSION", 8);
+
+_defineProperty(VRam, "TILE_DATA_INDICES", (0, _lodash.range)(0, VRam.TILE_DATA_DIMENSION));
+
+_defineProperty(VRam, "TILE_DATA_BIT_MASKS", VRam.TILE_DATA_INDICES.map(function (i) {
+  return 1 << VRam.TILE_DATA_DIMENSION - i - 1;
+}));
 
 var OamMemory =
 /*#__PURE__*/
