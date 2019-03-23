@@ -3,11 +3,12 @@
 import { Mmu } from "../../memory/mmu";
 import {
   createCpuWithRegisters,
-  createMemorySnapshot,
+  createMmuSnapshot,
   createMmu
 } from "../../test/help";
 import { Cpu } from "..";
 import { createRet } from "../ret";
+import "../../test/defs";
 
 describe("ret", () => {
   let cpu: Cpu;
@@ -26,12 +27,12 @@ describe("ret", () => {
 
       const instruction = createRet(0x3d);
 
-      const mmuSnapshot = createMemorySnapshot(mmu);
+      const mmuSnapshot = createMmuSnapshot(mmu);
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(12);
       expect(cpu).toEqual(createCpuWithRegisters({ sp: 0x8816, pc: 0x5432 }));
-      expect(createMemorySnapshot(mmu)).toEqual(mmuSnapshot);
+      expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
     });
   });
 });

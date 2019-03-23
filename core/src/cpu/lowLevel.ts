@@ -384,7 +384,6 @@ export class SetRegister implements LowLevelOperation {
   }
 }
 
-// TODO: Can be done in terms of lower level ops
 export class LoadOperand implements LowLevelOperation {
   public readonly cycles: ClockCycles = 4;
 

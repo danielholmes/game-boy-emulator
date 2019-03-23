@@ -6,6 +6,7 @@ import {
   ByteRegister,
   NonAfGroupedWordRegister
 } from "../registers";
+import "../../test/defs";
 import {
   createLdAMNn,
   createLdRMRr,
@@ -27,7 +28,7 @@ import {
 import {
   createCpuSnapshot,
   createCpuWithRegisters,
-  createMemorySnapshot,
+  createMmuSnapshot,
   createMmu,
   createMmuWithCartridgeAndValues,
   createMmuWithValues,
@@ -156,8 +157,8 @@ describe("ld", () => {
       (register: NonAfGroupedWordRegister) => {
         cpu.registers[register] = 0xf108;
         mmu.writeByte(0xf108, 0x2d);
-        const memorySnapshot = createMemorySnapshot(mmu);
 
+        const memorySnapshot = createMmuSnapshot(mmu);
         const instruction = createLdGrM(0x3d, register);
 
         const cycles = instruction.execute(cpu, mmu);
@@ -166,7 +167,7 @@ describe("ld", () => {
         expect(cpu).toEqual(
           createCpuWithRegisters({ a: 0x2d, [register]: 0xf108 })
         );
-        expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
+        expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
       }
     );
   });
@@ -213,14 +214,14 @@ describe("ld", () => {
       mmu.loadCartridge(cartridge);
       mmu.writeWordBigEndian(0xd116, 0xaa21);
 
-      const memorySnapshot = createMemorySnapshot(mmu);
+      const memorySnapshot = createMmuSnapshot(mmu);
       const instruction = createLdAMNn(0x3d);
 
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(12);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, a: 0x21 }));
-      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
+      expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });
 
@@ -254,14 +255,14 @@ describe("ld", () => {
 
       const instruction = createLdRrNn(0x3d, register);
 
-      const mmuSnapshot = createMemorySnapshot(mmu);
+      const mmuSnapshot = createMmuSnapshot(mmu);
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(8);
       expect(cpu).toEqual(
         createCpuWithRegisters({ pc: 0x0002, [register]: 0xdefa })
       );
-      expect(createMemorySnapshot(mmu)).toEqual(mmuSnapshot);
+      expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
     });
   });
 
@@ -276,7 +277,7 @@ describe("ld", () => {
 
         const instruction = createLdRMRr(0x3d, register1, register2);
 
-        const memorySnapshot = createMemorySnapshot(mmu);
+        const memorySnapshot = createMmuSnapshot(mmu);
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(4);
@@ -286,7 +287,7 @@ describe("ld", () => {
             [register1]: 0xdf
           })
         );
-        expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
+        expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
       }
     );
   });

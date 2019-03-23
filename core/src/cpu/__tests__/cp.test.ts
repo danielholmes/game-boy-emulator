@@ -3,10 +3,11 @@
 import { Mmu } from "../../memory/mmu";
 import {
   createCpuWithRegisters,
-  createMemorySnapshot,
+  createMmuSnapshot,
   createMmu,
   EMPTY_MEMORY
 } from "../../test/help";
+import "../../test/defs";
 import { Cpu } from "..";
 import { ByteRegister, NON_A_BYTE_REGISTERS } from "../registers";
 import { createCpMHl, createCpN, createCpR } from "../cp";
@@ -69,33 +70,33 @@ describe("cp", () => {
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
+
+    test.each(NON_A_BYTE_REGISTERS.map(r => [r]))(
+      "CP %s carries",
+      (register: ByteRegister) => {
+        cpu.registers.a = 0x16;
+        cpu.registers[register] = 0x27;
+        cpu.registers.f = binaryToNumber("10000000");
+
+        const instruction = createCpR(0x3d, register);
+
+        const cycles = instruction.execute(cpu, mmu);
+
+        expect(cycles).toBe(0);
+        expect(cpu).toEqual(
+          createCpuWithRegisters({
+            a: 0x16,
+            [register]: 0x27,
+            fZ: 0,
+            fN: 1,
+            fH: 1,
+            fC: 1
+          })
+        );
+        expect(mmu).toEqual(EMPTY_MEMORY);
+      }
+    );
   });
-
-  test.each(NON_A_BYTE_REGISTERS.map(r => [r]))(
-    "CP %s carries",
-    (register: ByteRegister) => {
-      cpu.registers.a = 0x16;
-      cpu.registers[register] = 0x27;
-      cpu.registers.f = binaryToNumber("10000000");
-
-      const instruction = createCpR(0x3d, register);
-
-      const cycles = instruction.execute(cpu, mmu);
-
-      expect(cycles).toBe(0);
-      expect(cpu).toEqual(
-        createCpuWithRegisters({
-          a: 0x16,
-          [register]: 0x27,
-          fZ: 0,
-          fN: 1,
-          fH: 1,
-          fC: 1
-        })
-      );
-      expect(mmu).toEqual(EMPTY_MEMORY);
-    }
-  );
 
   describe("createCpMHl", () => {
     test("CP (hl)", () => {
@@ -106,7 +107,7 @@ describe("cp", () => {
 
       const instruction = createCpMHl(0x3d);
 
-      const memorySnapshot = createMemorySnapshot(mmu);
+      const memorySnapshot = createMmuSnapshot(mmu);
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
@@ -120,7 +121,7 @@ describe("cp", () => {
           fC: 0
         })
       );
-      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
+      expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });
 
@@ -133,7 +134,7 @@ describe("cp", () => {
 
       const instruction = createCpN(0x3d);
 
-      const memorySnapshot = createMemorySnapshot(mmu);
+      const memorySnapshot = createMmuSnapshot(mmu);
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
@@ -147,7 +148,7 @@ describe("cp", () => {
           fC: 0
         })
       );
-      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
+      expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });
 });

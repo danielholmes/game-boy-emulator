@@ -47,6 +47,9 @@
       "ts",
       "js"
     ],
+    "setupFilesAfterEnv": [
+      "./src/test/setUp.ts"
+    ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/src/test/"

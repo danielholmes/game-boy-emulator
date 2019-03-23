@@ -1,8 +1,7 @@
 /* global describe, test, expect */
-
 import {
   createCpuWithRegisters,
-  createMemorySnapshot,
+  createMmuSnapshot,
   createMmu
 } from "../../test/help";
 import { createJrN } from "../jr";
@@ -10,6 +9,7 @@ import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import { Cartridge } from "../../cartridge";
 import { JR_FLAGS, JrFlag } from "../lowLevel";
+import "../../test/defs";
 
 describe("jr", () => {
   let cpu: Cpu;
@@ -26,14 +26,14 @@ describe("jr", () => {
       cpu.registers[flag] = 0;
       mmu.loadCartridge(new Cartridge(new Uint8Array([0x00, 0x03])));
 
-      const memorySnapshot = createMemorySnapshot(mmu);
+      const memorySnapshot = createMmuSnapshot(mmu);
       const instruction = createJrN(0x3d, flag);
 
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0005, [flag]: 0 }));
-      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
+      expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
 
     test.each(JR_FLAGS.map((f) => [f]))("JR %s,n pass negative", (flag: JrFlag) => {
@@ -44,14 +44,14 @@ describe("jr", () => {
       );
       mmu.loadCartridge(cartridge); // -3
 
-      const memorySnapshot = createMemorySnapshot(mmu);
+      const memorySnapshot = createMmuSnapshot(mmu);
       const instruction = createJrN(0x3d, flag);
 
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0002, [flag]: 0 }));
-      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
+      expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
 
     test.each(JR_FLAGS.map((f) => [f]))("JR %s,n skip", (flag: JrFlag) => {
@@ -60,14 +60,14 @@ describe("jr", () => {
       const cartridge = new Cartridge(new Uint8Array([0x00, 0x03]));
       mmu.loadCartridge(cartridge);
 
-      const memorySnapshot = createMemorySnapshot(mmu);
+      const memorySnapshot = createMmuSnapshot(mmu);
       const instruction = createJrN(0x3d, flag);
 
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
       expect(cpu).toEqual(createCpuWithRegisters({ pc: 0x0001, [flag]: 1 }));
-      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
+      expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });
 });

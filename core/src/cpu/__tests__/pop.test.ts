@@ -2,13 +2,14 @@
 
 import {
   createCpuWithRegisters,
-  createMemorySnapshot,
+  createMmuSnapshot,
   createMmu
 } from "../../test/help";
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import { GROUPED_WORD_REGISTERS, GroupedWordRegister } from "../registers";
 import { createPopRr } from "../pop";
+import "../../test/defs";
 
 describe("pop", () => {
   let cpu: Cpu;
@@ -29,7 +30,7 @@ describe("pop", () => {
         // Pop two bytes off stack into register pair nn.
         //   Increment Stack Pointer (SP) twice.
 
-        const mmuSnapshot = createMemorySnapshot(mmu);
+        const mmuSnapshot = createMmuSnapshot(mmu);
         const instruction = createPopRr(0x3d, register);
 
         const cycles = instruction.execute(cpu, mmu);
@@ -38,7 +39,7 @@ describe("pop", () => {
         expect(cpu).toEqual(
           createCpuWithRegisters({ [register]: 0x142e, sp: 0xf125 })
         );
-        expect(createMemorySnapshot(mmu)).toEqual(mmuSnapshot);
+        expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
       }
     );
   });

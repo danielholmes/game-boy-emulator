@@ -30,6 +30,10 @@ export class Mmu {
     this.cartridge = cartridge;
   }
 
+  public get workingRamValues(): Uint8Array {
+    return this.workingRam.getValues();
+  }
+
   public loadCartridge(cartridge: Cartridge): void {
     this.cartridge = cartridge;
   }

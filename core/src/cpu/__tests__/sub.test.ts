@@ -3,7 +3,7 @@
 import { Mmu } from "../../memory/mmu";
 import {
   createCpuWithRegisters,
-  createMemorySnapshot,
+  createMmuSnapshot,
   createMmu,
   EMPTY_MEMORY
 } from "../../test/help";
@@ -12,6 +12,7 @@ import { ByteRegister, NON_A_BYTE_REGISTERS } from "../registers";
 import { createSubMHl, createSubN, createSubR } from "../sub";
 import { binaryToNumber } from "../../types";
 import { Cartridge } from "../../cartridge";
+import "../../test/defs";
 
 describe("sub", () => {
   let cpu: Cpu;
@@ -106,7 +107,7 @@ describe("sub", () => {
 
       const instruction = createSubMHl(0x3d);
 
-      const memorySnapshot = createMemorySnapshot(mmu);
+      const memorySnapshot = createMmuSnapshot(mmu);
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
@@ -120,7 +121,7 @@ describe("sub", () => {
           fC: 0
         })
       );
-      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
+      expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });
 
@@ -133,7 +134,7 @@ describe("sub", () => {
 
       const instruction = createSubN(0x3d);
 
-      const memorySnapshot = createMemorySnapshot(mmu);
+      const memorySnapshot = createMmuSnapshot(mmu);
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
@@ -147,7 +148,7 @@ describe("sub", () => {
           fC: 0
         })
       );
-      expect(createMemorySnapshot(mmu)).toEqual(memorySnapshot);
+      expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });
 });
