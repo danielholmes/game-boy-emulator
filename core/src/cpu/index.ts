@@ -29,7 +29,7 @@ import { createNop } from "./special";
 import { createXorR } from "./xor";
 import { numberToByteHex } from "../types";
 import { createCb } from "./cb";
-import { createJrN } from "./jr";
+import { createJrCcN, createJrN } from "./jr";
 import { createSbcAR } from "./sbc";
 import { createCallNn } from "./call";
 import { createPush } from "./push";
@@ -329,8 +329,9 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x30, "fNc"],
       [0x38, "fC"]
     ] as ReadonlyArray<[OpCode, JrFlag]>).map(([opCode, flag]) =>
-      createJrN(opCode, flag)
+      createJrCcN(opCode, flag)
     ),
+    createJrN(0x18),
 
     ...([
       [0x9f, "a"],

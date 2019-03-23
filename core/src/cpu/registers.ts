@@ -148,16 +148,16 @@ export class CpuRegistersImpl implements CpuRegisters {
 
   public setFHFromByteSubtract(original: ByteValue, subtract: ByteValue): void {
     if (subtract !== 1) {
-      throw new Error('Not impl')
+      throw new Error("Not impl");
     }
-    this.fH = ((original & 0xf) === 0) ? 1 : 0;
+    this.fH = (original & 0xf) === 0 ? 1 : 0;
   }
 
   public setFHFromWordSubtract(original: ByteValue, subtract: ByteValue): void {
     if (subtract !== 1) {
-      throw new Error('Not impl')
+      throw new Error("Not impl");
     }
-    this.fH = ((original & 0xff) === 0) ? 1 : 0;
+    this.fH = (original & 0xff) === 0 ? 1 : 0;
   }
 
   public get fNz(): BitValue {

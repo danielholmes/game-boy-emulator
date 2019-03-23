@@ -103,7 +103,7 @@ function () {
     key: "setFHFromByteSubtract",
     value: function setFHFromByteSubtract(original, subtract) {
       if (subtract !== 1) {
-        throw new Error('Not impl');
+        throw new Error("Not impl");
       }
 
       this.fH = (original & 0xf) === 0 ? 1 : 0;
@@ -112,7 +112,7 @@ function () {
     key: "setFHFromWordSubtract",
     value: function setFHFromWordSubtract(original, subtract) {
       if (subtract !== 1) {
-        throw new Error('Not impl');
+        throw new Error("Not impl");
       }
 
       this.fH = (original & 0xff) === 0 ? 1 : 0;

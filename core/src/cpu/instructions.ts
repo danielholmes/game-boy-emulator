@@ -28,13 +28,9 @@ import {
   CompareToRegister,
   JrFlag,
   IncrementByteRegisterWithFlags,
-  IncrementWordRegisterWithFlags
+  IncrementWordRegisterWithFlags, Jr
 } from "./lowLevel";
-import {
-  ByteRegister,
-  Register,
-  WordRegister
-} from "./registers";
+import { ByteRegister, Register, WordRegister } from "./registers";
 import { sum } from "lodash";
 import { ByteBitPosition, MemoryAddress } from "../types";
 import { Cpu, ClockCycles } from "./index";
@@ -94,6 +90,10 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new JrCheck(flag));
   }
 
+  public jr(): InstructionDefinition {
+    return this.withOperation(new Jr());
+  }
+
   public bitFlags(position: ByteBitPosition): InstructionDefinition {
     return this.withOperation(new BitFlags(position));
   }
@@ -119,13 +119,15 @@ export class InstructionDefinition implements Instruction {
   public writeMemoryFromFf00PlusRegisterAddress(
     register: ByteRegister
   ): InstructionDefinition {
-    return this.withOperation(new WriteMemoryFromRegisterAddress(register, 0xff00));
+    return this.withOperation(
+      new WriteMemoryFromRegisterAddress(register, 0xff00)
+    );
   }
 
-  public writeMemoryFromWordRegisterAddress(register: WordRegister): InstructionDefinition {
-    return this.withOperation(
-      new WriteMemoryFromRegisterAddress(register)
-    );
+  public writeMemoryFromWordRegisterAddress(
+    register: WordRegister
+  ): InstructionDefinition {
+    return this.withOperation(new WriteMemoryFromRegisterAddress(register));
   }
 
   public loadByteOperand(): InstructionDefinition {
@@ -140,7 +142,9 @@ export class InstructionDefinition implements Instruction {
     return this.loadByteOperand().withOperation(new LoadWordOperandHighByte());
   }
 
-  public decrementByteRegisterWithFlags(register: ByteRegister): InstructionDefinition {
+  public decrementByteRegisterWithFlags(
+    register: ByteRegister
+  ): InstructionDefinition {
     return this.withOperation(new DecrementByteRegisterWithFlags(register));
   }
 

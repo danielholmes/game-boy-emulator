@@ -18,7 +18,11 @@ type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 export type WithRegisters = Partial<
   Omit<
     CpuRegisters,
-    "setFFromParts" | "setFHFromByteAdd" | "setFHFromWordAdd" | "setFHFromByteSubtract" | "setFHFromWordSubtract"
+    | "setFFromParts"
+    | "setFHFromByteAdd"
+    | "setFHFromWordAdd"
+    | "setFHFromByteSubtract"
+    | "setFHFromWordSubtract"
   >
 >;
 

@@ -218,8 +218,7 @@ function () {
         throw new Error("value undefined");
       }
 
-      if (this.flag) {
-        // TODO: Becomes a longer cycle operation, in internal
+      if (cpu.registers[this.flag]) {
         cpu.registers.pc += value;
       }
     }

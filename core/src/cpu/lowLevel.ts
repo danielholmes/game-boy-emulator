@@ -3,7 +3,6 @@ import {
   ByteRegister,
   FLAG_C_MASK,
   FLAG_Z_MASK,
-  NonAfGroupedWordRegister,
   Register,
   WordRegister
 } from "./registers";
@@ -173,10 +172,25 @@ export class JrCheck implements LowLevelOperation {
       throw new Error("value undefined");
     }
 
-    if (this.flag) {
-      // TODO: Becomes a longer cycle operation, in internal
+    if (cpu.registers[this.flag]) {
       cpu.registers.pc += value;
     }
+  }
+}
+
+export class Jr implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 0;
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error("value undefined");
+    }
+
+    cpu.registers.pc += value;
   }
 }
 
