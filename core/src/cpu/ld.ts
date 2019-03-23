@@ -63,6 +63,13 @@ export const createLdMFfCA = (opCode: OpCode): Instruction =>
     .loadRegister("a")
     .writeMemoryFromFf00PlusRegisterAddress("c");
 
+export const createLdAMFfC = (opCode: OpCode): Instruction =>
+  new InstructionDefinition(opCode, `LD a,(0xff00+c)`)
+    .loadRegister("c")
+    .addToValue(0xff00)
+    .readMemory()
+    .storeInRegister("a");
+
 export const createLdMNA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (0xff00+n),a`)
     .loadRegister("a")
@@ -73,7 +80,7 @@ export const createLdAMFfN = (opCode: OpCode): Instruction =>
     .loadByteOperand()
     .addToValue(0xff00)
     .readMemory()
-    .storeInRegister('a');
+    .storeInRegister("a");
 
 export const createLdGrM = (
   opCode: OpCode,

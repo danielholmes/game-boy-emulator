@@ -2,6 +2,7 @@ import { Mmu } from "../memory/mmu";
 import { fromPairs } from "lodash";
 import { Instruction, OpCode } from "./instructions";
 import {
+  createLdAMFfC,
   createLdAMFfN,
   createLddMHlA,
   createLdHlMR,
@@ -53,6 +54,15 @@ export class Cpu {
   public constructor() {
     this.registers = new CpuRegistersImpl();
     this.remainingCycles = 0;
+  }
+
+  public getInstructionLabel(opCode: OpCode): string {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    const instruction = INSTRUCTIONS[opCode];
+    if (!instruction) {
+      throw new Error(`No instruction with opCode ${numberToByteHex(opCode)}`);
+    }
+    return instruction.label;
   }
 
   // TODO: See device comments for changes
@@ -320,13 +330,14 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
 
     createLdMFfCA(0xe2),
     createLdAMFfN(0xf0),
+    createLdAMFfC(0xf2),
 
     createCb(0xcb),
 
     createRet(0xc9),
 
     ...([
-      [0x20, "fNZ"],
+      [0x20, "fNz"],
       [0x28, "fZ"],
       [0x30, "fNc"],
       [0x38, "fC"]

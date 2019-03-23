@@ -396,9 +396,13 @@ export class AddToValue implements LowLevelOperation {
     this.amount = amount;
   }
 
-  public execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn {
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
     if (value === undefined) {
-      throw new Error('value undefined');
+      throw new Error("value undefined");
     }
     return value + this.amount;
   }

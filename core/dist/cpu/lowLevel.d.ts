@@ -104,6 +104,12 @@ export declare class SetRegister implements LowLevelOperation {
     constructor(register: Register, value: WordValue);
     execute(cpu: Cpu): LowLevelStateReturn;
 }
+export declare class AddToValue implements LowLevelOperation {
+    readonly cycles: ClockCycles;
+    private readonly amount;
+    constructor(amount: WordValue | ByteValue);
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
+}
 export declare class LoadOperand implements LowLevelOperation {
     readonly cycles: ClockCycles;
     execute(cpu: Cpu, mmu: Mmu): LowLevelStateReturn;

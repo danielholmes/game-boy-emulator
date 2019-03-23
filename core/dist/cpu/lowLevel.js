@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementRegister = exports.DecrementByteRegisterWithFlags = exports.XOrRegister = exports.IncrementRegister = exports.IncrementByteRegisterWithFlags = exports.IncrementWordRegisterWithFlags = exports.LoadWordOperandHighByte = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.ByteValueToSignedByte = exports.Jr = exports.JrCheck = exports.JR_FLAGS = exports.BitFlags = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.DecrementByteRegisterWithFlags = exports.XOrRegister = exports.IncrementRegister = exports.IncrementByteRegisterWithFlags = exports.IncrementWordRegisterWithFlags = exports.LoadWordOperandHighByte = exports.LoadOperand = exports.AddToValue = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.ByteValueToSignedByte = exports.Jr = exports.JrCheck = exports.JR_FLAGS = exports.BitFlags = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -558,6 +558,35 @@ function () {
 }();
 
 exports.SetRegister = SetRegister;
+
+var AddToValue =
+/*#__PURE__*/
+function () {
+  function AddToValue(amount) {
+    _classCallCheck(this, AddToValue);
+
+    _defineProperty(this, "cycles", 0);
+
+    _defineProperty(this, "amount", void 0);
+
+    this.amount = amount;
+  }
+
+  _createClass(AddToValue, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      if (value === undefined) {
+        throw new Error("value undefined");
+      }
+
+      return value + this.amount;
+    }
+  }]);
+
+  return AddToValue;
+}();
+
+exports.AddToValue = AddToValue;
 
 var LoadOperand =
 /*#__PURE__*/

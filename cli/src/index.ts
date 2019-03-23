@@ -94,16 +94,17 @@ device.turnOn();
 // Alt: console.log('\033c\033[3J')
 // Console pixels: console.log('\u2591', '\u2592', '\u2588');
 
-for (let i = 0; i < 1000001; i++) {
+const TOTAL = 10000000;
+for (let i = 0; i < TOTAL; i++) {
+  const opCode = mmu.readByte(cpu.registers.pc);
   console.log(
-    i.toString() +
-      ") 0x" +
-      cpu.registers.pc.toString(16) +
-      " 0x" +
-      mmu.readByte(cpu.registers.pc).toString(16)
+    i.toString() + ")",
+    "@0x" + cpu.registers.pc.toString(16),
+    "0x" + opCode.toString(16),
+    cpu.getInstructionLabel(opCode)
   );
   device.tickCycle();
-  if (i % 10 === 0) {
+  if (i % 1000 === 0 || i === (TOTAL - 1)) {
     const values = vRam.getValues();
     const filled: { [address: number]: number } = {};
     for (let j = 0; j < values.length; j++) {
@@ -112,10 +113,7 @@ for (let i = 0; i < 1000001; i++) {
       }
     }
     const addresses = Object.keys(filled).sort();
-    console.log(
-      "MEM",
-      addresses.length.toString(16)
-    );
+    console.log("MEM", addresses.length);
     if (addresses.length > 0) {
       console.log(
         "  0x" + addresses.sort()[0].toString(16),

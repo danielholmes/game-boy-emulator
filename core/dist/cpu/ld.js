@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createLdiMHlA = exports.createLddMHlA = exports.createLdMNnSp = exports.createLdMNnA = exports.createLdMRA = exports.createLdAMNn = exports.createLdGrM = exports.createLdMNA = exports.createLdMFfCA = exports.createLdHlMN = exports.createLdHlMR = exports.createLdRHlM = exports.createLdRMRr = exports.createLdRN = exports.createLdRrNn = exports.createLdRR = void 0;
+exports.createLdiMHlA = exports.createLddMHlA = exports.createLdMNnSp = exports.createLdMNnA = exports.createLdMRA = exports.createLdAMNn = exports.createLdGrM = exports.createLdAMFfN = exports.createLdMNA = exports.createLdAMFfC = exports.createLdMFfCA = exports.createLdHlMN = exports.createLdHlMR = exports.createLdRHlM = exports.createLdRMRr = exports.createLdRN = exports.createLdRrNn = exports.createLdRR = void 0;
 
 var _instructions = require("./instructions");
 
@@ -55,11 +55,23 @@ var createLdMFfCA = function createLdMFfCA(opCode) {
 
 exports.createLdMFfCA = createLdMFfCA;
 
+var createLdAMFfC = function createLdAMFfC(opCode) {
+  return new _instructions.InstructionDefinition(opCode, "LD a,(0xff00+c)").loadRegister("c").addToValue(0xff00).readMemory().storeInRegister("a");
+};
+
+exports.createLdAMFfC = createLdAMFfC;
+
 var createLdMNA = function createLdMNA(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LD (0xff00+n),a").loadRegister("a").writeMemoryFromOperandAddress();
 };
 
 exports.createLdMNA = createLdMNA;
+
+var createLdAMFfN = function createLdAMFfN(opCode) {
+  return new _instructions.InstructionDefinition(opCode, "LD a,(0xff00+n)").loadByteOperand().addToValue(0xff00).readMemory().storeInRegister("a");
+};
+
+exports.createLdAMFfN = createLdAMFfN;
 
 var createLdGrM = function createLdGrM(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "LD a,".concat(register)).loadRegister(register).readMemory().storeInRegister("a");

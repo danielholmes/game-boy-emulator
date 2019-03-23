@@ -125,6 +125,11 @@ function () {
       return this.withOperation(new _lowLevel.LoadOperand());
     }
   }, {
+    key: "addToValue",
+    value: function addToValue(value) {
+      return this.withOperation(new _lowLevel.AddToValue(value));
+    }
+  }, {
     key: "loadSignedByteOperand",
     value: function loadSignedByteOperand() {
       return this.loadByteOperand().withOperation(new _lowLevel.ByteValueToSignedByte());

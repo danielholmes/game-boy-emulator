@@ -22,7 +22,9 @@ import {
   createLdRN,
   createLdRR,
   createLdRrNn,
-  createLdiMHlA, createLdAMFfN
+  createLdiMHlA,
+  createLdAMFfN,
+  createLdAMFfC
 } from "../ld";
 import {
   createCpuSnapshot,
@@ -350,7 +352,7 @@ describe("ld", () => {
   });
 
   describe("createLdAMFfN", () => {
-    test("LDI a, (#ff00+n)", () => {
+    test("LD a, (#ff00+n)", () => {
       cpu.registers.pc = 0x0000;
       const cart = new Cartridge(new Uint8Array([0x72]));
       mmu.loadCartridge(cart);
@@ -365,5 +367,22 @@ describe("ld", () => {
       expect(cpu).toEqualCpuWithRegisters({ a: 0x62, pc: 0x0001 });
       expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
     });
-  })
+  });
+
+  describe("createLdAMFfC", () => {
+    test("LD a, (#ff00+c)", () => {
+      cpu.registers.a = 0x23;
+      cpu.registers.c = 0xd1;
+      mmu.writeByte(0xffd1, 0x62);
+
+      const mmuSnapshot = createMmuSnapshot(mmu);
+      const instruction = createLdAMFfC(0x3d);
+
+      const cycles = instruction.execute(cpu, mmu);
+
+      expect(cycles).toBe(4);
+      expect(cpu).toEqualCpuWithRegisters({ a: 0x62, c: 0xd1 });
+      expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
+    });
+  });
 });

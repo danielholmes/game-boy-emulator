@@ -28,7 +28,9 @@ import {
   CompareToRegister,
   JrFlag,
   IncrementByteRegisterWithFlags,
-  IncrementWordRegisterWithFlags, Jr, AddToValue
+  IncrementWordRegisterWithFlags,
+  Jr,
+  AddToValue
 } from "./lowLevel";
 import { ByteRegister, Register, WordRegister } from "./registers";
 import { sum } from "lodash";

@@ -1,7 +1,7 @@
 import { Mmu } from "../memory/mmu";
 import { LowLevelOperation, JrFlag } from "./lowLevel";
 import { ByteRegister, Register, WordRegister } from "./registers";
-import { ByteBitPosition, MemoryAddress } from "../types";
+import { ByteBitPosition, ByteValue, MemoryAddress, WordValue } from "../types";
 import { Cpu, ClockCycles } from "./index";
 export declare type OpCode = number;
 export interface Instruction {
@@ -28,6 +28,7 @@ export declare class InstructionDefinition implements Instruction {
     writeMemoryFromFf00PlusRegisterAddress(register: ByteRegister): InstructionDefinition;
     writeMemoryFromWordRegisterAddress(register: WordRegister): InstructionDefinition;
     loadByteOperand(): InstructionDefinition;
+    addToValue(value: WordValue | ByteValue): InstructionDefinition;
     loadSignedByteOperand(): InstructionDefinition;
     loadWordOperand(): InstructionDefinition;
     decrementByteRegisterWithFlags(register: ByteRegister): InstructionDefinition;
