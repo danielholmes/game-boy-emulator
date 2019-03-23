@@ -34,8 +34,9 @@ export const BYTE_REGISTERS: ReadonlyArray<ByteRegister> = [
   "l"
 ];
 
-export const NON_A_BYTE_REGISTERS: ReadonlyArray<ByteRegister> =
-  BYTE_REGISTERS.filter((r) => r !== 'a');
+export const NON_A_BYTE_REGISTERS: ReadonlyArray<
+  ByteRegister
+> = BYTE_REGISTERS.filter(r => r !== "a");
 
 export const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<
   Readonly<[ByteRegister, ByteRegister]>
@@ -83,7 +84,12 @@ export interface CpuRegisters {
   fC: BitValue;
   fNc: BitValue;
 
-  setFFromParts(z: BitIndicator, n: BitIndicator, h: BitIndicator, c: BitIndicator): void;
+  setFFromParts(
+    z: BitIndicator,
+    n: BitIndicator,
+    h: BitIndicator,
+    c: BitIndicator
+  ): void;
 }
 
 export class CpuRegistersImpl implements CpuRegisters {
@@ -115,15 +121,24 @@ export class CpuRegistersImpl implements CpuRegisters {
     this._sp = 0xffff;
   }
 
-  public setFFromParts (z: BitIndicator, n: BitIndicator, h: BitIndicator, c: BitIndicator): void {
-    this._f = (z ? FLAG_Z_MASK : 0) +
+  public setFFromParts(
+    z: BitIndicator,
+    n: BitIndicator,
+    h: BitIndicator,
+    c: BitIndicator
+  ): void {
+    this._f =
+      (z ? FLAG_Z_MASK : 0) +
       (n ? FLAG_N_MASK : 0) +
       (h ? FLAG_H_MASK : 0) +
-      (c ? FLAG_C_MASK : 0)
+      (c ? FLAG_C_MASK : 0);
   }
 
   public get fNz(): BitValue {
     return this.fZ ? 0 : 1;
+  }
+  public set fNz(value: BitValue) {
+    this.fZ = value ? 0 : 1;
   }
 
   public get fZ(): BitValue {
@@ -172,6 +187,9 @@ export class CpuRegistersImpl implements CpuRegisters {
 
   public get fNc(): BitValue {
     return this.fC ? 0 : 1;
+  }
+  public set fNc(value: BitValue) {
+    this.fC = value ? 0 : 1;
   }
 
   public set a(value: ByteValue) {

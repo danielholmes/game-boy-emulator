@@ -76,8 +76,8 @@ function () {
     }
   }, {
     key: "jrCheck",
-    value: function jrCheck() {
-      return this.withOperation(new _lowLevel.JrCheck());
+    value: function jrCheck(flag) {
+      return this.withOperation(new _lowLevel.JrCheck(flag));
     }
   }, {
     key: "bitFlags",

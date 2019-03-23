@@ -21,7 +21,8 @@ import {
   createLdRHlM,
   createLdRN,
   createLdRR,
-  createLdRrNn, createLdiMHlA
+  createLdRrNn,
+  createLdiMHlA
 } from "../ld";
 import {
   createCpuSnapshot,

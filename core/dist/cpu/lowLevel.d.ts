@@ -46,8 +46,12 @@ export declare class BitFlags implements LowLevelOperation {
     constructor(register: ByteRegister);
     execute(cpu: Cpu): LowLevelStateReturn;
 }
+export declare type JrFlag = 'fNz' | 'fZ' | 'fC' | 'fNc';
+export declare const JR_FLAGS: ReadonlyArray<JrFlag>;
 export declare class JrCheck implements LowLevelOperation {
     readonly cycles: ClockCycles;
+    private readonly flag;
+    constructor(flag: JrFlag);
     execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
 export declare class WordValueToSignedByte implements LowLevelOperation {

@@ -22,7 +22,7 @@ exports.GROUPED_WORD_REGISTERS = GROUPED_WORD_REGISTERS;
 var BYTE_REGISTERS = ["a", "b", "c", "d", "e", "h", "l"];
 exports.BYTE_REGISTERS = BYTE_REGISTERS;
 var NON_A_BYTE_REGISTERS = BYTE_REGISTERS.filter(function (r) {
-  return r !== 'a';
+  return r !== "a";
 });
 exports.NON_A_BYTE_REGISTERS = NON_A_BYTE_REGISTERS;
 var BYTE_REGISTER_PAIR_PERMUTATIONS = (0, _lodash.flatMap)(BYTE_REGISTERS.map(function (r1) {
@@ -93,6 +93,9 @@ function () {
     key: "fNz",
     get: function get() {
       return this.fZ ? 0 : 1;
+    },
+    set: function set(value) {
+      this.fZ = value ? 0 : 1;
     }
   }, {
     key: "fZ",
@@ -150,6 +153,9 @@ function () {
     key: "fNc",
     get: function get() {
       return this.fC ? 0 : 1;
+    },
+    set: function set(value) {
+      this.fC = value ? 0 : 1;
     }
   }, {
     key: "a",

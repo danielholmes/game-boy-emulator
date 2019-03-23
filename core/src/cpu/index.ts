@@ -3,7 +3,8 @@ import { fromPairs } from "lodash";
 import { Instruction, OpCode } from "./instructions";
 import {
   createLddMHlA,
-  createLdHlMR, createLdiMHlA,
+  createLdHlMR,
+  createLdiMHlA,
   createLdMCA,
   createLdMNA,
   createLdMNnA,
@@ -29,7 +30,7 @@ import { createNop } from "./special";
 import { createXorR } from "./xor";
 import { numberToByteHex } from "../types";
 import { createCb } from "./cb";
-import { createJrNzN } from "./jr";
+import { createJrN } from "./jr";
 import { createSbcAR } from "./sbc";
 import { createCallNn } from "./call";
 import { createPush } from "./push";
@@ -38,6 +39,7 @@ import { createPopRr } from "./pop";
 import { createRet } from "./ret";
 import { createSubMHl, createSubN, createSubR } from "./sub";
 import { createCpMHl, createCpN, createCpR } from "./cp";
+import { JrFlag } from "./lowLevel";
 
 export type ClockCycles = number;
 
@@ -319,7 +321,14 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
 
     createRet(0xc9),
 
-    createJrNzN(0x20),
+    ...([
+      [0x20, "fNZ"],
+      [0x28, "fZ"],
+      [0x30, "fNc"],
+      [0x38, "fC"]
+    ] as ReadonlyArray<[OpCode, JrFlag]>).map(([opCode, flag]) =>
+      createJrN(opCode, flag)
+    ),
 
     ...([
       [0x9f, "a"],

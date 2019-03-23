@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.XOrRegister = exports.IncrementRegister = exports.LoadWordOperand = exports.LoadOperand = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.WordValueToSignedByte = exports.JrCheck = exports.JR_FLAGS = exports.BitFlags = exports.WriteWordFromGroupedRegisterAddress = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -59,12 +59,12 @@ function () {
     key: "execute",
     value: function execute(cpu, mmu, value) {
       if (value === undefined) {
-        throw new Error('Undefined value');
+        throw new Error("Undefined value");
       }
 
       var previous = cpu.registers[this.register];
       var next = previous - value;
-      cpu.registers.setFFromParts(next === 0x00, 1, (previous & 0xF) - (value & 0xF) < 0, next < 0);
+      cpu.registers.setFFromParts(next === 0x00, 1, (previous & 0xf) - (value & 0xf) < 0, next < 0);
       return next;
     }
   }]);
@@ -221,14 +221,20 @@ function () {
 }();
 
 exports.BitFlags = BitFlags;
+var JR_FLAGS = ['fNz', 'fZ', 'fC', 'fNc'];
+exports.JR_FLAGS = JR_FLAGS;
 
 var JrCheck =
 /*#__PURE__*/
 function () {
-  function JrCheck() {
+  function JrCheck(flag) {
     _classCallCheck(this, JrCheck);
 
     _defineProperty(this, "cycles", 0);
+
+    _defineProperty(this, "flag", void 0);
+
+    this.flag = flag;
   }
 
   _createClass(JrCheck, [{
@@ -238,8 +244,8 @@ function () {
         throw new Error("value undefined");
       }
 
-      if (cpu.registers.fNz) {
-        // TODO: Becomes a longer cycle operation
+      if (this.flag) {
+        // TODO: Becomes a longer cycle operation, in internal
         cpu.registers.pc += value;
       }
     }

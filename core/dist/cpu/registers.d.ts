@@ -51,12 +51,12 @@ export declare class CpuRegistersImpl implements CpuRegisters {
     private _sp;
     constructor();
     setFFromParts(z: BitIndicator, n: BitIndicator, h: BitIndicator, c: BitIndicator): void;
-    readonly fNz: BitValue;
+    fNz: BitValue;
     fZ: BitValue;
     fN: BitValue;
     fH: BitValue;
     fC: BitValue;
-    readonly fNc: BitValue;
+    fNc: BitValue;
     a: ByteValue;
     b: ByteValue;
     c: ByteValue;

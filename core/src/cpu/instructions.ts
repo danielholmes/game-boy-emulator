@@ -24,7 +24,8 @@ import {
   WriteMemoryWordHighByteFromStackPointer,
   WriteMemoryWordLowByteFromStackPointer,
   RotateLeftThroughCarry,
-  ReadMemoryWord, CompareToRegister
+  ReadMemoryWord,
+  CompareToRegister, JrFlag
 } from "./lowLevel";
 import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
 import { sum } from "lodash";
@@ -82,8 +83,8 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new XOrRegister(register));
   }
 
-  public jrCheck(): InstructionDefinition {
-    return this.withOperation(new JrCheck());
+  public jrCheck(flag: JrFlag): InstructionDefinition {
+    return this.withOperation(new JrCheck(flag));
   }
 
   public bitFlags(register: ByteRegister): InstructionDefinition {

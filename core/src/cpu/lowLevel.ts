@@ -52,16 +52,20 @@ export class CompareToRegister implements LowLevelOperation {
     this.register = register;
   }
 
-  public execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn {
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
     if (value === undefined) {
-      throw new Error('Undefined value');
+      throw new Error("Undefined value");
     }
     const previous = cpu.registers[this.register];
     const next = previous - value;
     cpu.registers.setFFromParts(
       next === 0x00,
       1,
-      ((previous & 0xF) - (value & 0xF)) < 0,
+      (previous & 0xf) - (value & 0xf) < 0,
       next < 0
     );
     return next;
@@ -161,8 +165,16 @@ export class BitFlags implements LowLevelOperation {
   }
 }
 
+export type JrFlag = 'fNz' | 'fZ' | 'fC' | 'fNc';
+export const JR_FLAGS: ReadonlyArray<JrFlag> = ['fNz', 'fZ', 'fC', 'fNc'];
+
 export class JrCheck implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
+  private readonly flag: JrFlag;
+
+  public constructor(flag: JrFlag) {
+    this.flag = flag;
+  }
 
   public execute(
     cpu: Cpu,
@@ -173,8 +185,8 @@ export class JrCheck implements LowLevelOperation {
       throw new Error("value undefined");
     }
 
-    if (cpu.registers.fNz) {
-      // TODO: Becomes a longer cycle operation
+    if (this.flag) {
+      // TODO: Becomes a longer cycle operation, in internal
       cpu.registers.pc += value;
     }
   }

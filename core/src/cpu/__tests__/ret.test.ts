@@ -2,7 +2,8 @@
 
 import { Mmu } from "../../memory/mmu";
 import {
-  createCpuWithRegisters, createMemorySnapshot,
+  createCpuWithRegisters,
+  createMemorySnapshot,
   createMmu
 } from "../../test/help";
 import { Cpu } from "..";
