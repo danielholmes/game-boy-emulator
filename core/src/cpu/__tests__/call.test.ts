@@ -1,10 +1,7 @@
 /* global describe, expect */
 
 import { Mmu } from "../../memory/mmu";
-import {
-  createMmu,
-  createMmuWithCartridgeAndValues
-} from "../../test/help";
+import { createMmu, createMmuWithCartridgeAndValues } from "../../test/help";
 import { Cpu } from "../index";
 import { createCallNn } from "../call";
 import { Cartridge } from "../../cartridge";

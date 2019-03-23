@@ -11,7 +11,8 @@ import {
   ByteValue,
   WordValue,
   byteValueToSignedByte,
-  BitValue
+  BitValue,
+  ByteBitPosition
 } from "../types";
 import { Cpu, ClockCycles } from ".";
 
@@ -151,22 +152,25 @@ export class WriteWordFromGroupedRegisterAddress implements LowLevelOperation {
 
 export class BitFlags implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
-  private readonly register: ByteRegister;
+  private readonly position: ByteBitPosition;
 
-  public constructor(register: ByteRegister) {
-    this.register = register;
+  public constructor(position: ByteBitPosition) {
+    this.position = position;
   }
 
-  public execute(cpu: Cpu): LowLevelStateReturn {
-    const t = cpu.registers[this.register] & FLAG_Z_MASK;
-    const flag = 0x20 + (((t & 0xff) === 0 ? 1 : 0) << FLAG_Z_BIT);
-    cpu.registers.f &= 0x10;
-    cpu.registers.f |= flag;
+  public execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error('value undefined');
+    }
+    const bit = value & (1 << this.position);
+    cpu.registers.fZ = bit === 0 ? 1 : 0;
+    cpu.registers.fN = 0;
+    cpu.registers.fH = 1;
   }
 }
 
-export type JrFlag = 'fNz' | 'fZ' | 'fC' | 'fNc';
-export const JR_FLAGS: ReadonlyArray<JrFlag> = ['fNz', 'fZ', 'fC', 'fNc'];
+export type JrFlag = "fNz" | "fZ" | "fC" | "fNc";
+export const JR_FLAGS: ReadonlyArray<JrFlag> = ["fNz", "fZ", "fC", "fNc"];
 
 export class JrCheck implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
@@ -397,9 +401,13 @@ export class LoadOperand implements LowLevelOperation {
 export class LoadWordOperandHighByte implements LowLevelOperation {
   public readonly cycles: ClockCycles = 4;
 
-  public execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn {
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
     if (value === undefined) {
-      throw new Error('value undefined');
+      throw new Error("value undefined");
     }
     const byte = mmu.readByte(cpu.registers.pc);
     cpu.registers.pc++;

@@ -1,10 +1,7 @@
 /* global describe, expect */
 
 import { Mmu } from "../../memory/mmu";
-import {
-  createMmu,
-  createMmuWithValues
-} from "../../test/help";
+import { createMmu, createMmuWithValues } from "../../test/help";
 import { Cpu } from "../index";
 import { GROUPED_WORD_REGISTERS, GroupedWordRegister } from "../registers";
 import { createPush } from "../push";

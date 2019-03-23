@@ -25,11 +25,12 @@ import {
   WriteMemoryWordLowByteFromStackPointer,
   RotateLeftThroughCarry,
   ReadMemoryWord,
-  CompareToRegister, JrFlag
+  CompareToRegister,
+  JrFlag
 } from "./lowLevel";
 import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
 import { sum } from "lodash";
-import { MemoryAddress } from "../types";
+import { ByteBitPosition, MemoryAddress } from "../types";
 import { Cpu, ClockCycles } from "./index";
 
 export type OpCode = number;
@@ -87,8 +88,8 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new JrCheck(flag));
   }
 
-  public bitFlags(register: ByteRegister): InstructionDefinition {
-    return this.withOperation(new BitFlags(register));
+  public bitFlags(position: ByteBitPosition): InstructionDefinition {
+    return this.withOperation(new BitFlags(position));
   }
 
   public compareToRegister(register: Register): InstructionDefinition {
@@ -132,8 +133,7 @@ export class InstructionDefinition implements Instruction {
   }
 
   public loadWordOperand(): InstructionDefinition {
-    return this.loadByteOperand()
-      .withOperation(new LoadWordOperandHighByte());
+    return this.loadByteOperand().withOperation(new LoadWordOperandHighByte());
   }
 
   public decrementRegister(register: Register): InstructionDefinition {

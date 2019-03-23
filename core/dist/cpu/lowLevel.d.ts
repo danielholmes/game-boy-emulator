@@ -1,6 +1,6 @@
 import { Mmu } from "../memory/mmu";
 import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
-import { ByteValue, WordValue } from "../types";
+import { ByteValue, WordValue, ByteBitPosition } from "../types";
 import { Cpu, ClockCycles } from ".";
 export declare type LowLevelState = ByteValue | WordValue | undefined;
 export declare type LowLevelStateReturn = ByteValue | WordValue | void;
@@ -42,11 +42,11 @@ export declare class WriteWordFromGroupedRegisterAddress implements LowLevelOper
 }
 export declare class BitFlags implements LowLevelOperation {
     readonly cycles: ClockCycles;
-    private readonly register;
-    constructor(register: ByteRegister);
-    execute(cpu: Cpu): LowLevelStateReturn;
+    private readonly position;
+    constructor(position: ByteBitPosition);
+    execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn;
 }
-export declare type JrFlag = 'fNz' | 'fZ' | 'fC' | 'fNc';
+export declare type JrFlag = "fNz" | "fZ" | "fC" | "fNc";
 export declare const JR_FLAGS: ReadonlyArray<JrFlag>;
 export declare class JrCheck implements LowLevelOperation {
     readonly cycles: ClockCycles;

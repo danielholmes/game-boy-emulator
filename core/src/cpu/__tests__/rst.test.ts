@@ -1,10 +1,7 @@
 /* global describe, expect */
 
 import { Mmu } from "../../memory/mmu";
-import {
-  createMmu,
-  createMmuWithValues
-} from "../../test/help";
+import { createMmu, createMmuWithValues } from "../../test/help";
 import { createRst, RST_ADDRESSES, RstAddress } from "../rst";
 import { Cpu } from "..";
 

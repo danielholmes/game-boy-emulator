@@ -1,11 +1,7 @@
 /* global describe, expect */
 
 import { Mmu } from "../../memory/mmu";
-import {
-  createMmuSnapshot,
-  createMmu,
-  EMPTY_MEMORY
-} from "../../test/help";
+import { createMmuSnapshot, createMmu, EMPTY_MEMORY } from "../../test/help";
 import { Cpu } from "..";
 import { ByteRegister, NON_A_BYTE_REGISTERS } from "../registers";
 import { createSubMHl, createSubN, createSubR } from "../sub";

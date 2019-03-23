@@ -197,23 +197,27 @@ exports.WriteWordFromGroupedRegisterAddress = WriteWordFromGroupedRegisterAddres
 var BitFlags =
 /*#__PURE__*/
 function () {
-  function BitFlags(register) {
+  function BitFlags(position) {
     _classCallCheck(this, BitFlags);
 
     _defineProperty(this, "cycles", 0);
 
-    _defineProperty(this, "register", void 0);
+    _defineProperty(this, "position", void 0);
 
-    this.register = register;
+    this.position = position;
   }
 
   _createClass(BitFlags, [{
     key: "execute",
-    value: function execute(cpu) {
-      var t = cpu.registers[this.register] & _registers.FLAG_Z_MASK;
-      var flag = 0x20 + (((t & 0xff) === 0 ? 1 : 0) << _registers.FLAG_Z_BIT);
-      cpu.registers.f &= 0x10;
-      cpu.registers.f |= flag;
+    value: function execute(cpu, mmu, value) {
+      if (value === undefined) {
+        throw new Error('value undefined');
+      }
+
+      var bit = value & 1 << this.position;
+      cpu.registers.fZ = bit === 0 ? 1 : 0;
+      cpu.registers.fN = 0;
+      cpu.registers.fH = 1;
     }
   }]);
 
@@ -221,7 +225,7 @@ function () {
 }();
 
 exports.BitFlags = BitFlags;
-var JR_FLAGS = ['fNz', 'fZ', 'fC', 'fNc'];
+var JR_FLAGS = ["fNz", "fZ", "fC", "fNc"];
 exports.JR_FLAGS = JR_FLAGS;
 
 var JrCheck =
@@ -592,7 +596,7 @@ function () {
     key: "execute",
     value: function execute(cpu, mmu, value) {
       if (value === undefined) {
-        throw new Error('value undefined');
+        throw new Error("value undefined");
       }
 
       var byte = mmu.readByte(cpu.registers.pc);

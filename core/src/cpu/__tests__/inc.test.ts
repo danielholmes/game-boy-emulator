@@ -1,10 +1,7 @@
 /* global describe, test, expect */
 
 import { Mmu } from "../../memory/mmu";
-import {
-  createMmu,
-  EMPTY_MEMORY
-} from "../../test/help";
+import { createMmu, EMPTY_MEMORY } from "../../test/help";
 import { createIncR, createIncRr, createIncSp } from "../inc";
 import {
   BYTE_REGISTERS,

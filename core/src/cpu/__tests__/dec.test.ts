@@ -2,10 +2,7 @@
 
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
-import {
-  createMmu,
-  EMPTY_MEMORY
-} from "../../test/help";
+import { createMmu, EMPTY_MEMORY } from "../../test/help";
 import { BYTE_REGISTERS, ByteRegister } from "../registers";
 import { createDecR } from "../dec";
 

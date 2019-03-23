@@ -2,10 +2,7 @@
 
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "../";
-import {
-  createMmu,
-  createMmuWithCartridgeAndValues
-} from "../../test/help";
+import { createMmu, createMmuWithCartridgeAndValues } from "../../test/help";
 import { OpCode } from "../instructions";
 import { Cartridge } from "../../cartridge";
 import bios from "../../bios";

@@ -94,7 +94,7 @@ device.turnOn();
 // Alt: console.log('\033c\033[3J')
 // Console pixels: console.log('\u2591', '\u2592', '\u2588');
 
-for (let i = 0; i < 1000000; i++) {
+for (let i = 0; i < 1000001; i++) {
   console.log(
     i.toString() +
       ") 0x" +

@@ -1,9 +1,6 @@
 /* global describe, test, expect */
 
-import {
-  createMmuSnapshot,
-  createMmu
-} from "../../test/help";
+import { createMmuSnapshot, createMmu } from "../../test/help";
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import { GROUPED_WORD_REGISTERS, GroupedWordRegister } from "../registers";

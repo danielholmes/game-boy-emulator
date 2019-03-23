@@ -1,7 +1,7 @@
 import { Mmu } from "../memory/mmu";
 import { LowLevelOperation, JrFlag } from "./lowLevel";
 import { ByteRegister, NonAfGroupedWordRegister, Register } from "./registers";
-import { MemoryAddress } from "../types";
+import { ByteBitPosition, MemoryAddress } from "../types";
 import { Cpu, ClockCycles } from "./index";
 export declare type OpCode = number;
 export interface Instruction {
@@ -19,7 +19,7 @@ export declare class InstructionDefinition implements Instruction {
     internalDelay(): InstructionDefinition;
     xOr(register: ByteRegister): InstructionDefinition;
     jrCheck(flag: JrFlag): InstructionDefinition;
-    bitFlags(register: ByteRegister): InstructionDefinition;
+    bitFlags(position: ByteBitPosition): InstructionDefinition;
     compareToRegister(register: Register): InstructionDefinition;
     loadRegister(register: Register): InstructionDefinition;
     loadProgramCounter(): InstructionDefinition;

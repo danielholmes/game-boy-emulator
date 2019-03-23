@@ -3,9 +3,12 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.numberToByteBinary = exports.numberToWordHex = exports.numberToByteHex = exports.numberToHex = exports.binaryToNumber = exports.byteValueToSignedByte = void 0;
+exports.numberToByteBinary = exports.numberToWordHex = exports.numberToByteHex = exports.numberToHex = exports.binaryToNumber = exports.byteValueToSignedByte = exports.BYTE_BIT_POSITIONS = void 0;
 
 var _lodash = require("lodash");
+
+var BYTE_BIT_POSITIONS = [0, 1, 2, 3, 4, 5, 6, 7];
+exports.BYTE_BIT_POSITIONS = BYTE_BIT_POSITIONS;
 
 var byteValueToSignedByte = function byteValueToSignedByte(value) {
   if ((value & 0x80) !== 0) {

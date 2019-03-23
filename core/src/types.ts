@@ -5,6 +5,19 @@ export type SignedByteValue = number;
 export type WordValue = number;
 export type BitValue = 1 | 0;
 
+export type ByteBitPosition = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+
+export const BYTE_BIT_POSITIONS: ReadonlyArray<ByteBitPosition> = [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7
+];
+
 export type MemoryAddress = number;
 
 export const byteValueToSignedByte = (value: WordValue): SignedByteValue => {

@@ -81,8 +81,8 @@ function () {
     }
   }, {
     key: "bitFlags",
-    value: function bitFlags(register) {
-      return this.withOperation(new _lowLevel.BitFlags(register));
+    value: function bitFlags(position) {
+      return this.withOperation(new _lowLevel.BitFlags(position));
     }
   }, {
     key: "compareToRegister",

@@ -1,9 +1,6 @@
 /* global describe, test, expect */
 
-import {
-  createMmu,
-  EMPTY_MEMORY
-} from "../../test/help";
+import { createMmu, EMPTY_MEMORY } from "../../test/help";
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import { BYTE_REGISTERS, ByteRegister } from "../registers";

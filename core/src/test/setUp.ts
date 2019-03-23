@@ -5,7 +5,9 @@ import { Cpu } from "../cpu";
 import { CpuRegisters, Register } from "../cpu/registers";
 import { toPairs } from "lodash";
 
-const isBitRegister = (name: string): name is "fZ" | "fC" | "fN" | "fH" | "fNz" | "fNc" =>
+const isBitRegister = (
+  name: string
+): name is "fZ" | "fC" | "fN" | "fH" | "fNz" | "fNc" =>
   ["fZ", "fN", "fH", "fC", "fNz", "fNc"].indexOf(name) >= 0;
 
 // Dummy to get around typing
@@ -34,7 +36,7 @@ function toEqualCpuRegisters(
   utils: { isNot: boolean },
   received: CpuRegisters,
   withRegisters: Partial<Omit<CpuRegisters, "setFFromParts">>
-) {
+): { pass: boolean, message: string | (() => string) } {
   if (received === null) {
     return {
       pass: true,
@@ -53,7 +55,7 @@ function toEqualCpuRegisters(
   // The test should therefore always pass, that means it needs to be
   // `true` when used normally, and `false` when `.not` was used.
   return { pass: !utils.isNot, message: "" };
-};
+}
 
 expect.extend({
   toMatchSnapshotWorkingRam(received: Mmu, snapshot: MmuSnapshot) {
@@ -66,9 +68,13 @@ expect.extend({
 
     const receivedSnapshot = createMmuSnapshot(received);
     if (this.isNot) {
-      expect(receivedSnapshot.workingRamValues).not.toEqual(snapshot.workingRamValues);
+      expect(receivedSnapshot.workingRamValues).not.toEqual(
+        snapshot.workingRamValues
+      );
     } else {
-      expect(receivedSnapshot.workingRamValues).toEqual(snapshot.workingRamValues);
+      expect(receivedSnapshot.workingRamValues).toEqual(
+        snapshot.workingRamValues
+      );
     }
 
     // This point is reached when the above assertion was successful.
