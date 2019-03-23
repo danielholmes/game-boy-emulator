@@ -49,10 +49,20 @@ function () {
     value: function readByte(address) {
       return this.bytes[address];
     }
+  }], [{
+    key: "newWithNintendoLogo",
+    value: function newWithNintendoLogo(bytes) {
+      return new Cartridge(new Uint8Array([0x00, // 0x0100
+      0x00, // 0x0101
+      0x00, // 0x0102
+      0x00].concat(_toConsumableArray(_nintendoLogo.default), _toConsumableArray(bytes))));
+    }
   }]);
 
   return Cartridge;
 }();
 
 exports.Cartridge = Cartridge;
+
+_defineProperty(Cartridge, "PC_START", 4 + _nintendoLogo.default.length);
 //# sourceMappingURL=cartridge.js.map

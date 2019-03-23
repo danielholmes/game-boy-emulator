@@ -30,7 +30,7 @@ import {
   IncrementByteRegisterWithFlags,
   IncrementWordRegisterWithFlags,
   Jr,
-  AddToValue
+  AddToValue, AddWithCarryToA
 } from "./lowLevel";
 import { ByteRegister, Register, WordRegister } from "./registers";
 import { sum } from "lodash";
@@ -211,6 +211,10 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(
       new WriteMemoryWordHighByteFromStackPointer()
     ).withOperation(new WriteMemoryWordLowByteFromStackPointer());
+  }
+
+  public addWithCarryToA(): InstructionDefinition {
+    return this.withOperation(new AddWithCarryToA());
   }
 
   private withOperation(operation: LowLevelOperation): InstructionDefinition {

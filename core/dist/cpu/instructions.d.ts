@@ -44,6 +44,7 @@ export declare class InstructionDefinition implements Instruction {
     setRegister(register: Register, address: MemoryAddress): InstructionDefinition;
     pushWordToStack(): InstructionDefinition;
     writeMemoryWordFromStackPointer(): InstructionDefinition;
+    addWithCarryToA(): InstructionDefinition;
     private withOperation;
 }
 //# sourceMappingURL=instructions.d.ts.map

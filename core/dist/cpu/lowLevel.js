@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DecrementRegister = exports.DecrementByteRegisterWithFlags = exports.XOrRegister = exports.IncrementRegister = exports.IncrementByteRegisterWithFlags = exports.IncrementWordRegisterWithFlags = exports.LoadWordOperandHighByte = exports.LoadOperand = exports.AddToValue = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.ByteValueToSignedByte = exports.Jr = exports.JrCheck = exports.JR_FLAGS = exports.BitFlags = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
+exports.DecrementRegister = exports.DecrementByteRegisterWithFlags = exports.XOrRegister = exports.IncrementRegister = exports.IncrementByteRegisterWithFlags = exports.IncrementWordRegisterWithFlags = exports.LoadWordOperandHighByte = exports.LoadOperand = exports.AddToValue = exports.AddWithCarryToA = exports.SetRegister = exports.WriteMemoryWordLowByteFromStackPointer = exports.WriteMemoryWordHighByteFromStackPointer = exports.InternalDelay = exports.WriteMemoryFromRegisterAddress = exports.WriteMemoryLowByteFromOperandAddress = exports.WriteMemoryHighByteFromOperandAddress = exports.StoreInRegister = exports.WriteWordFromOperandAddress = exports.WriteByteFromOperandAddress = exports.ByteValueToSignedByte = exports.Jr = exports.JrCheck = exports.JR_FLAGS = exports.BitFlags = exports.ReadMemory = exports.ReadMemoryWord = exports.RotateLeftThroughCarry = exports.CompareToRegister = exports.LoadRegister = void 0;
 
 var _registers = require("./registers");
 
@@ -558,6 +558,33 @@ function () {
 }();
 
 exports.SetRegister = SetRegister;
+
+var AddWithCarryToA =
+/*#__PURE__*/
+function () {
+  function AddWithCarryToA() {
+    _classCallCheck(this, AddWithCarryToA);
+
+    _defineProperty(this, "cycles", 0);
+  }
+
+  _createClass(AddWithCarryToA, [{
+    key: "execute",
+    value: function execute(cpu, mmu, value) {
+      if (value === undefined) {
+        throw new Error("value undefined");
+      }
+
+      var result = cpu.registers.a + value + cpu.registers.fC;
+      cpu.registers.setFFromParts(result === 0x100 ? 1 : 0, 0, (0, _registers.calculateFHFromByteAdd)(cpu.registers.a, value + cpu.registers.fC), result > 0xff ? 1 : 0);
+      cpu.registers.a = result;
+    }
+  }]);
+
+  return AddWithCarryToA;
+}();
+
+exports.AddWithCarryToA = AddWithCarryToA;
 
 var AddToValue =
 /*#__PURE__*/

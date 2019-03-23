@@ -1,6 +1,6 @@
 import { Mmu } from "../memory/mmu";
 import {
-  ByteRegister,
+  ByteRegister, calculateFHFromByteAdd,
   FLAG_C_MASK,
   FLAG_Z_MASK,
   Register,
@@ -385,6 +385,28 @@ export class SetRegister implements LowLevelOperation {
 
   public execute(cpu: Cpu): LowLevelStateReturn {
     cpu.registers[this.register] = this.value;
+  }
+}
+
+export class AddWithCarryToA implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 0;
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error("value undefined");
+    }
+    const result = cpu.registers.a + value + cpu.registers.fC;
+    cpu.registers.setFFromParts(
+      result === 0x100 ? 1 : 0,
+    0,
+      calculateFHFromByteAdd(cpu.registers.a, value + cpu.registers.fC),
+    result > 0xff ? 1 : 0
+    );
+    cpu.registers.a = result;
   }
 }
 

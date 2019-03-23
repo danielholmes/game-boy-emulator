@@ -41,6 +41,7 @@ import { createRet } from "./ret";
 import { createSubMHl, createSubN, createSubR } from "./sub";
 import { createCpMHl, createCpN, createCpR } from "./cp";
 import { JrFlag } from "./lowLevel";
+import { createAdcN } from "./add";
 
 export type ClockCycles = number;
 
@@ -296,6 +297,8 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
     ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
       createXorR(opCode, register)
     ),
+
+    createAdcN(0xce),
 
     ...([
       [0x97, "a"],

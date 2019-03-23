@@ -205,6 +205,11 @@ function () {
       return this.withOperation(new _lowLevel.WriteMemoryWordHighByteFromStackPointer()).withOperation(new _lowLevel.WriteMemoryWordLowByteFromStackPointer());
     }
   }, {
+    key: "addWithCarryToA",
+    value: function addWithCarryToA() {
+      return this.withOperation(new _lowLevel.AddWithCarryToA());
+    }
+  }, {
     key: "withOperation",
     value: function withOperation(operation) {
       return new InstructionDefinition(this.opCode, this.label, [].concat(_toConsumableArray(this.operations), [operation]));

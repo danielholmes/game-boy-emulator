@@ -43,6 +43,8 @@ var _sub = require("./sub");
 
 var _cp = require("./cp");
 
+var _add = require("./add");
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -210,7 +212,7 @@ var INSTRUCTIONS = (0, _lodash.fromPairs)([(0, _special.createNop)(0x00)].concat
       register = _ref26[1];
 
   return (0, _xor.createXorR)(opCode, register);
-})), _toConsumableArray([[0x97, "a"], [0x90, "b"], [0x91, "c"], [0x92, "d"], [0x93, "e"], [0x94, "h"], [0x95, "l"]].map(function (_ref27) {
+})), [(0, _add.createAdcN)(0xce)], _toConsumableArray([[0x97, "a"], [0x90, "b"], [0x91, "c"], [0x92, "d"], [0x93, "e"], [0x94, "h"], [0x95, "l"]].map(function (_ref27) {
   var _ref28 = _slicedToArray(_ref27, 2),
       opCode = _ref28[0],
       register = _ref28[1];

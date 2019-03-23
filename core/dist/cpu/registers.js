@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CpuRegistersImpl = exports.FLAG_C_MASK = exports.FLAG_H_MASK = exports.FLAG_N_MASK = exports.FLAG_Z_MASK = exports.FLAG_Z_BIT = exports.BYTE_REGISTER_PAIR_PERMUTATIONS = exports.NON_A_BYTE_REGISTERS = exports.BYTE_REGISTERS = exports.GROUPED_WORD_REGISTERS = exports.NON_AF_GROUPED_WORD_REGISTERS = void 0;
+exports.CpuRegistersImpl = exports.calculateFHFromByteAdd = exports.FLAG_C_MASK = exports.FLAG_H_MASK = exports.FLAG_N_MASK = exports.FLAG_Z_MASK = exports.FLAG_Z_BIT = exports.BYTE_REGISTER_PAIR_PERMUTATIONS = exports.NON_A_BYTE_REGISTERS = exports.BYTE_REGISTERS = exports.GROUPED_WORD_REGISTERS = exports.NON_AF_GROUPED_WORD_REGISTERS = void 0;
 
 var _lodash = require("lodash");
 
@@ -45,6 +45,12 @@ var FLAG_H_MASK = 1 << FLAG_H_BIT;
 exports.FLAG_H_MASK = FLAG_H_MASK;
 var FLAG_C_MASK = 1 << FLAG_C_BIT;
 exports.FLAG_C_MASK = FLAG_C_MASK;
+
+var calculateFHFromByteAdd = function calculateFHFromByteAdd(original, add) {
+  return ((original & 0xf) + (add & 0xf) & 0x10) === 0x10 ? 1 : 0;
+};
+
+exports.calculateFHFromByteAdd = calculateFHFromByteAdd;
 
 var CpuRegistersImpl =
 /*#__PURE__*/
@@ -92,7 +98,7 @@ function () {
   }, {
     key: "setFHFromByteAdd",
     value: function setFHFromByteAdd(original, add) {
-      this.fH = ((original & 0xf) + (add & 0xf) & 0x10) === 0x10 ? 1 : 0;
+      this.fH = calculateFHFromByteAdd(original, add);
     }
   }, {
     key: "setFHFromWordAdd",
