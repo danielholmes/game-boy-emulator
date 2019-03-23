@@ -5,7 +5,7 @@ import {
   IncrementRegister,
   JrCheck,
   LoadOperand,
-  LoadWordOperand,
+  LoadWordOperandHighByte,
   LoadRegister,
   LowLevelOperation,
   LowLevelState,
@@ -15,7 +15,7 @@ import {
   WriteWordFromGroupedRegisterAddress,
   WriteByteFromOperandAddress,
   XOrRegister,
-  WordValueToSignedByte,
+  ByteValueToSignedByte,
   WriteWordFromOperandAddress,
   WriteMemoryFromRegisterAddress,
   WriteMemoryLowByteFromOperandAddress,
@@ -128,11 +128,12 @@ export class InstructionDefinition implements Instruction {
   }
 
   public loadSignedByteOperand(): InstructionDefinition {
-    return this.loadByteOperand().withOperation(new WordValueToSignedByte());
+    return this.loadByteOperand().withOperation(new ByteValueToSignedByte());
   }
 
   public loadWordOperand(): InstructionDefinition {
-    return this.withOperation(new LoadWordOperand());
+    return this.loadByteOperand()
+      .withOperation(new LoadWordOperandHighByte());
   }
 
   public decrementRegister(register: Register): InstructionDefinition {

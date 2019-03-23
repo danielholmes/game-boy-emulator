@@ -192,7 +192,7 @@ export class JrCheck implements LowLevelOperation {
   }
 }
 
-export class WordValueToSignedByte implements LowLevelOperation {
+export class ByteValueToSignedByte implements LowLevelOperation {
   public readonly cycles: ClockCycles = 0;
 
   public execute(
@@ -395,16 +395,16 @@ export class LoadOperand implements LowLevelOperation {
   }
 }
 
-/**
- * @deprecated should be split
- */
-export class LoadWordOperand implements LowLevelOperation {
-  public readonly cycles: ClockCycles = 8;
+export class LoadWordOperandHighByte implements LowLevelOperation {
+  public readonly cycles: ClockCycles = 4;
 
-  public execute(cpu: Cpu, mmu: Mmu): LowLevelStateReturn {
-    const byte = mmu.readBigEndianWord(cpu.registers.pc);
-    cpu.registers.pc += 2;
-    return byte;
+  public execute(cpu: Cpu, mmu: Mmu, value: LowLevelState): LowLevelStateReturn {
+    if (value === undefined) {
+      throw new Error('value undefined');
+    }
+    const byte = mmu.readByte(cpu.registers.pc);
+    cpu.registers.pc++;
+    return (byte << 8) + value;
   }
 }
 
