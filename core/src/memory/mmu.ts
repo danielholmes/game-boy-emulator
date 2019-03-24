@@ -45,7 +45,7 @@ export class Mmu {
   // TODO: Test access and shadowing
   public readByte(address: MemoryAddress): ByteValue {
     // TODO: Once the bios has run, it is removed and goes through to cartridge
-    if (address >= 0x0000 && address <= 0x00ff && !this.cartridge) {
+    if (address >= 0x0000 && address <= 0x00ff) { // TODO: check bios flag} && !this.cartridge) {
       return this.bios.readByte(address);
     }
     if (address >= 0x0000 && address <= 0x7fff) {
@@ -94,6 +94,10 @@ export class Mmu {
   }
 
   public writeByte(address: MemoryAddress, value: ByteValue): void {
+    if (address === 0xff50) {
+      console.log('Writing bios', value.toString(16))
+    }
+
     if (address >= 0x8000 && address <= 0x9fff) {
       this.vRam.writeByte(address - 0x8000, value);
     } else if (address >= 0xa000 && address <= 0xbfff) {

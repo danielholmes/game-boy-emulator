@@ -12,10 +12,13 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
-var cartridge = new _core.Cartridge(new Uint8Array([0x00, // 0x0100
-0x00, // 0x0101
-0x00, // 0x0102
-0x00].concat(_toConsumableArray(_core.nintendoLogo))));
+var cartridge = new _core.Cartridge(new Uint8Array([].concat(_toConsumableArray((0, _lodash.range)(0x0000, 0x0104).map(function () {
+  return 0x00;
+})), _toConsumableArray(_core.nintendoLogo))));
+
+if (!(0, _core.isValidCartridge)(cartridge)) {
+  throw new Error('Invalid cartridge');
+}
 
 var vRam = _core.VRam.initializeRandomly();
 
@@ -77,19 +80,15 @@ var printEnd = function printEnd() {
       console.log(tileToString(tile));
     }
   });
-  console.log("done");
+  console.log('Background map 1:');
 };
 
-var TOTAL = 250000;
+var TOTAL = 5000000;
 
 for (var i = 0; i < TOTAL; i++) {
-  /*const opCode = mmu.readByte(cpu.registers.pc);
-  console.log(
-    i.toString() + ")",
-    "@0x" + cpu.registers.pc.toString(16),
-    "0x" + opCode.toString(16),
-    cpu.getInstructionLabel(opCode)
-  );*/
+  var opCode = mmu.readByte(cpu.registers.pc);
+  console.log(i.toString() + ")", "@0x" + cpu.registers.pc.toString(16), "0x" + opCode.toString(16), cpu.getInstructionLabel(opCode));
+
   try {
     device.tickCycle();
   } catch (e) {

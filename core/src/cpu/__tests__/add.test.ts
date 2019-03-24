@@ -19,8 +19,8 @@ describe("add", () => {
     test("ADC a,n basic", () => {
       cpu.registers.a = 0x12;
       cpu.registers.fC = 0;
-      cpu.registers.pc = Cartridge.PC_START;
-      const cart = Cartridge.newWithNintendoLogo(new Uint8Array([0x34]));
+      cpu.registers.pc = 0x0000;
+      const cart = new Cartridge(new Uint8Array([0x34]));
       mmu.loadCartridge(cart);
 
       const instruction = createAdcN(0x3d);
@@ -35,7 +35,7 @@ describe("add", () => {
         fN: 0,
         fH: 0,
         fC: 0,
-        pc: Cartridge.PC_START + 1
+        pc: 0x0001
       });
       expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
     });
@@ -43,8 +43,8 @@ describe("add", () => {
     test("ADC a,n use carry", () => {
       cpu.registers.a = 0x27;
       cpu.registers.fC = 1;
-      cpu.registers.pc = Cartridge.PC_START;
-      const cart = Cartridge.newWithNintendoLogo(new Uint8Array([0x00]));
+      cpu.registers.pc = 0x0000;
+      const cart = new Cartridge(new Uint8Array([0x00]));
       mmu.loadCartridge(cart);
 
       const instruction = createAdcN(0x3d);
@@ -59,7 +59,7 @@ describe("add", () => {
         fN: 0,
         fH: 0,
         fC: 0,
-        pc: Cartridge.PC_START + 1
+        pc: 0x0001
       });
       expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
     });
@@ -67,8 +67,8 @@ describe("add", () => {
     test("ADC a,n zero", () => {
       cpu.registers.a = 0xfe;
       cpu.registers.fC = 1;
-      cpu.registers.pc = Cartridge.PC_START;
-      const cart = Cartridge.newWithNintendoLogo(new Uint8Array([0x01]));
+      cpu.registers.pc = 0x0000;
+      const cart = new Cartridge(new Uint8Array([0x01]));
       mmu.loadCartridge(cart);
 
       const instruction = createAdcN(0x3d);
@@ -83,7 +83,7 @@ describe("add", () => {
         fN: 0,
         fH: 1,
         fC: 1,
-        pc: Cartridge.PC_START + 1
+        pc: 0x0001
       });
       expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
     });
@@ -91,8 +91,8 @@ describe("add", () => {
     test("ADC a,n half carry", () => {
       cpu.registers.a = 0x0e;
       cpu.registers.fC = 0;
-      cpu.registers.pc = Cartridge.PC_START;
-      const cart = Cartridge.newWithNintendoLogo(new Uint8Array([0x05]));
+      cpu.registers.pc = 0x0000;
+      const cart = new Cartridge(new Uint8Array([0x05]));
       mmu.loadCartridge(cart);
 
       const instruction = createAdcN(0x3d);
@@ -107,7 +107,7 @@ describe("add", () => {
         fN: 0,
         fH: 1,
         fC: 0,
-        pc: Cartridge.PC_START + 1
+        pc: 0x0001
       });
       expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
     });

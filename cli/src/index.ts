@@ -11,19 +11,20 @@ import {
   OamMemory,
   PixelColor,
   Tile, Cartridge,
-  nintendoLogo
+  nintendoLogo,
+  isValidCartridge
 } from "@gebby/core";
 import { range, flatMap } from "lodash";
 
 const cartridge = new Cartridge(
   new Uint8Array([
-    0x00, // 0x0100
-    0x00, // 0x0101
-    0x00, // 0x0102
-    0x00, // 0x0103
+    ...range(0x0000, 0x0104).map(() => 0x00),
     ...nintendoLogo
   ])
 );
+if (!isValidCartridge(cartridge)) {
+  throw new Error('Invalid cartridge');
+}
 
 const vRam = VRam.initializeRandomly();
 
@@ -71,6 +72,7 @@ const tileToString = (tile: Tile): string =>
 
 const printEnd = (): void => {
   console.log("BG & window palette", mmu.bGP.toString(2));
+
   console.log("Table 1 tiles:");
   range(0, 255)
     .forEach((i) => {
@@ -80,6 +82,7 @@ const printEnd = (): void => {
         console.log(tileToString(tile));
       }
     });
+
   console.log("Table 2 tiles:");
   range(0, 255)
     .forEach((i) => {
@@ -89,18 +92,20 @@ const printEnd = (): void => {
         console.log(tileToString(tile));
       }
     });
-  console.log("done");
-}
 
-const TOTAL = 250000;
+  console.log('Background map 1:');
+
+};
+
+const TOTAL = 5000000;
 for (let i = 0; i < TOTAL; i++) {
-  /*const opCode = mmu.readByte(cpu.registers.pc);
+  const opCode = mmu.readByte(cpu.registers.pc);
   console.log(
     i.toString() + ")",
     "@0x" + cpu.registers.pc.toString(16),
     "0x" + opCode.toString(16),
     cpu.getInstructionLabel(opCode)
-  );*/
+  );
   try {
     device.tickCycle();
   } catch (e) {

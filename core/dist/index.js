@@ -87,6 +87,12 @@ Object.defineProperty(exports, "Cartridge", {
     return _cartridge.Cartridge;
   }
 });
+Object.defineProperty(exports, "isValidCartridge", {
+  enumerable: true,
+  get: function get() {
+    return _cartridge.isValid;
+  }
+});
 Object.defineProperty(exports, "PixelColor", {
   enumerable: true,
   get: function get() {

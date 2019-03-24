@@ -2,6 +2,7 @@
 
 import { Cartridge, isValid } from "../cartridge";
 import nintendoLogo from "../nintendoLogo";
+import { range } from "lodash";
 
 describe("cartridge", () => {
   describe("isValid", () => {
@@ -17,10 +18,7 @@ describe("cartridge", () => {
       const cart = new Cartridge(
         new Uint8Array(
           [
-            0x00, // 0x0100
-            0x00, // 0x0101
-            0x00, // 0x0102
-            0x00, // 0x0103
+            ...range(0x0000, 0x0104).map(() => 0x00),
             ...nintendoLogo
           ]
         )
@@ -29,7 +27,22 @@ describe("cartridge", () => {
       const result = isValid(cart);
 
       expect(result).toBe(true);
-      expect(cart.readByte(0x0004)).toEqual(0xce); // first byte of logo
+      expect(cart.readByte(0x0104)).toEqual(0xce); // first byte of logo
+    });
+
+    test("invalid (nintendo logo not where meant to be)", () => {
+      const cart = new Cartridge(
+        new Uint8Array(
+          [
+            ...range(0x0000, 0x0094).map(() => 0x00),
+            ...nintendoLogo
+          ]
+        )
+      );
+
+      const result = isValid(cart);
+
+      expect(result).toBe(false);
     });
   });
 });

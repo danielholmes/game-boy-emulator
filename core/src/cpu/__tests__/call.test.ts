@@ -20,9 +20,9 @@ describe("call", () => {
     test("normal", () => {
       // Push address of next instruction onto stack and then jump to address nn
       // call to nn, SP=SP-2, (SP)=PC, PC=nn
-      cpu.registers.pc = Cartridge.PC_START;
+      cpu.registers.pc = 0x0000;
       cpu.registers.sp = 0xe444;
-      const cart = Cartridge.newWithNintendoLogo(new Uint8Array([0x54, 0x76]));
+      const cart = new Cartridge(new Uint8Array([0x54, 0x76]));
       mmu.loadCartridge(cart);
 
       const instruction = createCallNn(0x3d);
@@ -33,7 +33,7 @@ describe("call", () => {
       expect(cpu).toEqualCpuWithRegisters({ pc: 0x7654, sp: 0xe442 });
       expect(mmu).toMatchSnapshotWorkingRam(
         createMmuSnapshot(
-          createMmuWithCartridgeAndValues(cart, { 0xe442: Cartridge.PC_START })
+          createMmuWithCartridgeAndValues(cart, { 0xe442: 0x0000 })
         )
       );
       expect(cycles).toBe(20);
@@ -43,9 +43,9 @@ describe("call", () => {
   describe("createCallFNn", () => {
     describe.each(CHECK_FLAGS.map((f) => [f]))("CALL %s,nn", (flag: CheckFlag) => {
       test("pass", () => {
-        cpu.registers.pc = Cartridge.PC_START;
+        cpu.registers.pc = 0x0000;
         cpu.registers[flag] = 1;
-        const cart = Cartridge.newWithNintendoLogo(new Uint8Array([0x54, 0x76]));
+        const cart = new Cartridge(new Uint8Array([0x54, 0x76]));
         mmu.loadCartridge(cart);
 
         const instruction = createCallFNn(0x3d, flag);
@@ -59,9 +59,9 @@ describe("call", () => {
       });
 
       test("fail", () => {
-        cpu.registers.pc = Cartridge.PC_START;
+        cpu.registers.pc = 0x0000;
         cpu.registers[flag] = 0;
-        const cart = Cartridge.newWithNintendoLogo(new Uint8Array([0x54, 0x76]));
+        const cart = new Cartridge(new Uint8Array([0x54, 0x76]));
         mmu.loadCartridge(cart);
 
         const instruction = createCallFNn(0x3d, flag);
@@ -69,7 +69,7 @@ describe("call", () => {
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cpu).toEqualCpuWithRegisters({ pc: Cartridge.PC_START + 2, [flag]: 0 });
+        expect(cpu).toEqualCpuWithRegisters({ pc: 0x0002, [flag]: 0 });
         expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
         expect(cycles).toBe(8);
       });
