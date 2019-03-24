@@ -9,7 +9,9 @@ export {
   WorkingRam,
   ZeroPageRam,
   OamMemory,
-  Tile
+  Tile,
+  BackgroundMap,
+  TileDataIndex
 } from "./memory/ram";
 export { Cpu } from "./cpu";
 export { Gpu } from "./gpu";

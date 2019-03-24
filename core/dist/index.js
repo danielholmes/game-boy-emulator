@@ -57,6 +57,18 @@ Object.defineProperty(exports, "Tile", {
     return _ram.Tile;
   }
 });
+Object.defineProperty(exports, "BackgroundMap", {
+  enumerable: true,
+  get: function get() {
+    return _ram.BackgroundMap;
+  }
+});
+Object.defineProperty(exports, "TileDataIndex", {
+  enumerable: true,
+  get: function get() {
+    return _ram.TileDataIndex;
+  }
+});
 Object.defineProperty(exports, "Cpu", {
   enumerable: true,
   get: function get() {

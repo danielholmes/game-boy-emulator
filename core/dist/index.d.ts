@@ -2,7 +2,7 @@ import bios from "./bios";
 import nintendoLogo from "./nintendoLogo";
 export { bios, nintendoLogo };
 export { Bios } from "./bios";
-export { IOMemory, VRam, WorkingRam, ZeroPageRam, OamMemory, Tile } from "./memory/ram";
+export { IOMemory, VRam, WorkingRam, ZeroPageRam, OamMemory, Tile, BackgroundMap, TileDataIndex } from "./memory/ram";
 export { Cpu } from "./cpu";
 export { Gpu } from "./gpu";
 export { Mmu } from "./memory/mmu";

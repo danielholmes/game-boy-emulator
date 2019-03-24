@@ -30,6 +30,10 @@ module.exports = {
         loader: 'url-loader?mimetype=image/png'
       },
       {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
         test: /(\.js|\.tsx?)$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
@@ -46,7 +50,9 @@ module.exports = {
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: ['dist']
     }),
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: "./src/index.html"
+    }),
     new webpack.NoEmitOnErrorsPlugin()
   ],
 }
