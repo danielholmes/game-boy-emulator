@@ -53,15 +53,13 @@ function () {
   }, {
     key: "readByte",
     value: function readByte(address) {
-      // TODO: Once the bios has run, it is removed and goes through to cartridge
       if (address >= 0x0000 && address <= 0x00ff && this.isInBios) {
         return this.bios.readByte(address);
       }
 
       if (address >= 0x0000 && address <= 0x7fff) {
         if (!this.cartridge) {
-          // throw new Error(`Cannot access address ${numberToWordHex(address)}: no cartridge`);
-          return 0;
+          return 0x00;
         }
 
         return this.cartridge.readByte(address);

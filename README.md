@@ -19,42 +19,51 @@ yarn
 
 ## Roadmap
 
- 1. Get bios running to completion
+ 1. interrupts
  2. complete GPU enough (nintendo logo is a background, not sprite)
- 3. interrupts
- 4. Set up cli running and displaying bios
- 5. Set up browser running and displaying bios
- 6. Set up blarg test roms infrastructure
- 7. get tetris running
- 8. input, sound, etc
- 9. more complicated carts
+ 3. Set up cli running and displaying bios
+ 4. Set up browser running and displaying bios
+ 5. Set up blarg test roms infrastructure
+ 6. get tetris running
+ 7. input, sound, etc
+ 8. more complicated carts
 
 
 ## References
 
- GPU
-  - https://forums.nesdev.com/viewtopic.php?f=20&t=17754
-  - http://blog.kevtris.org/blogfiles/Nitty%20Gritty%20Gameboy%20VRAM%20Timing.txt
+### General
 
  - https://realboyemulator.wordpress.com/posts/
  - https://cturt.github.io/cinoop.html
  - https://blog.rekawek.eu/2017/02/09/coffee-gb/
- - https://gekkio.fi/files/gb-docs/gbctr.pdf
- - https://www.cl.cam.ac.uk/~pv273/slides/emulation.pdf
+ - https://robdor.com/2016/08/10/gameboy-emulator-half-carry-flag/
+ - http://imrannazar.com/GameBoy-Emulation-in-JavaScript
+
+### Manuals/Comprehensive Reference
+
+ - https://gekkio.fi/files/gb-docs/gbctr.pdf < See for some precise CPU timings
  - http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf
- - http://problemkaputt.de/pandocs.htm
+ - http://problemkaputt.de/pandocs.htm 
+ - http://nnarain.github.io/2016/07/21/Gameboy-Specs.html
+
+### Overviews
+
+ - https://www.cl.cam.ac.uk/~pv273/slides/emulation.pdf
  - https://www.youtube.com/watch?v=t0V-D2YMhrs&index=2&list=PLu3xpmdUP-GRDp8tknpXC_Y4RUQtMMqEu
  - https://www.youtube.com/watch?v=GBYwjch6oEE
+ - https://www.youtube.com/watch?v=RZUDEaLa5Nw
+ - https://media.ccc.de/v/33c3-8029-the_ultimate_game_boy_talk
+
+### GPU
+
+ - https://forums.nesdev.com/viewtopic.php?f=20&t=17754
+ - http://blog.kevtris.org/blogfiles/Nitty%20Gritty%20Gameboy%20VRAM%20Timing.txt
+
+### Testing
+
  - See blarg's test ROM https://github.com/taisel/GameBoy-Online
  - https://github.com/Gekkio/mooneye-gb/blob/master/docs/accuracy.markdown
- - https://realboyemulator.wordpress.com/2013/01/03/a-look-at-the-game-boy-bootstrap-let-the-fun-begin/
- 
- - http://imrannazar.com/GameBoy-Emulation-in-JavaScript
- - https://media.ccc.de/v/33c3-8029-the_ultimate_game_boy_talk
- - http://blog.rekawek.eu/2017/02/09/coffee-gb/
- - https://www.youtube.com/watch?v=RZUDEaLa5Nw
- - http://nnarain.github.io/2016/07/21/Gameboy-Specs.html
- - https://robdor.com/2016/08/10/gameboy-emulator-half-carry-flag/
+ - https://realboyemulator.wordpress.com/2013/01/03/a-look-at-the-game-boy-bootstrap-let-the-fun-begin/ 
  
 ### Implementations
 

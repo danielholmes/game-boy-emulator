@@ -58,6 +58,9 @@ var isValid = function isValid(cartridge) {
 };
 
 exports.isValid = isValid;
+var CARTRIDGE_LENGTH = 0x8000;
+var CARTRIDGE_HEADER_LENGTH = 0x0104;
+var MAX_CARTRIDGE_PROGRAM_LENGTH = CARTRIDGE_LENGTH - CARTRIDGE_HEADER_LENGTH - _nintendoLogo.default.length;
 
 var CartridgeBuilder =
 /*#__PURE__*/
@@ -67,20 +70,26 @@ function () {
 
     _defineProperty(this, "_program", void 0);
 
-    this._program = program || new Uint8Array();
+    this._program = program || new Uint8Array(CARTRIDGE_LENGTH);
   }
 
   _createClass(CartridgeBuilder, [{
     key: "program",
     value: function program(_program) {
+      if (_program.length > MAX_CARTRIDGE_PROGRAM_LENGTH) {
+        throw new Error('program too long');
+      }
+
       return this.clone({
-        program: new Uint8Array(_program)
+        program: new Uint8Array([].concat(_toConsumableArray(_program), _toConsumableArray((0, _lodash.range)(0, MAX_CARTRIDGE_PROGRAM_LENGTH - _program.length).map(function () {
+          return 0x00;
+        }))))
       });
     }
   }, {
     key: "build",
     value: function build() {
-      return new Cartridge(new Uint8Array([].concat(_toConsumableArray((0, _lodash.range)(0x0000, 0x0104).map(function () {
+      return new Cartridge(new Uint8Array([].concat(_toConsumableArray((0, _lodash.range)(0x0000, CARTRIDGE_HEADER_LENGTH).map(function () {
         return 0x00;
       })), _toConsumableArray(_nintendoLogo.default), _toConsumableArray(this._program))));
     }
