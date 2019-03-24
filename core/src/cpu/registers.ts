@@ -96,8 +96,10 @@ export interface CpuRegisters {
   setFHFromWordSubtract(original: WordValue, subtract: WordValue): void;
 }
 
-export const calculateFHFromByteAdd = (original: ByteValue, add: ByteValue): BitValue =>
-  (((original & 0xf) + (add & 0xf)) & 0x10) === 0x10 ? 1 : 0;
+export const calculateFHFromByteAdd = (
+  original: ByteValue,
+  add: ByteValue
+): BitValue => ((((original & 0xf) + (add & 0xf)) & 0x10) === 0x10 ? 1 : 0);
 
 export class CpuRegistersImpl implements CpuRegisters {
   private _a: ByteValue;

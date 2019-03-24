@@ -123,10 +123,7 @@ describe("ram", () => {
 
     describe("bgMap1", () => {
       test("normal", () => {
-        [
-          0x2e,
-          0xd2
-        ].forEach((value, address) =>
+        [0x2e, 0xd2].forEach((value, address) =>
           vRam.writeByte(address + 0x1800, value)
         );
 
@@ -137,7 +134,7 @@ describe("ram", () => {
         expect(result[31].length).toEqual(32);
         expect(result[0][0]).toEqual(0x2e);
         expect(result[0][1]).toEqual(0xd2);
-      })
+      });
     });
   });
 });

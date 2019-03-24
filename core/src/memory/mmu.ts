@@ -1,10 +1,12 @@
-import { ByteValue, MemoryAddress, numberToWordHex, WordValue } from "../types";
+import { ByteValue, MemoryAddress, numberToWordHex } from "../types";
 import { WorkingRam, VRam, ZeroPageRam, IOMemory, OamMemory } from "./ram";
 import { Bios } from "../bios";
 import { Cartridge } from "../cartridge";
 
-export const WORKING_RAM_RANGE: Readonly<{ start: MemoryAddress, end: MemoryAddress }> =
-  { start: 0xc000, end: 0xe000 };
+export const WORKING_RAM_RANGE: Readonly<{
+  start: MemoryAddress;
+  end: MemoryAddress;
+}> = { start: 0xc000, end: 0xe000 };
 
 export class Mmu {
   private readonly bios: Bios;
@@ -74,7 +76,10 @@ export class Mmu {
     if (address >= 0xa000 && address < WORKING_RAM_RANGE.start) {
       throw new Error("TODO: Access memory on cartridge");
     }
-    if (address >= WORKING_RAM_RANGE.start && address <= WORKING_RAM_RANGE.end) {
+    if (
+      address >= WORKING_RAM_RANGE.start &&
+      address <= WORKING_RAM_RANGE.end
+    ) {
       return this.workingRam.readByte(address - WORKING_RAM_RANGE.start);
     }
     // Shadow of working ram
@@ -103,17 +108,9 @@ export class Mmu {
     throw new Error("Address not readable");
   }
 
-  /**
-   * @deprecated should be done separate
-   * @param address
-   */
-  public readBigEndianWord(address: MemoryAddress): WordValue {
-    return (this.readByte(address + 1) << 8) + this.readByte(address);
-  }
-
   public writeByte(address: MemoryAddress, value: ByteValue): void {
     if (address === 0xff50) {
-      console.log('Writing bios', value.toString(16))
+      console.log("Writing bios", value.toString(16));
     }
 
     if (address >= 0x8000 && address <= 0x9fff) {
@@ -137,15 +134,5 @@ export class Mmu {
     } else {
       throw new Error(`Can't write address ${numberToWordHex(address)}`);
     }
-  }
-
-  /**
-   * @deprecated Should always be split up in usage
-   * @param address
-   * @param value
-   */
-  public writeWordBigEndian(address: MemoryAddress, value: WordValue): void {
-    this.writeByte(address + 1, value >> 8);
-    this.writeByte(address, value & 255);
   }
 }

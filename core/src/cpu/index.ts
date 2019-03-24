@@ -2,7 +2,7 @@ import { Mmu } from "../memory/mmu";
 import { OpCode } from "./instructions";
 import { CpuRegisters, CpuRegistersImpl } from "./registers";
 import { numberToByteHex } from "../types";
-import opCodesMap from './opCodesMap'
+import opCodesMap from "./opCodesMap";
 
 export type ClockCycles = number;
 

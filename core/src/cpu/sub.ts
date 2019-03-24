@@ -1,10 +1,7 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
 import { ByteRegister } from "./registers";
 
-export const subR = (
-  opCode: OpCode,
-  register: ByteRegister
-): Instruction =>
+export const subR = (opCode: OpCode, register: ByteRegister): Instruction =>
   new InstructionDefinition(opCode, `SUB ${register}`)
     .loadRegister(register)
     .compareToRegister("a")

@@ -1,6 +1,10 @@
 /* global describe, test, expect */
 
-import { createMmuSnapshot, createMmu } from "../../test/help";
+import {
+  createMmuSnapshot,
+  createMmu,
+  writeWordBigEndian
+} from "../../test/help";
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import { GROUPED_WORD_REGISTERS, GroupedWordRegister } from "../registers";
@@ -20,7 +24,7 @@ describe("pop", () => {
       "POP %s",
       (register: GroupedWordRegister) => {
         cpu.registers.sp = 0xf123;
-        mmu.writeWordBigEndian(0xf123, 0x142e);
+        writeWordBigEndian(mmu, 0xf123, 0x142e);
 
         // Pop two bytes off stack into register pair nn.
         //   Increment Stack Pointer (SP) twice.

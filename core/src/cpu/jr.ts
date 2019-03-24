@@ -11,5 +11,6 @@ export const createJrCcN = (opCode: OpCode, flag: CheckFlag): Instruction =>
 // M = 2: internal delay
 
 export const createJrN = (opCode: OpCode): Instruction =>
-  new InstructionDefinition(opCode, "JR n").loadSignedByteOperand()
-    .addToRegister('pc');
+  new InstructionDefinition(opCode, "JR n")
+    .loadSignedByteOperand()
+    .addToRegister("pc");

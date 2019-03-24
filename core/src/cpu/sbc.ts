@@ -1,9 +1,9 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
 import { ByteRegister } from "./registers";
-import { LowLevelOperation, LowLevelStateReturn } from "./lowLevel";
+import { LowLevelOp, LowLevelStateReturn } from "./lowLevel";
 import { Cpu, ClockCycles } from "./index";
 
-class SbcAR implements LowLevelOperation {
+class SbcAR implements LowLevelOp {
   public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;
 
@@ -26,8 +26,5 @@ class SbcAR implements LowLevelOperation {
   }
 }
 
-export const sbcAR = (
-  opCode: OpCode,
-  register: ByteRegister
-): Instruction =>
+export const sbcAR = (opCode: OpCode, register: ByteRegister): Instruction =>
   new InstructionDefinition(opCode, `SBC a,${register}`, [new SbcAR(register)]);

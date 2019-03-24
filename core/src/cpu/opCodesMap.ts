@@ -1,13 +1,20 @@
 import { Instruction, OpCode } from "./instructions";
 import { createNop } from "./special";
-import { ByteRegister, GroupedWordRegister, NonAfGroupedWordRegister } from "./registers";
+import {
+  ByteRegister,
+  GroupedWordRegister,
+  NonAfGroupedWordRegister
+} from "./registers";
 import {
   createLdAMFfC,
   ldAMFfN,
   createLddMHlA,
-  ldHlMR, ldiMHlA, ldMFfCA,
+  ldHlMR,
+  ldiMHlA,
+  ldMFfCA,
   ldMFfNA,
-  ldMNnA, ldMNnSp,
+  ldMNnA,
+  ldMNnSp,
   ldMRA,
   createLdRMRr,
   ldRN,
@@ -99,8 +106,8 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0xcc, "fZ"],
       [0xd4, "fNc"],
       [0xdc, "fC"]
-    ] as ReadonlyArray<[OpCode, CheckFlag]>).map(
-      ([opCode, flag]) => createCallFNn(opCode, flag)
+    ] as ReadonlyArray<[OpCode, CheckFlag]>).map(([opCode, flag]) =>
+      createCallFNn(opCode, flag)
     ),
 
     ...([
@@ -141,7 +148,7 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
 
     ...([[0x02, "bc"], [0x12, "de"], [0x77, "hl"]] as ReadonlyArray<
       [OpCode, NonAfGroupedWordRegister]
-      >).map(([opCode, register]) => ldMRA(opCode, register)),
+    >).map(([opCode, register]) => ldMRA(opCode, register)),
 
     ldMFfNA(0xe0),
 

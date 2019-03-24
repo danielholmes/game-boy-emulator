@@ -41,7 +41,11 @@ export const wordHighByte = (word: WordValue): ByteValue => word >> 8;
 
 export const wordLowByte = (word: WordValue): ByteValue => word & 0xff;
 
-export const writeWordBigEndian = (mmu: Mmu, address: MemoryAddress, value: WordValue): void => {
+export const writeWordBigEndian = (
+  mmu: Mmu,
+  address: MemoryAddress,
+  value: WordValue
+): void => {
   mmu.writeByte(address + 1, value >> 8);
   mmu.writeByte(address, value & 255);
-}
+};

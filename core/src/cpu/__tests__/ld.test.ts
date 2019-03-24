@@ -30,7 +30,8 @@ import {
   createCpuSnapshot,
   createMmuSnapshot,
   createMmu,
-  EMPTY_MEMORY, writeWordBigEndian
+  EMPTY_MEMORY,
+  writeWordBigEndian
 } from "../../test/help";
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
@@ -175,7 +176,10 @@ describe("ld", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(8);
-      expect(cpu).toEqualCpuWithRegisters({ a: 0x12, pc: CARTRIDGE_PROGRAM_START + 1 });
+      expect(cpu).toEqualCpuWithRegisters({
+        a: 0x12,
+        pc: CARTRIDGE_PROGRAM_START + 1
+      });
       // TODO: Some sort of assert for special registers
       expect(mmu.readByte(0xff76)).toEqual(0x12);
     });
@@ -302,7 +306,9 @@ describe("ld", () => {
     test("LD (nn),sp", () => {
       cpu.registers.pc = CARTRIDGE_PROGRAM_START;
       cpu.registers.sp = 0xc712;
-      const cart = Cartridge.builder().program([0x54, 0xd6]).build();
+      const cart = Cartridge.builder()
+        .program([0x54, 0xd6])
+        .build();
       mmu.loadCartridge(cart);
 
       const instruction = ldMNnSp(0x3d);
@@ -351,7 +357,9 @@ describe("ld", () => {
   describe("ldAMFfN", () => {
     test("LD a, (#ff00+n)", () => {
       cpu.registers.pc = CARTRIDGE_PROGRAM_START;
-      const cart = Cartridge.builder().program([0x72]).build();
+      const cart = Cartridge.builder()
+        .program([0x72])
+        .build();
       mmu.loadCartridge(cart);
       mmu.writeByte(0xff72, 0x62);
 

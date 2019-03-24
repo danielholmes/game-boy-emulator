@@ -10,9 +10,12 @@ export const createDecR = (
     `DEC ${register}`
   ).decrementByteRegisterWithFlags(register);
 
-export type DecRrRegister = 'bc' | 'de' | 'hl' | 'sp';
+export type DecRrRegister = "bc" | "de" | "hl" | "sp";
 
-export const createDecRr = (opCode: OpCode, register: DecRrRegister): Instruction =>
+export const createDecRr = (
+  opCode: OpCode,
+  register: DecRrRegister
+): Instruction =>
   new InstructionDefinition(opCode, `DEC ${register}`)
     .decrementRegister(register)
     .internalDelay();

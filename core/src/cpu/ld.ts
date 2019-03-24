@@ -18,10 +18,7 @@ export const ldRrNn = (
     .loadWordOperand()
     .storeInRegister(register);
 
-export const ldRN = (
-  opCode: OpCode,
-  register: ByteRegister
-): Instruction =>
+export const ldRN = (opCode: OpCode, register: ByteRegister): Instruction =>
   new InstructionDefinition(opCode, `LD ${register},n`)
     .loadByteOperand()
     .storeInRegister(register);
@@ -36,19 +33,13 @@ export const createLdRMRr = (
     .readMemory()
     .storeInRegister(register1);
 
-export const ldRHlM = (
-  opCode: OpCode,
-  register: ByteRegister
-): Instruction =>
+export const ldRHlM = (opCode: OpCode, register: ByteRegister): Instruction =>
   new InstructionDefinition(opCode, `LD ${register},(hl)`)
     .loadRegister("hl")
     .readMemory()
     .storeInRegister(register);
 
-export const ldHlMR = (
-  opCode: OpCode,
-  register: ByteRegister
-): Instruction =>
+export const ldHlMR = (opCode: OpCode, register: ByteRegister): Instruction =>
   new InstructionDefinition(opCode, `LD (hl),${register}`)
     .loadRegister(register)
     .writeMemoryFromWordRegisterAddress("hl");

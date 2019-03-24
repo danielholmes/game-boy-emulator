@@ -8,7 +8,7 @@ import {
   LoadOperand,
   LoadWordOperandHighByte,
   LoadRegister,
-  LowLevelOperation,
+  LowLevelOp,
   LowLevelState,
   ReadMemory,
   SetRegister,
@@ -29,7 +29,10 @@ import {
   CheckFlag,
   IncrementByteRegisterWithFlags,
   IncrementWordRegisterWithFlags,
-  AddToValue, AddWithCarryToA, AddToRegister, SetToPcIfFlag
+  AddToValue,
+  AddWithCarryToA,
+  AddToRegister,
+  SetToPcIfFlag
 } from "./lowLevel";
 import { ByteRegister, Register, WordRegister } from "./registers";
 import { sum } from "lodash";
@@ -52,12 +55,12 @@ export interface Instruction {
 export class InstructionDefinition implements Instruction {
   public readonly opCode: OpCode;
   public readonly label: string;
-  private readonly operations: ReadonlyArray<LowLevelOperation>;
+  private readonly operations: ReadonlyArray<LowLevelOp>;
 
   public constructor(
     opCode: OpCode,
     label: string,
-    operations: ReadonlyArray<LowLevelOperation> = []
+    operations: ReadonlyArray<LowLevelOp> = []
   ) {
     this.opCode = opCode;
     this.label = label;
@@ -66,7 +69,7 @@ export class InstructionDefinition implements Instruction {
 
   public execute(cpu: Cpu, mmu: Mmu): ClockCycles {
     this.operations.reduce(
-      (value: LowLevelState, op: LowLevelOperation): LowLevelState => {
+      (value: LowLevelState, op: LowLevelOp): LowLevelState => {
         const newResult = op.execute(cpu, mmu, value);
         return typeof newResult === "undefined" ? undefined : newResult;
       },
@@ -220,7 +223,7 @@ export class InstructionDefinition implements Instruction {
     return this.withOperation(new AddWithCarryToA());
   }
 
-  private withOperation(operation: LowLevelOperation): InstructionDefinition {
+  private withOperation(operation: LowLevelOp): InstructionDefinition {
     return new InstructionDefinition(this.opCode, this.label, [
       ...this.operations,
       operation

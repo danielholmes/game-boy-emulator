@@ -1,5 +1,7 @@
+/* eslint-disable */
 import {
-  ByteValue, ColorNumber,
+  ByteValue,
+  ColorNumber,
   MemoryAddress,
   numberToHex,
   numberToWordHex
@@ -145,7 +147,7 @@ export class VRam extends Ram {
           }
           return 0;
         })
-      );
+    );
   }
 
   public static initializeRandomly(): VRam {

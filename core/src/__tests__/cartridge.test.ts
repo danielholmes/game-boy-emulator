@@ -16,12 +16,10 @@ describe("cartridge", () => {
 
     test("valid", () => {
       const cart = new Cartridge(
-        new Uint8Array(
-          [
-            ...range(0x0000, 0x0104).map(() => 0x00),
-            ...nintendoLogo
-          ]
-        )
+        new Uint8Array([
+          ...range(0x0000, 0x0104).map(() => 0x00),
+          ...nintendoLogo
+        ])
       );
 
       const result = isValid(cart);
@@ -32,12 +30,10 @@ describe("cartridge", () => {
 
     test("invalid (nintendo logo not where meant to be)", () => {
       const cart = new Cartridge(
-        new Uint8Array(
-          [
-            ...range(0x0000, 0x0094).map(() => 0x00),
-            ...nintendoLogo
-          ]
-        )
+        new Uint8Array([
+          ...range(0x0000, 0x0094).map(() => 0x00),
+          ...nintendoLogo
+        ])
       );
 
       const result = isValid(cart);
