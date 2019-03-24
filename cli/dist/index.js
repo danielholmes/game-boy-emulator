@@ -32,6 +32,54 @@ device.turnOn(); // process.stdout.write instead of console.log
 // Alt: console.log('\033c\033[3J')
 // Console pixels: console.log('\u2591', '\u2592', '\u2588');
 
+var pixelToOutChar = function pixelToOutChar(color) {
+  switch (color) {
+    case 3:
+      return "\u2588";
+
+    case 2:
+      return "\u2592";
+
+    case 1:
+      return "\u2591";
+  }
+
+  return " ";
+};
+
+var tileToString = function tileToString(tile) {
+  return tile.map(function (r) {
+    return r.map(pixelToOutChar).join('');
+  }).join("\n");
+};
+
+var printEnd = function printEnd() {
+  console.log("BG & window palette", mmu.bGP.toString(2));
+  console.log("Table 1 tiles:");
+  (0, _lodash.range)(0, 255).forEach(function (i) {
+    var tile = vRam.getTileDataFromTable1(i);
+
+    if ((0, _lodash.flatMap)(tile).some(function (c) {
+      return c !== 0;
+    })) {
+      console.log(i + ')');
+      console.log(tileToString(tile));
+    }
+  });
+  console.log("Table 2 tiles:");
+  (0, _lodash.range)(0, 255).forEach(function (i) {
+    var tile = vRam.getTileDataFromTable2(i);
+
+    if ((0, _lodash.flatMap)(tile).some(function (c) {
+      return c !== 0;
+    })) {
+      console.log(i + ')');
+      console.log(tileToString(tile));
+    }
+  });
+  console.log("done");
+};
+
 var TOTAL = 250000;
 
 for (var i = 0; i < TOTAL; i++) {
@@ -42,7 +90,12 @@ for (var i = 0; i < TOTAL; i++) {
     "0x" + opCode.toString(16),
     cpu.getInstructionLabel(opCode)
   );*/
-  device.tickCycle(); // if (i % 1000 === 0 || i === (TOTAL - 1)) {
+  try {
+    device.tickCycle();
+  } catch (e) {
+    printEnd();
+    throw e;
+  } // if (i % 1000 === 0 || i === (TOTAL - 1)) {
   //   const values = vRam.getValues();
   //   const filled: { [address: number]: number } = {};
   //   for (let j = 0; j < values.length; j++) {
@@ -72,51 +125,8 @@ for (var i = 0; i < TOTAL; i++) {
   //   //     .join(' ')
   //   // );
   // }
+
 }
 
-var pixelToOutChar = function pixelToOutChar(color) {
-  switch (color) {
-    case 3:
-      return "\u2588";
-
-    case 2:
-      return "\u2592";
-
-    case 1:
-      return "\u2591";
-  }
-
-  return " ";
-};
-
-var tileToString = function tileToString(tile) {
-  return tile.map(function (r) {
-    return r.map(pixelToOutChar).join('');
-  }).join("\n");
-};
-
-console.log("BG & window palette", mmu.bGP.toString(2));
-console.log("Table 1 tiles:");
-(0, _lodash.range)(0, 255).forEach(function (i) {
-  var tile = vRam.getTileDataFromTable1(i);
-
-  if ((0, _lodash.flatMap)(tile).some(function (c) {
-    return c !== 0;
-  })) {
-    console.log(i + ')');
-    console.log(tileToString(tile));
-  }
-});
-console.log("Table 2 tiles:");
-(0, _lodash.range)(0, 255).forEach(function (i) {
-  var tile = vRam.getTileDataFromTable2(i);
-
-  if ((0, _lodash.flatMap)(tile).some(function (c) {
-    return c !== 0;
-  })) {
-    console.log(i + ')');
-    console.log(tileToString(tile));
-  }
-});
-console.log("done");
+printEnd();
 //# sourceMappingURL=index.js.map

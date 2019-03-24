@@ -3,8 +3,8 @@
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
 import { createMmu, EMPTY_MEMORY } from "../../test/help";
-import { BYTE_REGISTERS, ByteRegister } from "../registers";
-import { createDecR } from "../dec";
+import { BYTE_REGISTERS, ByteRegister, GROUPED_WORD_REGISTERS, WordRegister } from "../registers";
+import { createDecR, createDecRr, DecRrRegister } from "../dec";
 
 describe("dec", () => {
   let cpu: Cpu;
@@ -92,6 +92,49 @@ describe("dec", () => {
             fH: 1,
             fC: 0
           });
+          expect(mmu).toEqual(EMPTY_MEMORY);
+        });
+      }
+    );
+  });
+
+  describe("createDecRr", () => {
+    describe.each(([...GROUPED_WORD_REGISTERS, 'sp'] as DecRrRegister[]).map(r => [r]))(
+      "DEC %s",
+      (register: DecRrRegister) => {
+        test("positive", () => {
+          cpu.registers[register] = 0xf239;
+
+          const instruction = createDecRr(0x3d, register);
+
+          const cycles = instruction.execute(cpu, mmu);
+
+          expect(cycles).toBe(4);
+          expect(cpu).toEqualCpuWithRegisters({ [register]: 0xf238 });
+          expect(mmu).toEqual(EMPTY_MEMORY);
+        });
+
+        test("zero", () => {
+          cpu.registers[register] = 0x0001;
+
+          const instruction = createDecRr(0x3d, register);
+
+          const cycles = instruction.execute(cpu, mmu);
+
+          expect(cycles).toBe(4);
+          expect(cpu).toEqualCpuWithRegisters({ [register]: 0x0000 });
+          expect(mmu).toEqual(EMPTY_MEMORY);
+        });
+
+        test("rotate", () => {
+          cpu.registers[register] = 0x0000;
+
+          const instruction = createDecRr(0x3d, register);
+
+          const cycles = instruction.execute(cpu, mmu);
+
+          expect(cycles).toBe(4);
+          expect(cpu).toEqualCpuWithRegisters({ [register]: 0xffff });
           expect(mmu).toEqual(EMPTY_MEMORY);
         });
       }

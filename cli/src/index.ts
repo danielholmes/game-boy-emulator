@@ -53,6 +53,45 @@ device.turnOn();
 // Alt: console.log('\033c\033[3J')
 // Console pixels: console.log('\u2591', '\u2592', '\u2588');
 
+
+const pixelToOutChar = (color: PixelColor): string => {
+  switch (color) {
+    case 3:
+      return '\u2588';
+    case 2:
+      return '\u2592';
+    case 1:
+      return '\u2591';
+  }
+  return " ";
+};
+
+const tileToString = (tile: Tile): string =>
+  tile.map((r) => r.map(pixelToOutChar).join('')).join("\n")
+
+const printEnd = (): void => {
+  console.log("BG & window palette", mmu.bGP.toString(2));
+  console.log("Table 1 tiles:");
+  range(0, 255)
+    .forEach((i) => {
+      const tile = vRam.getTileDataFromTable1(i);
+      if (flatMap(tile).some((c) => c !== 0)) {
+        console.log(i + ')');
+        console.log(tileToString(tile));
+      }
+    });
+  console.log("Table 2 tiles:");
+  range(0, 255)
+    .forEach((i) => {
+      const tile = vRam.getTileDataFromTable2(i);
+      if (flatMap(tile).some((c) => c !== 0)) {
+        console.log(i + ')');
+        console.log(tileToString(tile));
+      }
+    });
+  console.log("done");
+}
+
 const TOTAL = 250000;
 for (let i = 0; i < TOTAL; i++) {
   /*const opCode = mmu.readByte(cpu.registers.pc);
@@ -62,7 +101,12 @@ for (let i = 0; i < TOTAL; i++) {
     "0x" + opCode.toString(16),
     cpu.getInstructionLabel(opCode)
   );*/
-  device.tickCycle();
+  try {
+    device.tickCycle();
+  } catch (e) {
+    printEnd()
+    throw e;
+  }
   // if (i % 1000 === 0 || i === (TOTAL - 1)) {
   //   const values = vRam.getValues();
   //   const filled: { [address: number]: number } = {};
@@ -95,38 +139,4 @@ for (let i = 0; i < TOTAL; i++) {
   // }
 }
 
-const pixelToOutChar = (color: PixelColor): string => {
-  switch (color) {
-    case 3:
-      return '\u2588';
-    case 2:
-      return '\u2592';
-    case 1:
-      return '\u2591';
-  }
-  return " ";
-};
-
-const tileToString = (tile: Tile): string =>
-  tile.map((r) => r.map(pixelToOutChar).join('')).join("\n")
-
-console.log("BG & window palette", mmu.bGP.toString(2));
-console.log("Table 1 tiles:");
-range(0, 255)
-  .forEach((i) => {
-    const tile = vRam.getTileDataFromTable1(i);
-    if (flatMap(tile).some((c) => c !== 0)) {
-      console.log(i + ')');
-      console.log(tileToString(tile));
-    }
-  });
-console.log("Table 2 tiles:");
-range(0, 255)
-  .forEach((i) => {
-    const tile = vRam.getTileDataFromTable2(i);
-    if (flatMap(tile).some((c) => c !== 0)) {
-      console.log(i + ')');
-      console.log(tileToString(tile));
-    }
-  });
-console.log("done");
+printEnd();

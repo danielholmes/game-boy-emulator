@@ -25,7 +25,7 @@ import {
   NonAfGroupedWordRegister
 } from "./registers";
 import { createRst, RstAddress } from "./rst";
-import { createDecR } from "./dec";
+import { createDecR, createDecRr, DecRrRegister } from "./dec";
 import { createIncR, createIncRr } from "./inc";
 import { createNop } from "./special";
 import { createXorR } from "./xor";
@@ -271,6 +271,15 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x2d, "l"]
     ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
       createDecR(opCode, register)
+    ),
+
+    ...([
+      [0x0b, "bc"],
+      [0x1b, "de"],
+      [0x2b, "hl"],
+      [0x3b, "sp"]
+    ] as ReadonlyArray<[OpCode, DecRrRegister]>).map(([opCode, register]) =>
+      createDecRr(opCode, register)
     ),
 
     ...([
