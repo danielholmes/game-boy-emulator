@@ -99,6 +99,12 @@ Object.defineProperty(exports, "Cartridge", {
     return _cartridge.Cartridge;
   }
 });
+Object.defineProperty(exports, "CartridgeBuilder", {
+  enumerable: true,
+  get: function get() {
+    return _cartridge.CartridgeBuilder;
+  }
+});
 Object.defineProperty(exports, "isValidCartridge", {
   enumerable: true,
   get: function get() {

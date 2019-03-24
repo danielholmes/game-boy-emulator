@@ -18,7 +18,7 @@ export declare class WorkingRam extends Ram {
 }
 export declare const V_RAM_SIZE = 8192;
 export declare type Tile = ReadonlyArray<ReadonlyArray<ColorNumber>>;
-declare type TileDataIndex = number;
+export declare type TileDataIndex = number;
 export declare type BackgroundMap = ReadonlyArray<ReadonlyArray<TileDataIndex>>;
 export declare class VRam extends Ram {
     private static readonly TILE_DATA_TABLE_1_RANGE;

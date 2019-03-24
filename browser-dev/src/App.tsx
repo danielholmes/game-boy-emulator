@@ -10,9 +10,7 @@ import {
   WorkingRam,
   ZeroPageRam,
   OamMemory,
-  Cartridge,
-  nintendoLogo,
-  isValidCartridge
+  CartridgeBuilder
 } from "@gebby/core";
 import { range } from "lodash";
 import TileMap from "./TileMap";
@@ -22,15 +20,7 @@ export default class App extends Component<{}, { device: Device }> {
   private vRam?: VRam;
 
   componentDidMount (): void {
-    const cartridge = new Cartridge(
-      new Uint8Array([
-        ...range(0x0000, 0x0104).map(() => 0x00),
-        ...nintendoLogo
-      ])
-    );
-    if (!isValidCartridge(cartridge)) {
-      throw new Error("Invalid cartridge");
-    }
+    const cartridge = CartridgeBuilder.builder().build();
 
     this.vRam = VRam.initializeRandomly();
 

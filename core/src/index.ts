@@ -17,5 +17,5 @@ export { Cpu } from "./cpu";
 export { Gpu } from "./gpu";
 export { Mmu } from "./memory/mmu";
 export { Device } from "./device";
-export { Cartridge, isValid as isValidCartridge } from "./cartridge";
+export { Cartridge, CartridgeBuilder, isValid as isValidCartridge } from "./cartridge";
 export { PixelColor } from "./types";

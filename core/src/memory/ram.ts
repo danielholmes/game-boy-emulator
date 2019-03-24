@@ -73,7 +73,7 @@ type TileTableNumber = 0 | 1;
 
 type MemoryRange = Readonly<[MemoryAddress, MemoryAddress]>;
 
-type TileDataIndex = number;
+export type TileDataIndex = number;
 
 export type BackgroundMap = ReadonlyArray<ReadonlyArray<TileDataIndex>>;
 
