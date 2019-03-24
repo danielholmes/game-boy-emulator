@@ -26,7 +26,7 @@ class SbcAR implements LowLevelOperation {
   }
 }
 
-export const createSbcAR = (
+export const sbcAR = (
   opCode: OpCode,
   register: ByteRegister
 ): Instruction =>

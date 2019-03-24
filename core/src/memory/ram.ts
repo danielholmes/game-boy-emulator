@@ -59,9 +59,11 @@ export class ZeroPageRam extends Ram {
   }
 }
 
+export const WORKING_RAM_SIZE = 0x2000;
+
 export class WorkingRam extends Ram {
   public constructor() {
-    super(0x2000);
+    super(WORKING_RAM_SIZE);
   }
 }
 

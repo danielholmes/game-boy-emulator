@@ -3,7 +3,7 @@
 import { Mmu } from "../../memory/mmu";
 import { createMmuSnapshot, createMmu } from "../../test/help";
 import { Cpu } from "..";
-import { createRet } from "../ret";
+import { ret } from "../ret";
 
 describe("ret", () => {
   let cpu: Cpu;
@@ -14,13 +14,14 @@ describe("ret", () => {
     mmu = createMmu();
   });
 
-  describe("createRet", () => {
+  describe("ret", () => {
     test("RET", () => {
       cpu.registers.pc = 0x0000;
       cpu.registers.sp = 0x8814;
-      mmu.writeWordBigEndian(0x8814, 0x5432);
+      mmu.writeByte(0x8814, 0x32);
+      mmu.writeByte(0x8815, 0x54);
 
-      const instruction = createRet(0x3d);
+      const instruction = ret(0x3d);
 
       const mmuSnapshot = createMmuSnapshot(mmu);
       const cycles = instruction.execute(cpu, mmu);

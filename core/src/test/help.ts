@@ -1,5 +1,3 @@
-import { toPairs } from "lodash";
-import { ByteValue } from "../types";
 import { Mmu } from "../memory/mmu";
 import bios from "../bios";
 import {
@@ -10,7 +8,7 @@ import {
   ZeroPageRam
 } from "../memory/ram";
 import { Cpu } from "../cpu";
-import { Cartridge } from "../cartridge";
+import { ByteValue, MemoryAddress, WordValue } from "../types";
 
 export const createMmu = (): Mmu =>
   new Mmu(
@@ -23,25 +21,6 @@ export const createMmu = (): Mmu =>
   );
 
 export const EMPTY_MEMORY = createMmu();
-
-export const createMmuWithValues = (values: {
-  [address: number]: ByteValue;
-}): Mmu => {
-  const mmu = createMmu();
-  toPairs(values).forEach(([address, value]) =>
-    mmu.writeByte(parseInt(address), value)
-  );
-  return mmu;
-};
-
-export const createMmuWithCartridgeAndValues = (
-  cartridge: Cartridge,
-  values?: { [address: number]: ByteValue }
-): Mmu => {
-  const mmu = createMmuWithValues(values || {});
-  mmu.loadCartridge(cartridge);
-  return mmu;
-};
 
 export interface MmuSnapshot {
   readonly workingRamValues: Uint8Array;
@@ -57,3 +36,12 @@ export const createMmuSnapshot = (mmu: Mmu): MmuSnapshot => {
 export const createCpuSnapshot = (cpu: Cpu): string => {
   return typeof cpu;
 };
+
+export const wordHighByte = (word: WordValue): ByteValue => word >> 8;
+
+export const wordLowByte = (word: WordValue): ByteValue => word & 0xff;
+
+export const writeWordBigEndian = (mmu: Mmu, address: MemoryAddress, value: WordValue): void => {
+  mmu.writeByte(address + 1, value >> 8);
+  mmu.writeByte(address, value & 255);
+}

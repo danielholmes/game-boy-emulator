@@ -2,9 +2,9 @@
 
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "../";
-import { createMmu, createMmuWithCartridgeAndValues } from "../../test/help";
+import { createMmu, createMmuSnapshot } from "../../test/help";
 import { OpCode } from "../instructions";
-import { Cartridge } from "../../cartridge";
+import { Cartridge, CARTRIDGE_PROGRAM_START } from "../../cartridge";
 import bios from "../../bios";
 import { IOMemory, OamMemory, VRam, WorkingRam, ZeroPageRam } from "../..";
 import { V_RAM_SIZE } from "../../memory/ram";
@@ -20,25 +20,28 @@ describe("cpu", () => {
 
   describe("Cpu", () => {
     test("runs NOP", () => {
-      const cartridge = new Cartridge(new Uint8Array([0x00]));
-      mmu.loadCartridge(cartridge);
-      cpu.registers.pc = 0x0000;
+      mmu.loadCartridge(Cartridge.buildWithProgram([0x00]));
+      cpu.registers.pc = CARTRIDGE_PROGRAM_START;
+      const mmuSnapshot = createMmuSnapshot(mmu);
 
       cpu.tickCycle(mmu);
 
-      expect(cpu).toEqualCpuWithRegisters({ pc: 0x0001 });
-      expect(mmu).toEqual(createMmuWithCartridgeAndValues(cartridge));
+      expect(cpu).toEqualCpuWithRegisters({ pc: CARTRIDGE_PROGRAM_START + 1 });
+      expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
     });
 
     test("runs single operand", () => {
-      const cartridge = new Cartridge(new Uint8Array([0x06, 0x66]));
-      mmu.loadCartridge(cartridge);
-      cpu.registers.pc = 0x0000;
+      mmu.loadCartridge(Cartridge.buildWithProgram([0x06, 0x66]));
+      cpu.registers.pc = CARTRIDGE_PROGRAM_START;
+      const mmuSnapshot = createMmuSnapshot(mmu);
 
       cpu.tickCycle(mmu);
 
-      expect(cpu).toEqualCpuWithRegisters({ b: 0x66, pc: 0x0002 });
-      expect(mmu).toEqual(createMmuWithCartridgeAndValues(cartridge));
+      expect(cpu).toEqualCpuWithRegisters({
+        pc: CARTRIDGE_PROGRAM_START + 2,
+        b: 0x66
+      });
+      expect(mmu).toMatchSnapshotWorkingRam(mmuSnapshot);
     });
 
     test("runs smoke test on bios", () => {

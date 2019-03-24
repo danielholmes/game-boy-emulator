@@ -1,7 +1,7 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
 import { ByteRegister } from "./registers";
 
-export const createSubR = (
+export const subR = (
   opCode: OpCode,
   register: ByteRegister
 ): Instruction =>
@@ -10,14 +10,14 @@ export const createSubR = (
     .compareToRegister("a")
     .storeInRegister("a");
 
-export const createSubMHl = (opCode: OpCode): Instruction =>
+export const subMHl = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `SUB (hl)`)
     .loadRegister("hl")
     .readMemory()
     .compareToRegister("a")
     .storeInRegister("a");
 
-export const createSubN = (opCode: OpCode): Instruction =>
+export const subN = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `SUB n`)
     .loadByteOperand()
     .compareToRegister("a")

@@ -10,7 +10,7 @@ export const createLdRR = (
     .loadRegister(register2)
     .storeInRegister(register1);
 
-export const createLdRrNn = (
+export const ldRrNn = (
   opCode: OpCode,
   register: NonAfGroupedWordRegister | "sp"
 ): Instruction =>
@@ -18,7 +18,7 @@ export const createLdRrNn = (
     .loadWordOperand()
     .storeInRegister(register);
 
-export const createLdRN = (
+export const ldRN = (
   opCode: OpCode,
   register: ByteRegister
 ): Instruction =>
@@ -36,7 +36,7 @@ export const createLdRMRr = (
     .readMemory()
     .storeInRegister(register1);
 
-export const createLdRHlM = (
+export const ldRHlM = (
   opCode: OpCode,
   register: ByteRegister
 ): Instruction =>
@@ -45,7 +45,7 @@ export const createLdRHlM = (
     .readMemory()
     .storeInRegister(register);
 
-export const createLdHlMR = (
+export const ldHlMR = (
   opCode: OpCode,
   register: ByteRegister
 ): Instruction =>
@@ -53,12 +53,12 @@ export const createLdHlMR = (
     .loadRegister(register)
     .writeMemoryFromWordRegisterAddress("hl");
 
-export const createLdHlMN = (opCode: OpCode): Instruction =>
+export const ldHlMN = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (hl),n`)
     .loadByteOperand()
     .writeMemoryFromWordRegisterAddress("hl");
 
-export const createLdMFfCA = (opCode: OpCode): Instruction =>
+export const ldMFfCA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (0xff00+c),a`)
     .loadRegister("a")
     .writeMemoryFromFf00PlusRegisterAddress("c");
@@ -70,19 +70,19 @@ export const createLdAMFfC = (opCode: OpCode): Instruction =>
     .readMemory()
     .storeInRegister("a");
 
-export const createLdMNA = (opCode: OpCode): Instruction =>
+export const ldMFfNA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (0xff00+n),a`)
     .loadRegister("a")
     .writeMemoryFromOperandAddress();
 
-export const createLdAMFfN = (opCode: OpCode): Instruction =>
+export const ldAMFfN = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD a,(0xff00+n)`)
     .loadByteOperand()
     .addToValue(0xff00)
     .readMemory()
     .storeInRegister("a");
 
-export const createLdGrM = (
+export const ldGrM = (
   opCode: OpCode,
   register: NonAfGroupedWordRegister
 ): Instruction =>
@@ -91,13 +91,13 @@ export const createLdGrM = (
     .readMemory()
     .storeInRegister("a");
 
-export const createLdAMNn = (opCode: OpCode): Instruction =>
+export const ldAMNn = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD a,(nn)`)
     .loadWordOperand()
     .readMemory()
     .storeInRegister("a");
 
-export const createLdMRA = (
+export const ldMRA = (
   opCode: OpCode,
   register: NonAfGroupedWordRegister
 ): Instruction =>
@@ -105,12 +105,12 @@ export const createLdMRA = (
     .loadRegister("a")
     .writeMemoryFromWordRegisterAddress(register);
 
-export const createLdMNnA = (opCode: OpCode): Instruction =>
+export const ldMNnA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (nn),a`)
     .loadRegister("a")
     .writeByteFromWordOperandAddress();
 
-export const createLdMNnSp = (opCode: OpCode): Instruction =>
+export const ldMNnSp = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LD (nn),sp`)
     .loadRegister("sp")
     .writeWordFromProgramWord();
@@ -121,7 +121,7 @@ export const createLddMHlA = (opCode: OpCode): Instruction =>
     .writeMemoryFromWordRegisterAddress("hl")
     .decrementRegister("hl");
 
-export const createLdiMHlA = (opCode: OpCode): Instruction =>
+export const ldiMHlA = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, `LDI (hl),a`)
     .loadRegister("a")
     .writeMemoryFromWordRegisterAddress("hl")

@@ -20,7 +20,7 @@ export default class App extends Component<{}, { device: Device }> {
   private vRam?: VRam;
 
   componentDidMount (): void {
-    const cartridge = CartridgeBuilder.builder().build();
+    const cartridge = Cartridge.builder().build();
 
     this.vRam = VRam.initializeRandomly();
 

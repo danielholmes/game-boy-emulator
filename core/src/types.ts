@@ -40,7 +40,7 @@ const toHex = (value: number, length?: number): string => {
   const start = `${sign}0x`;
   const end = Math.abs(value)
     .toString(16)
-    .toUpperCase();
+    .toLowerCase();
   if (length === undefined) {
     return start + end;
   }

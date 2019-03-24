@@ -1,10 +1,10 @@
 /* global describe, expect */
 
 import { Mmu } from "../../memory/mmu";
-import { createMmu, createMmuSnapshot, createMmuWithCartridgeAndValues } from "../../test/help";
+import { createMmu, createMmuSnapshot, wordHighByte, wordLowByte } from "../../test/help";
 import { Cpu } from "../index";
 import { createCallFNn, createCallNn } from "../call";
-import { Cartridge } from "../../cartridge";
+import { Cartridge, CARTRIDGE_PROGRAM_START } from "../../cartridge";
 import { CHECK_FLAGS, CheckFlag } from "../lowLevel";
 
 describe("call", () => {
@@ -18,24 +18,19 @@ describe("call", () => {
 
   describe("createCallNn", () => {
     test("normal", () => {
-      // Push address of next instruction onto stack and then jump to address nn
-      // call to nn, SP=SP-2, (SP)=PC, PC=nn
-      cpu.registers.pc = 0x0000;
-      cpu.registers.sp = 0xe444;
-      const cart = new Cartridge(new Uint8Array([0x54, 0x76]));
-      mmu.loadCartridge(cart);
+      cpu.registers.pc = CARTRIDGE_PROGRAM_START;
+      cpu.registers.sp = 0xc444;
+      mmu.loadCartridge(Cartridge.buildWithProgram([0x54, 0x76]));
 
       const instruction = createCallNn(0x3d);
-      const memorySnapshot = createMmuSnapshot(mmu);
 
       const cycles = instruction.execute(cpu, mmu);
 
-      expect(cpu).toEqualCpuWithRegisters({ pc: 0x7654, sp: 0xe442 });
-      expect(mmu).toMatchSnapshotWorkingRam(
-        createMmuSnapshot(
-          createMmuWithCartridgeAndValues(cart, { 0xe442: 0x0000 })
-        )
-      );
+      expect(cpu).toEqualCpuWithRegisters({ pc: 0x7654, sp: 0xc442 });
+      expect(mmu).toMatchWorkingRam({
+        0xc442: wordLowByte(CARTRIDGE_PROGRAM_START),
+        0xc443: wordHighByte(CARTRIDGE_PROGRAM_START)
+      });
       expect(cycles).toBe(20);
     });
   });
@@ -43,10 +38,9 @@ describe("call", () => {
   describe("createCallFNn", () => {
     describe.each(CHECK_FLAGS.map((f) => [f]))("CALL %s,nn", (flag: CheckFlag) => {
       test("pass", () => {
-        cpu.registers.pc = 0x0000;
+        cpu.registers.pc = CARTRIDGE_PROGRAM_START;
         cpu.registers[flag] = 1;
-        const cart = new Cartridge(new Uint8Array([0x54, 0x76]));
-        mmu.loadCartridge(cart);
+        mmu.loadCartridge(Cartridge.buildWithProgram([0x54, 0x76]));
 
         const instruction = createCallFNn(0x3d, flag);
         const memorySnapshot = createMmuSnapshot(mmu);
@@ -59,22 +53,19 @@ describe("call", () => {
       });
 
       test("fail", () => {
-        cpu.registers.pc = 0x0000;
+        cpu.registers.pc = CARTRIDGE_PROGRAM_START;
         cpu.registers[flag] = 0;
-        const cart = new Cartridge(new Uint8Array([0x54, 0x76]));
-        mmu.loadCartridge(cart);
+        mmu.loadCartridge(Cartridge.buildWithProgram([0x54, 0x76]));
 
         const instruction = createCallFNn(0x3d, flag);
         const memorySnapshot = createMmuSnapshot(mmu);
 
         const cycles = instruction.execute(cpu, mmu);
 
-        expect(cpu).toEqualCpuWithRegisters({ pc: 0x0002, [flag]: 0 });
+        expect(cpu).toEqualCpuWithRegisters({ pc: CARTRIDGE_PROGRAM_START + 2, [flag]: 0 });
         expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
         expect(cycles).toBe(8);
       });
-
-      // TODO: Only 8 cycles if fail
     });
   });
 });

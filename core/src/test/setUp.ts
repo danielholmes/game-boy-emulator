@@ -1,9 +1,10 @@
 /* global expect */
 import { createMmuSnapshot, MmuSnapshot } from "./help";
-import { Mmu } from "../memory/mmu";
+import { Mmu, WORKING_RAM_RANGE } from "../memory/mmu";
 import { Cpu } from "../cpu";
 import { CpuRegisters, Register } from "../cpu/registers";
-import { toPairs } from "lodash";
+import { toPairs, pickBy, mapKeys, mapValues, transform, fromPairs } from "lodash";
+import { ByteValue, MemoryAddress, numberToByteHex, numberToWordHex } from "../types";
 
 const isBitRegister = (
   name: string
@@ -67,6 +68,37 @@ function toEqualCpuRegisters(
 }
 
 expect.extend({
+  toMatchWorkingRam(received: Mmu, expected: { [address: number]: ByteValue; }) {
+    if (received === null) {
+      return {
+        pass: true,
+        message: () => "Mmu expected to be not null."
+      };
+    }
+
+    const receivedInHex = fromPairs(
+      ([...received.workingRamValues])
+        .map<Readonly<[MemoryAddress, ByteValue]>>((v, i) => [i, v])
+        .filter(([, value]) => value !== 0x00)
+        .map(([address, value]) =>
+          [numberToWordHex(address + WORKING_RAM_RANGE.start), numberToByteHex(value)]
+        )
+    );
+    const expectedInHex = transform<ByteValue, string>(
+      expected,
+      (result, value, address) => {
+        result[numberToWordHex(parseInt(address))] = numberToByteHex(value);
+      }
+    );
+    if (this.isNot) {
+      expect(receivedInHex).not.toEqual(expectedInHex);
+    } else {
+      expect(receivedInHex).toEqual(expectedInHex);
+    }
+
+    return { pass: !this.isNot, message: "" };
+  },
+
   toMatchSnapshotWorkingRam(received: Mmu, snapshot: MmuSnapshot) {
     if (received === null) {
       return {
@@ -86,9 +118,6 @@ expect.extend({
       );
     }
 
-    // This point is reached when the above assertion was successful.
-    // The test should therefore always pass, that means it needs to be
-    // `true` when used normally, and `false` when `.not` was used.
     return { pass: !this.isNot, message: "" };
   },
 

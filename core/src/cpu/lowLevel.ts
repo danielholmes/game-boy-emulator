@@ -12,7 +12,7 @@ import {
   byteValueToSignedByte,
   BitValue,
   ByteBitPosition,
-  binaryToNumber
+  binaryToNumber, numberToWordHex, numberToByteHex
 } from "../types";
 import { Cpu, ClockCycles } from ".";
 
@@ -327,7 +327,7 @@ export class WriteMemoryLowByteFromOperandAddress implements LowLevelOperation {
       throw new Error("value undefined");
     }
     const operand = mmu.readByte(cpu.registers.pc);
-    mmu.writeByte(0xff00 + operand, value & 255);
+    mmu.writeByte(0xff00 + operand, value & 0xff);
     return value;
   }
 }
@@ -395,7 +395,7 @@ implements LowLevelOperation {
     if (value === undefined) {
       throw new Error("value undefined");
     }
-    mmu.writeByte(cpu.registers.sp, value & 255);
+    mmu.writeByte(cpu.registers.sp, value & 0xff);
     return value;
   }
 }

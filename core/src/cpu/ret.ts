@@ -1,6 +1,6 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
 
-export const createRet = (opCode: OpCode): Instruction =>
+export const ret = (opCode: OpCode): Instruction =>
   new InstructionDefinition(opCode, "RET")
     .loadRegister("sp")
     .readMemoryWord()

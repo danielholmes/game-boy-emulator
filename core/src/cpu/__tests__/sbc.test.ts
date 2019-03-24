@@ -4,7 +4,7 @@ import { Mmu } from "../../memory/mmu";
 import { createMmu, EMPTY_MEMORY } from "../../test/help";
 import { BYTE_REGISTERS, ByteRegister } from "../registers";
 import { Cpu } from "..";
-import { createSbcAR } from "../sbc";
+import { sbcAR } from "../sbc";
 
 describe("sbc", () => {
   let cpu: Cpu;
@@ -15,7 +15,7 @@ describe("sbc", () => {
     mmu = createMmu();
   });
 
-  describe("createSbcAR", () => {
+  describe("sbcAR", () => {
     describe.each(BYTE_REGISTERS.map(r => [r]))(
       "SBC a,%s",
       (register: ByteRegister) => {
@@ -23,7 +23,7 @@ describe("sbc", () => {
           cpu.registers.a = 0xef;
           cpu.registers[register] = 0xe0;
 
-          const instruction = createSbcAR(0x3d, register);
+          const instruction = sbcAR(0x3d, register);
 
           const cycles = instruction.execute(cpu, mmu);
 
@@ -42,8 +42,3 @@ describe("sbc", () => {
     );
   });
 });
-
-// Z - Set if result is zero.
-// N - Set.
-// H - Set if no borrow from bit 4.
-// C - Set if no borrow.

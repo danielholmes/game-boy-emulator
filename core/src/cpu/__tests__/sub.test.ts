@@ -4,9 +4,9 @@ import { Mmu } from "../../memory/mmu";
 import { createMmuSnapshot, createMmu, EMPTY_MEMORY } from "../../test/help";
 import { Cpu } from "..";
 import { ByteRegister, NON_A_BYTE_REGISTERS } from "../registers";
-import { createSubMHl, createSubN, createSubR } from "../sub";
+import { subMHl, subN, subR } from "../sub";
 import { binaryToNumber } from "../../types";
-import { Cartridge } from "../../cartridge";
+import { Cartridge, CARTRIDGE_PROGRAM_START } from "../../cartridge";
 
 describe("sub", () => {
   let cpu: Cpu;
@@ -17,12 +17,12 @@ describe("sub", () => {
     mmu = createMmu();
   });
 
-  describe("createSubR", () => {
+  describe("subR", () => {
     test("SUB a", () => {
       cpu.registers.a = 0x99;
       cpu.registers.f = binaryToNumber("00000000");
 
-      const instruction = createSubR(0x3d, "a");
+      const instruction = subR(0x3d, "a");
 
       const cycles = instruction.execute(cpu, mmu);
 
@@ -44,7 +44,7 @@ describe("sub", () => {
         cpu.registers[register] = 0x07;
         cpu.registers.f = binaryToNumber("10000000");
 
-        const instruction = createSubR(0x3d, register);
+        const instruction = subR(0x3d, register);
 
         const cycles = instruction.execute(cpu, mmu);
 
@@ -60,40 +60,40 @@ describe("sub", () => {
         expect(mmu).toEqual(EMPTY_MEMORY);
       }
     );
+
+    test.each(NON_A_BYTE_REGISTERS.map(r => [r]))(
+      "SUB %s carries",
+      (register: ByteRegister) => {
+        cpu.registers.a = 0x16;
+        cpu.registers[register] = 0x27;
+        cpu.registers.f = binaryToNumber("10000000");
+
+        const instruction = subR(0x3d, register);
+
+        const cycles = instruction.execute(cpu, mmu);
+
+        expect(cycles).toBe(0);
+        expect(cpu).toEqualCpuWithRegisters({
+          a: 0xef,
+          [register]: 0x27,
+          fZ: 0,
+          fN: 1,
+          fH: 1,
+          fC: 1
+        });
+        expect(mmu).toEqual(EMPTY_MEMORY);
+      }
+    );
   });
 
-  test.each(NON_A_BYTE_REGISTERS.map(r => [r]))(
-    "SUB %s carries",
-    (register: ByteRegister) => {
-      cpu.registers.a = 0x16;
-      cpu.registers[register] = 0x27;
-      cpu.registers.f = binaryToNumber("10000000");
-
-      const instruction = createSubR(0x3d, register);
-
-      const cycles = instruction.execute(cpu, mmu);
-
-      expect(cycles).toBe(0);
-      expect(cpu).toEqualCpuWithRegisters({
-        a: 0xef,
-        [register]: 0x27,
-        fZ: 0,
-        fN: 1,
-        fH: 1,
-        fC: 1
-      });
-      expect(mmu).toEqual(EMPTY_MEMORY);
-    }
-  );
-
-  describe("createSubMHl", () => {
+  describe("subMHl", () => {
     test("SUB (hl)", () => {
       cpu.registers.a = 0x99;
       cpu.registers.hl = 0x9876;
       cpu.registers.f = binaryToNumber("10000000");
       mmu.writeByte(0x9876, 0x07);
 
-      const instruction = createSubMHl(0x3d);
+      const instruction = subMHl(0x3d);
 
       const memorySnapshot = createMmuSnapshot(mmu);
       const cycles = instruction.execute(cpu, mmu);
@@ -111,14 +111,14 @@ describe("sub", () => {
     });
   });
 
-  describe("createSubN", () => {
+  describe("subN", () => {
     test("SUB n", () => {
       cpu.registers.a = 0x99;
-      cpu.registers.pc = 0x0000;
+      cpu.registers.pc = CARTRIDGE_PROGRAM_START;
       cpu.registers.f = binaryToNumber("10000000");
-      mmu.loadCartridge(new Cartridge(new Uint8Array([0x07])));
+      mmu.loadCartridge(Cartridge.buildWithProgram([0x07]));
 
-      const instruction = createSubN(0x3d);
+      const instruction = subN(0x3d);
 
       const memorySnapshot = createMmuSnapshot(mmu);
       const cycles = instruction.execute(cpu, mmu);
@@ -126,7 +126,7 @@ describe("sub", () => {
       expect(cycles).toBe(4);
       expect(cpu).toEqualCpuWithRegisters({
         a: 0x92,
-        pc: 0x0001,
+        pc: CARTRIDGE_PROGRAM_START + 1,
         fZ: 0,
         fN: 1,
         fH: 0,

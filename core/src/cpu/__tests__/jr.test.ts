@@ -3,7 +3,7 @@ import { createMmuSnapshot, createMmu } from "../../test/help";
 import { createJrCcN, createJrN } from "../jr";
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "..";
-import { Cartridge } from "../../cartridge";
+import { Cartridge, CARTRIDGE_PROGRAM_START } from "../../cartridge";
 import { CHECK_FLAGS, CheckFlag } from "../lowLevel";
 
 describe("jr", () => {
@@ -18,9 +18,9 @@ describe("jr", () => {
   describe("createJrCcN", () => {
     describe.each(CHECK_FLAGS.map(f => [f]))("JR %s,n", (flag: CheckFlag) => {
       test("pass positive", () => {
-        cpu.registers.pc = 0x0001;
+        cpu.registers.pc = CARTRIDGE_PROGRAM_START + 1;
         cpu.registers[flag] = 1;
-        mmu.loadCartridge(new Cartridge(new Uint8Array([0x00, 0x03])));
+        mmu.loadCartridge(Cartridge.buildWithProgram([0x00, 0x03]));
 
         const memorySnapshot = createMmuSnapshot(mmu);
         const instruction = createJrCcN(0x3d, flag);
@@ -28,17 +28,14 @@ describe("jr", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(4);
-        expect(cpu).toEqualCpuWithRegisters({ pc: 0x0005, [flag]: 1 });
+        expect(cpu).toEqualCpuWithRegisters({ pc: CARTRIDGE_PROGRAM_START + 5, [flag]: 1 });
         expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
       });
 
       test("pass negative", () => {
-        cpu.registers.pc = 0x0004;
+        cpu.registers.pc = CARTRIDGE_PROGRAM_START + 4;
         cpu.registers[flag] = 1;
-        const cartridge = new Cartridge(
-          new Uint8Array([0x00, 0x00, 0x00, 0x00, 0xfd])
-        );
-        mmu.loadCartridge(cartridge); // -3
+        mmu.loadCartridge(Cartridge.buildWithProgram([0x00, 0x00, 0x00, 0x00, 0xfd]));
 
         const memorySnapshot = createMmuSnapshot(mmu);
         const instruction = createJrCcN(0x3d, flag);
@@ -46,15 +43,14 @@ describe("jr", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(4);
-        expect(cpu).toEqualCpuWithRegisters({ pc: 0x0002, [flag]: 1 });
+        expect(cpu).toEqualCpuWithRegisters({ pc: CARTRIDGE_PROGRAM_START + 2, [flag]: 1 });
         expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
       });
 
       test("skip", () => {
-        cpu.registers.pc = 0x0001;
+        cpu.registers.pc = CARTRIDGE_PROGRAM_START + 1;
         cpu.registers[flag] = 0;
-        const cartridge = new Cartridge(new Uint8Array([0x00, 0x03]));
-        mmu.loadCartridge(cartridge);
+        mmu.loadCartridge(Cartridge.buildWithProgram([0x00, 0x03]));
 
         const memorySnapshot = createMmuSnapshot(mmu);
         const instruction = createJrCcN(0x3d, flag);
@@ -62,7 +58,7 @@ describe("jr", () => {
         const cycles = instruction.execute(cpu, mmu);
 
         expect(cycles).toBe(4);
-        expect(cpu).toEqualCpuWithRegisters({ pc: 0x0002, [flag]: 0 });
+        expect(cpu).toEqualCpuWithRegisters({ pc: CARTRIDGE_PROGRAM_START + 2, [flag]: 0 });
         expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
       });
     });
@@ -70,8 +66,8 @@ describe("jr", () => {
 
   describe("createJrN", () => {
     test("positive", () => {
-      cpu.registers.pc = 0x0001;
-      mmu.loadCartridge(new Cartridge(new Uint8Array([0x00, 0x03])));
+      cpu.registers.pc = CARTRIDGE_PROGRAM_START + 1;
+      mmu.loadCartridge(Cartridge.buildWithProgram([0x00, 0x03]));
 
       const memorySnapshot = createMmuSnapshot(mmu);
       const instruction = createJrN(0x3d);
@@ -79,16 +75,13 @@ describe("jr", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
-      expect(cpu).toEqualCpuWithRegisters({ pc: 0x0005 });
+      expect(cpu).toEqualCpuWithRegisters({ pc: CARTRIDGE_PROGRAM_START + 5 });
       expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
 
     test("negative", () => {
-      cpu.registers.pc = 0x0004;
-      const cartridge = new Cartridge(
-        new Uint8Array([0x00, 0x00, 0x00, 0x00, 0xfd])
-      );
-      mmu.loadCartridge(cartridge); // -3
+      cpu.registers.pc = CARTRIDGE_PROGRAM_START + 4;
+      mmu.loadCartridge(Cartridge.buildWithProgram([0x00, 0x00, 0x00, 0x00, 0xfd]));
 
       const memorySnapshot = createMmuSnapshot(mmu);
       const instruction = createJrN(0x3d);
@@ -96,7 +89,7 @@ describe("jr", () => {
       const cycles = instruction.execute(cpu, mmu);
 
       expect(cycles).toBe(4);
-      expect(cpu).toEqualCpuWithRegisters({ pc: 0x0002 });
+      expect(cpu).toEqualCpuWithRegisters({ pc: CARTRIDGE_PROGRAM_START + 2 });
       expect(mmu).toMatchSnapshotWorkingRam(memorySnapshot);
     });
   });

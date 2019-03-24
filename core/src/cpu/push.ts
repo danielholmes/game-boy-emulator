@@ -1,7 +1,7 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
 import { GroupedWordRegister } from "./registers";
 
-export const createPush = (
+export const push = (
   opCode: OpCode,
   register: GroupedWordRegister
 ): Instruction =>

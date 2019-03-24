@@ -3,6 +3,9 @@ import { WorkingRam, VRam, ZeroPageRam, IOMemory, OamMemory } from "./ram";
 import { Bios } from "../bios";
 import { Cartridge } from "../cartridge";
 
+export const WORKING_RAM_RANGE: Readonly<{ start: MemoryAddress, end: MemoryAddress }> =
+  { start: 0xc000, end: 0xe000 };
+
 export class Mmu {
   private readonly bios: Bios;
   private readonly workingRam: WorkingRam;
@@ -65,15 +68,16 @@ export class Mmu {
       }
       return this.cartridge.readByte(address);
     }
-    if (address >= 0x8000 && address <= 0x9fff) {
+    if (address >= 0x8000 && address < 0xa000) {
       return this.vRam.readByte(address - 0x8000);
     }
-    if (address >= 0xc000 && address <= 0xdfff) {
-      return this.workingRam.readByte(address - 0xc000);
-    }
-    if (address >= 0xa000 && address <= 0xbfff) {
+    if (address >= 0xa000 && address < WORKING_RAM_RANGE.start) {
       throw new Error("TODO: Access memory on cartridge");
     }
+    if (address >= WORKING_RAM_RANGE.start && address <= WORKING_RAM_RANGE.end) {
+      return this.workingRam.readByte(address - WORKING_RAM_RANGE.start);
+    }
+    // Shadow of working ram
     if (address >= 0xe000 && address <= 0xfdff) {
       return this.workingRam.readByte(address - 0xe000);
     }
@@ -99,6 +103,10 @@ export class Mmu {
     throw new Error("Address not readable");
   }
 
+  /**
+   * @deprecated should be done separate
+   * @param address
+   */
   public readBigEndianWord(address: MemoryAddress): WordValue {
     return (this.readByte(address + 1) << 8) + this.readByte(address);
   }
@@ -131,13 +139,13 @@ export class Mmu {
     }
   }
 
+  /**
+   * @deprecated Should always be split up in usage
+   * @param address
+   * @param value
+   */
   public writeWordBigEndian(address: MemoryAddress, value: WordValue): void {
     this.writeByte(address + 1, value >> 8);
     this.writeByte(address, value & 255);
   }
 }
-
-// [0000-3FFF] Cartridge ROM, bank 0: The first 16,384 bytes of the cartridge program are always available at this point in the memory map. Special circumstances apply:
-// [0000-00FF] BIOS: When the CPU starts up, PC starts at 0000h, which is the start of the 256-byte GameBoy BIOS code. Once the BIOS has run, it is removed from the memory map, and this area of the cartridge rom becomes addressable.
-// [0100-014F] Cartridge header: This section of the cartridge contains data about its name and manufacturer, and must be written in a specific format.
-// [4000-7FFF]

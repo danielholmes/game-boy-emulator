@@ -2,34 +2,15 @@ import { ByteValue, MemoryAddress } from "./types";
 import { isEqual, range } from "lodash";
 import nintendoLogo from "./nintendoLogo";
 
-// TODO: ROM banks, etc
-export class Cartridge {
-  public readonly bytes: Uint8Array;
-
-  public constructor(bytes: Uint8Array) {
-    this.bytes = bytes;
-  }
-
-  public readByte(address: MemoryAddress): ByteValue {
-    return this.bytes[address];
-  }
-}
-
-export const isValid = (cartridge: Cartridge): Boolean =>
-  isEqual(
-    range(0x0104, 0x0133 + 1)
-      .map((address) => cartridge.readByte(address)),
-    nintendoLogo
-  );
-
 const CARTRIDGE_LENGTH: number = 0x8000;
-const CARTRIDGE_HEADER_LENGTH: number = 0x0104;
-const MAX_CARTRIDGE_PROGRAM_LENGTH: number = CARTRIDGE_LENGTH - CARTRIDGE_HEADER_LENGTH - nintendoLogo.length;
+const CARTRIDGE_START_LENGTH: number = 0x0104;
+export const CARTRIDGE_PROGRAM_START: number = CARTRIDGE_START_LENGTH + nintendoLogo.length;
+const MAX_CARTRIDGE_PROGRAM_LENGTH: number = CARTRIDGE_LENGTH - CARTRIDGE_PROGRAM_START;
 
-export class CartridgeBuilder {
+class CartridgeBuilder {
   private readonly _program: Uint8Array;
 
-  private constructor(program?: Uint8Array)
+  public constructor(program?: Uint8Array)
   {
     this._program = program || new Uint8Array(CARTRIDGE_LENGTH);
   }
@@ -50,8 +31,9 @@ export class CartridgeBuilder {
   public build(): Cartridge {
     return new Cartridge(
       new Uint8Array([
-        // empty header
-        ...range(0x0000, CARTRIDGE_HEADER_LENGTH).map(() => 0x00),
+        // empty beginning
+        ...range(0x0000, CARTRIDGE_START_LENGTH).map(() => 0x00),
+        // header
         ...nintendoLogo,
         ...this._program
       ])
@@ -61,8 +43,32 @@ export class CartridgeBuilder {
   private clone({ program }: { program?: Uint8Array }): CartridgeBuilder {
     return new CartridgeBuilder(program || this._program);
   }
+}
+
+// TODO: ROM banks, etc
+export class Cartridge {
+  public readonly bytes: Uint8Array;
+
+  public constructor(bytes: Uint8Array) {
+    this.bytes = bytes;
+  }
+
+  public readByte(address: MemoryAddress): ByteValue {
+    return this.bytes[address];
+  }
 
   public static builder(): CartridgeBuilder {
     return new CartridgeBuilder();
   }
+
+  public static buildWithProgram(program: Uint8Array | ReadonlyArray<ByteValue>): Cartridge {
+    return Cartridge.builder().program(program).build();
+  }
 }
+
+export const isValid = (cartridge: Cartridge): Boolean =>
+  isEqual(
+    range(0x0104, 0x0133 + 1)
+      .map((address) => cartridge.readByte(address)),
+    nintendoLogo
+  );
