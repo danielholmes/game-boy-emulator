@@ -31,7 +31,7 @@ export class Mmu {
   }
 
   public get isInBios(): boolean {
-    return this.readByte(0xff50) !== 0x00;
+    return this.readByte(0xff50) === 0x00;
   }
 
   public get bGP(): ByteValue {

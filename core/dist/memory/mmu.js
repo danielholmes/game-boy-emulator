@@ -148,7 +148,7 @@ function () {
   }, {
     key: "isInBios",
     get: function get() {
-      return this.readByte(0xff50) !== 0x00;
+      return this.readByte(0xff50) === 0x00;
     }
   }, {
     key: "bGP",
