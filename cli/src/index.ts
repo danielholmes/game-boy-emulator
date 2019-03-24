@@ -14,7 +14,7 @@ import {
   nintendoLogo,
   isValidCartridge
 } from "@gebby/core";
-import { range, flatMap } from "lodash";
+import { range, flatMap, repeat, zip } from "lodash";
 
 const cartridge = new Cartridge(
   new Uint8Array([
@@ -23,7 +23,7 @@ const cartridge = new Cartridge(
   ])
 );
 if (!isValidCartridge(cartridge)) {
-  throw new Error('Invalid cartridge');
+  throw new Error("Invalid cartridge");
 }
 
 const vRam = VRam.initializeRandomly();
@@ -58,17 +58,17 @@ device.turnOn();
 const pixelToOutChar = (color: PixelColor): string => {
   switch (color) {
     case 3:
-      return '\u2588';
+      return "\u2588";
     case 2:
-      return '\u2592';
+      return "\u2592";
     case 1:
-      return '\u2591';
+      return "\u2591";
   }
   return " ";
 };
 
 const tileToString = (tile: Tile): string =>
-  tile.map((r) => r.map(pixelToOutChar).join('')).join("\n")
+  tile.map((r) => r.map(pixelToOutChar).join("")).join("\n");
 
 const printEnd = (): void => {
   console.log("BG & window palette", mmu.bGP.toString(2));
@@ -78,7 +78,7 @@ const printEnd = (): void => {
     .forEach((i) => {
       const tile = vRam.getTileDataFromTable1(i);
       if (flatMap(tile).some((c) => c !== 0)) {
-        console.log(i + ')');
+        console.log(i + ")");
         console.log(tileToString(tile));
       }
     });
@@ -88,16 +88,33 @@ const printEnd = (): void => {
     .forEach((i) => {
       const tile = vRam.getTileDataFromTable2(i);
       if (flatMap(tile).some((c) => c !== 0)) {
-        console.log(i + ')');
+        console.log(i + ")");
         console.log(tileToString(tile));
       }
     });
 
-  console.log('Background map 1:');
-
+  console.log("Background map 1:");
+  console.log(
+    vRam.bgMap1
+      .map((row) =>
+        row.map((i) => tileToString(vRam.getTileDataFromTable1(i)))
+          .reduce(
+            (accu: string, tile: string): string =>
+              zip(
+                accu.split("\n"),
+                tile.split("\n")
+              )
+                .map(([accuRow, newRow]) => accuRow + newRow)
+                .join("\n")
+            ,
+            repeat("\n", 7)
+          )
+      )
+      .join("\n")
+  );
 };
 
-const TOTAL = 5000000;
+const TOTAL = 100000;
 for (let i = 0; i < TOTAL; i++) {
   const opCode = mmu.readByte(cpu.registers.pc);
   console.log(
@@ -109,7 +126,7 @@ for (let i = 0; i < TOTAL; i++) {
   try {
     device.tickCycle();
   } catch (e) {
-    printEnd()
+    printEnd();
     throw e;
   }
   // if (i % 1000 === 0 || i === (TOTAL - 1)) {

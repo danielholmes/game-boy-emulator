@@ -43,7 +43,7 @@ export interface CpuRegisters {
     setFHFromByteSubtract(original: ByteValue, subtract: ByteValue): void;
     setFHFromWordSubtract(original: WordValue, subtract: WordValue): void;
 }
-export declare const calculateFHFromByteAdd: (original: number, add: number) => 0 | 1;
+export declare const calculateFHFromByteAdd: (original: number, add: number) => BitValue;
 export declare class CpuRegistersImpl implements CpuRegisters {
     private _a;
     private _b;

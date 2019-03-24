@@ -54,8 +54,7 @@ function () {
     key: "readByte",
     value: function readByte(address) {
       // TODO: Once the bios has run, it is removed and goes through to cartridge
-      if (address >= 0x0000 && address <= 0x00ff) {
-        // TODO: check bios flag} && !this.cartridge) {
+      if (address >= 0x0000 && address <= 0x00ff && this.isInBios) {
         return this.bios.readByte(address);
       }
 
@@ -147,9 +146,24 @@ function () {
       this.writeByte(address, value & 255);
     }
   }, {
+    key: "isInBios",
+    get: function get() {
+      return this.readByte(0xff50) !== 0x00;
+    }
+  }, {
     key: "bGP",
     get: function get() {
       return this.readByte(0xff47);
+    }
+  }, {
+    key: "scY",
+    get: function get() {
+      return this.readByte(0xff42);
+    }
+  }, {
+    key: "scX",
+    get: function get() {
+      return this.readByte(0xff43);
     }
   }, {
     key: "workingRamValues",

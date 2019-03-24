@@ -18,16 +18,8 @@ export declare class WorkingRam extends Ram {
 }
 export declare const V_RAM_SIZE = 8192;
 export declare type Tile = ReadonlyArray<ReadonlyArray<ColorNumber>>;
-declare type TileTableNumber = 0 | 1;
-interface BackgroundTile {
-    readonly bGPNum: number;
-    readonly tileTableNumber: TileTableNumber;
-    readonly horizontalFlip: boolean;
-    readonly verticalFlip: boolean;
-    readonly useBgPriority: boolean;
-}
-export declare type BackgroundMap = ReadonlyArray<ReadonlyArray<BackgroundTile>>;
 declare type TileDataIndex = number;
+export declare type BackgroundMap = ReadonlyArray<ReadonlyArray<TileDataIndex>>;
 export declare class VRam extends Ram {
     private static readonly TILE_DATA_TABLE_1_RANGE;
     private static readonly TILE_DATA_TABLE_2_RANGE;
@@ -38,10 +30,6 @@ export declare class VRam extends Ram {
     private static readonly BG_MAP_1_RANGE;
     private static readonly BG_MAP_2_RANGE;
     private static readonly BG_MAP_DIMENSION;
-    private static readonly BG_MAP_TILE_TABLE_NUMBER_MASK;
-    private static readonly BG_MAP_HORIZONTAL_FLIP_MASK;
-    private static readonly BG_MAP_VERTICAL_FLIP_MASK;
-    private static readonly BG_MAP_PRIORITY_MASK;
     private static readonly BG_MAP_INDICES;
     constructor();
     readonly bgMap1: BackgroundMap;

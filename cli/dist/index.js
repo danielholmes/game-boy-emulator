@@ -4,6 +4,14 @@ var _core = require("@gebby/core");
 
 var _lodash = require("lodash");
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -17,7 +25,7 @@ var cartridge = new _core.Cartridge(new Uint8Array([].concat(_toConsumableArray(
 })), _toConsumableArray(_core.nintendoLogo))));
 
 if (!(0, _core.isValidCartridge)(cartridge)) {
-  throw new Error('Invalid cartridge');
+  throw new Error("Invalid cartridge");
 }
 
 var vRam = _core.VRam.initializeRandomly();
@@ -52,7 +60,7 @@ var pixelToOutChar = function pixelToOutChar(color) {
 
 var tileToString = function tileToString(tile) {
   return tile.map(function (r) {
-    return r.map(pixelToOutChar).join('');
+    return r.map(pixelToOutChar).join("");
   }).join("\n");
 };
 
@@ -65,7 +73,7 @@ var printEnd = function printEnd() {
     if ((0, _lodash.flatMap)(tile).some(function (c) {
       return c !== 0;
     })) {
-      console.log(i + ')');
+      console.log(i + ")");
       console.log(tileToString(tile));
     }
   });
@@ -76,14 +84,27 @@ var printEnd = function printEnd() {
     if ((0, _lodash.flatMap)(tile).some(function (c) {
       return c !== 0;
     })) {
-      console.log(i + ')');
+      console.log(i + ")");
       console.log(tileToString(tile));
     }
   });
-  console.log('Background map 1:');
+  console.log("Background map 1:");
+  console.log(vRam.bgMap1.map(function (row) {
+    return row.map(function (i) {
+      return tileToString(vRam.getTileDataFromTable1(i));
+    }).reduce(function (accu, tile) {
+      return (0, _lodash.zip)(accu.split("\n"), tile.split("\n")).map(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            accuRow = _ref2[0],
+            newRow = _ref2[1];
+
+        return accuRow + newRow;
+      }).join("\n");
+    }, (0, _lodash.repeat)("\n", 7));
+  }).join("\n"));
 };
 
-var TOTAL = 5000000;
+var TOTAL = 100000;
 
 for (var i = 0; i < TOTAL; i++) {
   var opCode = mmu.readByte(cpu.registers.pc);

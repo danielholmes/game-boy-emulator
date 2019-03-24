@@ -124,10 +124,10 @@ describe("ram", () => {
     describe("bgMap1", () => {
       test("normal", () => {
         [
-          "11111111",
-          "00000000"
+          0x2e,
+          0xd2
         ].forEach((value, address) =>
-          vRam.writeByte(address + 0x1800, binaryToNumber(value))
+          vRam.writeByte(address + 0x1800, value)
         );
 
         const result = vRam.bgMap1;
@@ -135,20 +135,8 @@ describe("ram", () => {
         expect(result.length).toEqual(32);
         expect(result[0].length).toEqual(32);
         expect(result[31].length).toEqual(32);
-        expect(result[0][0]).toEqual({
-          bGPNum: 7,
-          tileTableNumber: 1,
-          horizontalFlip: true,
-          verticalFlip: true,
-          useBgPriority: true
-        });
-        expect(result[0][1]).toEqual({
-          bGPNum: 0,
-          tileTableNumber: 0,
-          horizontalFlip: false,
-          verticalFlip: false,
-          useBgPriority: false
-        });
+        expect(result[0][0]).toEqual(0x2e);
+        expect(result[0][1]).toEqual(0xd2);
       })
     });
   });

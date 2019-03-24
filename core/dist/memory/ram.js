@@ -155,16 +155,7 @@ function (_Ram3) {
       return VRam.BG_MAP_INDICES.map(function (y) {
         return VRam.BG_MAP_INDICES.map(function (x) {
           var address = startAddress + x + y * VRam.BG_MAP_DIMENSION;
-
-          var byte = _this.readByte(address);
-
-          return {
-            bGPNum: byte & 0x7,
-            tileTableNumber: (byte & VRam.BG_MAP_TILE_TABLE_NUMBER_MASK) !== 0 ? 1 : 0,
-            horizontalFlip: (byte & VRam.BG_MAP_HORIZONTAL_FLIP_MASK) !== 0,
-            verticalFlip: (byte & VRam.BG_MAP_VERTICAL_FLIP_MASK) !== 0,
-            useBgPriority: (byte & VRam.BG_MAP_PRIORITY_MASK) !== 0
-          };
+          return _this.readByte(address);
         });
       });
     }
@@ -263,14 +254,6 @@ _defineProperty(VRam, "BG_MAP_1_RANGE", [0x1800, 0x1c00]);
 _defineProperty(VRam, "BG_MAP_2_RANGE", [0x1c00, 0x2000]);
 
 _defineProperty(VRam, "BG_MAP_DIMENSION", 32);
-
-_defineProperty(VRam, "BG_MAP_TILE_TABLE_NUMBER_MASK", 1 << 3);
-
-_defineProperty(VRam, "BG_MAP_HORIZONTAL_FLIP_MASK", 1 << 5);
-
-_defineProperty(VRam, "BG_MAP_VERTICAL_FLIP_MASK", 1 << 6);
-
-_defineProperty(VRam, "BG_MAP_PRIORITY_MASK", 1 << 7);
 
 _defineProperty(VRam, "BG_MAP_INDICES", (0, _lodash.range)(0, VRam.BG_MAP_DIMENSION));
 

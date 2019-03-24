@@ -30,8 +30,20 @@ export class Mmu {
     this.cartridge = cartridge;
   }
 
+  public get isInBios(): boolean {
+    return this.readByte(0xff50) !== 0x00;
+  }
+
   public get bGP(): ByteValue {
     return this.readByte(0xff47);
+  }
+
+  public get scY(): ByteValue {
+    return this.readByte(0xff42);
+  }
+
+  public get scX(): ByteValue {
+    return this.readByte(0xff43);
   }
 
   public get workingRamValues(): Uint8Array {
@@ -45,7 +57,7 @@ export class Mmu {
   // TODO: Test access and shadowing
   public readByte(address: MemoryAddress): ByteValue {
     // TODO: Once the bios has run, it is removed and goes through to cartridge
-    if (address >= 0x0000 && address <= 0x00ff) { // TODO: check bios flag} && !this.cartridge) {
+    if (address >= 0x0000 && address <= 0x00ff && this.isInBios) {
       return this.bios.readByte(address);
     }
     if (address >= 0x0000 && address <= 0x7fff) {
