@@ -17,7 +17,7 @@ var createJrCcN = function createJrCcN(opCode, flag) {
 exports.createJrCcN = createJrCcN;
 
 var createJrN = function createJrN(opCode) {
-  return new _instructions.InstructionDefinition(opCode, "JR n").loadSignedByteOperand().addToRegister('pc');
+  return new _instructions.InstructionDefinition(opCode, "JR n").loadSignedByteOperand().addToRegister("pc");
 };
 
 exports.createJrN = createJrN;

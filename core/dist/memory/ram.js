@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.IOMemory = exports.OamMemory = exports.VRam = exports.V_RAM_SIZE = exports.WorkingRam = exports.ZeroPageRam = void 0;
+exports.IOMemory = exports.OamMemory = exports.VRam = exports.V_RAM_SIZE = exports.WorkingRam = exports.WORKING_RAM_SIZE = exports.ZeroPageRam = void 0;
 
 var _types = require("../types");
 
@@ -114,6 +114,8 @@ function (_Ram) {
 }(Ram);
 
 exports.ZeroPageRam = ZeroPageRam;
+var WORKING_RAM_SIZE = 0x2000;
+exports.WORKING_RAM_SIZE = WORKING_RAM_SIZE;
 
 var WorkingRam =
 /*#__PURE__*/
@@ -123,7 +125,7 @@ function (_Ram2) {
   function WorkingRam() {
     _classCallCheck(this, WorkingRam);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(WorkingRam).call(this, 0x2000));
+    return _possibleConstructorReturn(this, _getPrototypeOf(WorkingRam).call(this, WORKING_RAM_SIZE));
   }
 
   return WorkingRam;

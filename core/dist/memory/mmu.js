@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Mmu = void 0;
+exports.Mmu = exports.WORKING_RAM_RANGE = void 0;
 
 var _types = require("../types");
 
@@ -14,6 +14,12 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var WORKING_RAM_RANGE = {
+  start: 0xc000,
+  end: 0xe000
+};
+exports.WORKING_RAM_RANGE = WORKING_RAM_RANGE;
 
 var Mmu =
 /*#__PURE__*/
@@ -65,17 +71,18 @@ function () {
         return this.cartridge.readByte(address);
       }
 
-      if (address >= 0x8000 && address <= 0x9fff) {
+      if (address >= 0x8000 && address < 0xa000) {
         return this.vRam.readByte(address - 0x8000);
       }
 
-      if (address >= 0xc000 && address <= 0xdfff) {
-        return this.workingRam.readByte(address - 0xc000);
-      }
-
-      if (address >= 0xa000 && address <= 0xbfff) {
+      if (address >= 0xa000 && address < WORKING_RAM_RANGE.start) {
         throw new Error("TODO: Access memory on cartridge");
       }
+
+      if (address >= WORKING_RAM_RANGE.start && address <= WORKING_RAM_RANGE.end) {
+        return this.workingRam.readByte(address - WORKING_RAM_RANGE.start);
+      } // Shadow of working ram
+
 
       if (address >= 0xe000 && address <= 0xfdff) {
         return this.workingRam.readByte(address - 0xe000);
@@ -107,15 +114,10 @@ function () {
       throw new Error("Address not readable");
     }
   }, {
-    key: "readBigEndianWord",
-    value: function readBigEndianWord(address) {
-      return (this.readByte(address + 1) << 8) + this.readByte(address);
-    }
-  }, {
     key: "writeByte",
     value: function writeByte(address, value) {
       if (address === 0xff50) {
-        console.log('Writing bios', value.toString(16));
+        console.log("Writing bios", value.toString(16));
       }
 
       if (address >= 0x8000 && address <= 0x9fff) {
@@ -136,12 +138,6 @@ function () {
       } else {
         throw new Error("Can't write address ".concat((0, _types.numberToWordHex)(address)));
       }
-    }
-  }, {
-    key: "writeWordBigEndian",
-    value: function writeWordBigEndian(address, value) {
-      this.writeByte(address + 1, value >> 8);
-      this.writeByte(address, value & 255);
     }
   }, {
     key: "isInBios",
@@ -171,11 +167,7 @@ function () {
   }]);
 
   return Mmu;
-}(); // [0000-3FFF] Cartridge ROM, bank 0: The first 16,384 bytes of the cartridge program are always available at this point in the memory map. Special circumstances apply:
-// [0000-00FF] BIOS: When the CPU starts up, PC starts at 0000h, which is the start of the 256-byte GameBoy BIOS code. Once the BIOS has run, it is removed from the memory map, and this area of the cartridge rom becomes addressable.
-// [0100-014F] Cartridge header: This section of the cartridge contains data about its name and manufacturer, and must be written in a specific format.
-// [4000-7FFF]
-
+}();
 
 exports.Mmu = Mmu;
 //# sourceMappingURL=mmu.js.map

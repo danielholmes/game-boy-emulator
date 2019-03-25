@@ -111,6 +111,10 @@ function () {
 
   return RotateLeftThroughCarry;
 }();
+/**
+ * @deprecated Split up
+ */
+
 
 exports.RotateLeftThroughCarry = RotateLeftThroughCarry;
 
@@ -130,7 +134,7 @@ function () {
         throw new Error("value undefined");
       }
 
-      return mmu.readBigEndianWord(value);
+      return (mmu.readByte(value + 1) << 8) + mmu.readByte(value);
     }
   }]);
 
@@ -305,7 +309,7 @@ function () {
         throw new Error("value undefined");
       }
 
-      var address = mmu.readBigEndianWord(cpu.registers.pc);
+      var address = (mmu.readByte(cpu.registers.pc + 1) << 8) + mmu.readByte(cpu.registers.pc);
       mmu.writeByte(address, value);
       cpu.registers.pc += 2;
     }
@@ -336,8 +340,9 @@ function () {
         throw new Error("value undefined");
       }
 
-      var address = mmu.readBigEndianWord(cpu.registers.pc);
-      mmu.writeWordBigEndian(address, value);
+      var address = (mmu.readByte(cpu.registers.pc + 1) << 8) + mmu.readByte(cpu.registers.pc);
+      mmu.writeByte(address + 1, value >> 8);
+      mmu.writeByte(address, value & 255);
       cpu.registers.pc += 2;
     }
   }]);
@@ -449,7 +454,7 @@ function () {
       }
 
       var operand = mmu.readByte(cpu.registers.pc);
-      mmu.writeByte(0xff00 + operand, value & 255);
+      mmu.writeByte(0xff00 + operand, value & 0xff);
       return value;
     }
   }]);
@@ -556,7 +561,7 @@ function () {
         throw new Error("value undefined");
       }
 
-      mmu.writeByte(cpu.registers.sp, value & 255);
+      mmu.writeByte(cpu.registers.sp, value & 0xff);
       return value;
     }
   }]);

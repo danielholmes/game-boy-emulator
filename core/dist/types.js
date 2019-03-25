@@ -29,7 +29,7 @@ exports.binaryToNumber = binaryToNumber;
 var toHex = function toHex(value, length) {
   var sign = value >= 0 ? "" : "-";
   var start = "".concat(sign, "0x");
-  var end = Math.abs(value).toString(16).toUpperCase();
+  var end = Math.abs(value).toString(16).toLowerCase();
 
   if (length === undefined) {
     return start + end;

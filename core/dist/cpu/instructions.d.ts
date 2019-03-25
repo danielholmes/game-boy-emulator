@@ -1,5 +1,5 @@
 import { Mmu } from "../memory/mmu";
-import { LowLevelOperation, CheckFlag } from "./lowLevel";
+import { LowLevelOp, CheckFlag } from "./lowLevel";
 import { ByteRegister, Register, WordRegister } from "./registers";
 import { ByteBitPosition, ByteValue, MemoryAddress, WordValue } from "../types";
 import { Cpu, ClockCycles } from "./index";
@@ -13,7 +13,7 @@ export declare class InstructionDefinition implements Instruction {
     readonly opCode: OpCode;
     readonly label: string;
     private readonly operations;
-    constructor(opCode: OpCode, label: string, operations?: ReadonlyArray<LowLevelOperation>);
+    constructor(opCode: OpCode, label: string, operations?: ReadonlyArray<LowLevelOp>);
     execute(cpu: Cpu, mmu: Mmu): ClockCycles;
     rotateLeftThroughCarry(register: ByteRegister): InstructionDefinition;
     internalDelay(): InstructionDefinition;

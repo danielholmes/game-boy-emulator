@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createSbcAR = void 0;
+exports.sbcAR = void 0;
 
 var _instructions = require("./instructions");
 
@@ -50,9 +50,9 @@ function () {
   return SbcAR;
 }();
 
-var createSbcAR = function createSbcAR(opCode, register) {
+var sbcAR = function sbcAR(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "SBC a,".concat(register), [new SbcAR(register)]);
 };
 
-exports.createSbcAR = createSbcAR;
+exports.sbcAR = sbcAR;
 //# sourceMappingURL=sbc.js.map

@@ -1,7 +1,11 @@
-import { ByteValue, MemoryAddress, WordValue } from "../types";
+import { ByteValue, MemoryAddress } from "../types";
 import { WorkingRam, VRam, ZeroPageRam, IOMemory, OamMemory } from "./ram";
 import { Bios } from "../bios";
 import { Cartridge } from "../cartridge";
+export declare const WORKING_RAM_RANGE: Readonly<{
+    start: MemoryAddress;
+    end: MemoryAddress;
+}>;
 export declare class Mmu {
     private readonly bios;
     private readonly workingRam;
@@ -18,8 +22,6 @@ export declare class Mmu {
     readonly workingRamValues: Uint8Array;
     loadCartridge(cartridge: Cartridge): void;
     readByte(address: MemoryAddress): ByteValue;
-    readBigEndianWord(address: MemoryAddress): WordValue;
     writeByte(address: MemoryAddress, value: ByteValue): void;
-    writeWordBigEndian(address: MemoryAddress, value: WordValue): void;
 }
 //# sourceMappingURL=mmu.d.ts.map

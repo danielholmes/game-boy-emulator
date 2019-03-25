@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createPush = void 0;
+exports.push = void 0;
 
 var _instructions = require("./instructions");
 
-var createPush = function createPush(opCode, register) {
+var push = function push(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "PUSH ".concat(register)).internalDelay().loadRegister(register).pushWordToStack();
 };
 
-exports.createPush = createPush;
+exports.push = push;
 //# sourceMappingURL=push.js.map

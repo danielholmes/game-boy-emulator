@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createLdiMHlA = exports.createLddMHlA = exports.createLdMNnSp = exports.createLdMNnA = exports.createLdMRA = exports.createLdAMNn = exports.createLdGrM = exports.createLdAMFfN = exports.createLdMNA = exports.createLdAMFfC = exports.createLdMFfCA = exports.createLdHlMN = exports.createLdHlMR = exports.createLdRHlM = exports.createLdRMRr = exports.createLdRN = exports.createLdRrNn = exports.createLdRR = void 0;
+exports.ldiMHlA = exports.createLddMHlA = exports.ldMNnSp = exports.ldMNnA = exports.ldMRA = exports.ldAMNn = exports.ldGrM = exports.ldAMFfN = exports.ldMFfNA = exports.createLdAMFfC = exports.ldMFfCA = exports.ldHlMN = exports.ldHlMR = exports.ldRHlM = exports.createLdRMRr = exports.ldRN = exports.ldRrNn = exports.createLdRR = void 0;
 
 var _instructions = require("./instructions");
 
@@ -13,17 +13,17 @@ var createLdRR = function createLdRR(opCode, register1, register2) {
 
 exports.createLdRR = createLdRR;
 
-var createLdRrNn = function createLdRrNn(opCode, register) {
+var ldRrNn = function ldRrNn(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "LD ".concat(register, ",nn")).loadWordOperand().storeInRegister(register);
 };
 
-exports.createLdRrNn = createLdRrNn;
+exports.ldRrNn = ldRrNn;
 
-var createLdRN = function createLdRN(opCode, register) {
+var ldRN = function ldRN(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "LD ".concat(register, ",n")).loadByteOperand().storeInRegister(register);
 };
 
-exports.createLdRN = createLdRN;
+exports.ldRN = ldRN;
 
 var createLdRMRr = function createLdRMRr(opCode, register1, register2) {
   return new _instructions.InstructionDefinition(opCode, "LD ".concat(register1, ",(").concat(register2, ")")).loadRegister(register2).readMemory().storeInRegister(register1);
@@ -31,29 +31,29 @@ var createLdRMRr = function createLdRMRr(opCode, register1, register2) {
 
 exports.createLdRMRr = createLdRMRr;
 
-var createLdRHlM = function createLdRHlM(opCode, register) {
+var ldRHlM = function ldRHlM(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "LD ".concat(register, ",(hl)")).loadRegister("hl").readMemory().storeInRegister(register);
 };
 
-exports.createLdRHlM = createLdRHlM;
+exports.ldRHlM = ldRHlM;
 
-var createLdHlMR = function createLdHlMR(opCode, register) {
+var ldHlMR = function ldHlMR(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "LD (hl),".concat(register)).loadRegister(register).writeMemoryFromWordRegisterAddress("hl");
 };
 
-exports.createLdHlMR = createLdHlMR;
+exports.ldHlMR = ldHlMR;
 
-var createLdHlMN = function createLdHlMN(opCode) {
+var ldHlMN = function ldHlMN(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LD (hl),n").loadByteOperand().writeMemoryFromWordRegisterAddress("hl");
 };
 
-exports.createLdHlMN = createLdHlMN;
+exports.ldHlMN = ldHlMN;
 
-var createLdMFfCA = function createLdMFfCA(opCode) {
+var ldMFfCA = function ldMFfCA(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LD (0xff00+c),a").loadRegister("a").writeMemoryFromFf00PlusRegisterAddress("c");
 };
 
-exports.createLdMFfCA = createLdMFfCA;
+exports.ldMFfCA = ldMFfCA;
 
 var createLdAMFfC = function createLdAMFfC(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LD a,(0xff00+c)").loadRegister("c").addToValue(0xff00).readMemory().storeInRegister("a");
@@ -61,47 +61,47 @@ var createLdAMFfC = function createLdAMFfC(opCode) {
 
 exports.createLdAMFfC = createLdAMFfC;
 
-var createLdMNA = function createLdMNA(opCode) {
+var ldMFfNA = function ldMFfNA(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LD (0xff00+n),a").loadRegister("a").writeMemoryFromOperandAddress();
 };
 
-exports.createLdMNA = createLdMNA;
+exports.ldMFfNA = ldMFfNA;
 
-var createLdAMFfN = function createLdAMFfN(opCode) {
+var ldAMFfN = function ldAMFfN(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LD a,(0xff00+n)").loadByteOperand().addToValue(0xff00).readMemory().storeInRegister("a");
 };
 
-exports.createLdAMFfN = createLdAMFfN;
+exports.ldAMFfN = ldAMFfN;
 
-var createLdGrM = function createLdGrM(opCode, register) {
+var ldGrM = function ldGrM(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "LD a,".concat(register)).loadRegister(register).readMemory().storeInRegister("a");
 };
 
-exports.createLdGrM = createLdGrM;
+exports.ldGrM = ldGrM;
 
-var createLdAMNn = function createLdAMNn(opCode) {
+var ldAMNn = function ldAMNn(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LD a,(nn)").loadWordOperand().readMemory().storeInRegister("a");
 };
 
-exports.createLdAMNn = createLdAMNn;
+exports.ldAMNn = ldAMNn;
 
-var createLdMRA = function createLdMRA(opCode, register) {
+var ldMRA = function ldMRA(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "LD (r),a").loadRegister("a").writeMemoryFromWordRegisterAddress(register);
 };
 
-exports.createLdMRA = createLdMRA;
+exports.ldMRA = ldMRA;
 
-var createLdMNnA = function createLdMNnA(opCode) {
+var ldMNnA = function ldMNnA(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LD (nn),a").loadRegister("a").writeByteFromWordOperandAddress();
 };
 
-exports.createLdMNnA = createLdMNnA;
+exports.ldMNnA = ldMNnA;
 
-var createLdMNnSp = function createLdMNnSp(opCode) {
+var ldMNnSp = function ldMNnSp(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LD (nn),sp").loadRegister("sp").writeWordFromProgramWord();
 };
 
-exports.createLdMNnSp = createLdMNnSp;
+exports.ldMNnSp = ldMNnSp;
 
 var createLddMHlA = function createLddMHlA(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LDD (hl),a").loadRegister("a").writeMemoryFromWordRegisterAddress("hl").decrementRegister("hl");
@@ -109,9 +109,9 @@ var createLddMHlA = function createLddMHlA(opCode) {
 
 exports.createLddMHlA = createLddMHlA;
 
-var createLdiMHlA = function createLdiMHlA(opCode) {
+var ldiMHlA = function ldiMHlA(opCode) {
   return new _instructions.InstructionDefinition(opCode, "LDI (hl),a").loadRegister("a").writeMemoryFromWordRegisterAddress("hl").incrementRegister("hl");
 };
 
-exports.createLdiMHlA = createLdiMHlA;
+exports.ldiMHlA = ldiMHlA;
 //# sourceMappingURL=ld.js.map

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CartridgeBuilder = exports.isValid = exports.Cartridge = void 0;
+exports.isValid = exports.Cartridge = exports.CARTRIDGE_PROGRAM_START = void 0;
 
 var _lodash = require("lodash");
 
@@ -27,7 +27,12 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-// TODO: ROM banks, etc
+var CARTRIDGE_LENGTH = 0x8000;
+var CARTRIDGE_START_LENGTH = 0x0104;
+var CARTRIDGE_PROGRAM_START = CARTRIDGE_START_LENGTH + _nintendoLogo.default.length;
+exports.CARTRIDGE_PROGRAM_START = CARTRIDGE_PROGRAM_START;
+var MAX_CARTRIDGE_PROGRAM_LENGTH = CARTRIDGE_LENGTH - CARTRIDGE_PROGRAM_START; // TODO: ROM banks, etc
+
 var Cartridge =
 /*#__PURE__*/
 function () {
@@ -44,23 +49,26 @@ function () {
     value: function readByte(address) {
       return this.bytes[address];
     }
+    /* eslint-disable @typescript-eslint/no-use-before-define */
+
+  }], [{
+    key: "builder",
+    value: function builder() {
+      return new CartridgeBuilder();
+    }
+    /* eslint-enable @typescript-eslint/no-use-before-define */
+
+  }, {
+    key: "buildWithProgram",
+    value: function buildWithProgram(program) {
+      return Cartridge.builder().program(program).build();
+    }
   }]);
 
   return Cartridge;
 }();
 
 exports.Cartridge = Cartridge;
-
-var isValid = function isValid(cartridge) {
-  return (0, _lodash.isEqual)((0, _lodash.range)(0x0104, 0x0133 + 1).map(function (address) {
-    return cartridge.readByte(address);
-  }), _nintendoLogo.default);
-};
-
-exports.isValid = isValid;
-var CARTRIDGE_LENGTH = 0x8000;
-var CARTRIDGE_HEADER_LENGTH = 0x0104;
-var MAX_CARTRIDGE_PROGRAM_LENGTH = CARTRIDGE_LENGTH - CARTRIDGE_HEADER_LENGTH - _nintendoLogo.default.length;
 
 var CartridgeBuilder =
 /*#__PURE__*/
@@ -77,7 +85,7 @@ function () {
     key: "program",
     value: function program(_program) {
       if (_program.length > MAX_CARTRIDGE_PROGRAM_LENGTH) {
-        throw new Error('program too long');
+        throw new Error("program too long");
       }
 
       return this.clone({
@@ -89,7 +97,7 @@ function () {
   }, {
     key: "build",
     value: function build() {
-      return new Cartridge(new Uint8Array([].concat(_toConsumableArray((0, _lodash.range)(0x0000, CARTRIDGE_HEADER_LENGTH).map(function () {
+      return new Cartridge(new Uint8Array([].concat(_toConsumableArray((0, _lodash.range)(0x0000, CARTRIDGE_START_LENGTH).map(function () {
         return 0x00;
       })), _toConsumableArray(_nintendoLogo.default), _toConsumableArray(this._program))));
     }
@@ -99,15 +107,16 @@ function () {
       var program = _ref.program;
       return new CartridgeBuilder(program || this._program);
     }
-  }], [{
-    key: "builder",
-    value: function builder() {
-      return new CartridgeBuilder();
-    }
   }]);
 
   return CartridgeBuilder;
 }();
 
-exports.CartridgeBuilder = CartridgeBuilder;
+var isValid = function isValid(cartridge) {
+  return (0, _lodash.isEqual)((0, _lodash.range)(0x0104, 0x0133 + 1).map(function (address) {
+    return cartridge.readByte(address);
+  }), _nintendoLogo.default);
+};
+
+exports.isValid = isValid;
 //# sourceMappingURL=cartridge.js.map

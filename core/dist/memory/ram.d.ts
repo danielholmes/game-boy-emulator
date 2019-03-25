@@ -13,6 +13,7 @@ declare class Ram {
 export declare class ZeroPageRam extends Ram {
     constructor();
 }
+export declare const WORKING_RAM_SIZE = 8192;
 export declare class WorkingRam extends Ram {
     constructor();
 }

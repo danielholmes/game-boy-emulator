@@ -3,25 +3,25 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createSubN = exports.createSubMHl = exports.createSubR = void 0;
+exports.subN = exports.subMHl = exports.subR = void 0;
 
 var _instructions = require("./instructions");
 
-var createSubR = function createSubR(opCode, register) {
+var subR = function subR(opCode, register) {
   return new _instructions.InstructionDefinition(opCode, "SUB ".concat(register)).loadRegister(register).compareToRegister("a").storeInRegister("a");
 };
 
-exports.createSubR = createSubR;
+exports.subR = subR;
 
-var createSubMHl = function createSubMHl(opCode) {
+var subMHl = function subMHl(opCode) {
   return new _instructions.InstructionDefinition(opCode, "SUB (hl)").loadRegister("hl").readMemory().compareToRegister("a").storeInRegister("a");
 };
 
-exports.createSubMHl = createSubMHl;
+exports.subMHl = subMHl;
 
-var createSubN = function createSubN(opCode) {
+var subN = function subN(opCode) {
   return new _instructions.InstructionDefinition(opCode, "SUB n").loadByteOperand().compareToRegister("a").storeInRegister("a");
 };
 
-exports.createSubN = createSubN;
+exports.subN = subN;
 //# sourceMappingURL=sub.js.map
