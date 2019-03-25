@@ -12,6 +12,14 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 var cartridge = _core.Cartridge.builder().build();
 
 if (!(0, _core.isValidCartridge)(cartridge)) {
@@ -80,7 +88,7 @@ var printEnd = function printEnd() {
   });
   console.log("Background map 1:");
   console.log(vRam.bgMap1.map(function (row) {
-    return row.map(function (i) {
+    return _toConsumableArray(row).map(function (i) {
       return tileToString(vRam.getTileDataFromTable1(i));
     }).reduce(function (accu, tile) {
       return (0, _lodash.zip)(accu.split("\n"), tile.split("\n")).map(function (_ref) {
@@ -106,7 +114,7 @@ for (var i = 0; i < TOTAL; i++) {
     printEnd();
     throw e;
   } // if (i % 1000 === 0 || i === (TOTAL - 1)) {
-  //   const values = vRam.getValues();
+  //   const values = vRam.values();
   //   const filled: { [address: number]: number } = {};
   //   for (let j = 0; j < values.length; j++) {
   //     if (values[j] !== 0) {

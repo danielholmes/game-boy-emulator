@@ -89,7 +89,7 @@ const printEnd = (): void => {
   console.log(
     vRam.bgMap1
       .map(row =>
-        row
+        [...row]
           .map(i => tileToString(vRam.getTileDataFromTable1(i)))
           .reduce(
             (accu: string, tile: string): string =>
