@@ -2,10 +2,12 @@
 import {
   ByteValue,
   MemoryAddress,
-  toHexString,
-  toWordHexString, ReadonlyUint8Array, ColorNumber
+  ReadonlyUint8Array,
+  ColorNumber
 } from "../types";
 import { range, chunk } from "lodash";
+import { toWordHexString } from "..";
+import { toHexString } from "../utils/numberUtils";
 
 class Ram {
   protected readonly raw: ReadonlyUint8Array;

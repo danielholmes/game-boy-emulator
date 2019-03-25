@@ -1,12 +1,8 @@
-import {
-  ByteValue,
-  MemoryAddress,
-  toWordHexString,
-  ReadonlyUint8Array
-} from "../types";
+import { ByteValue, MemoryAddress, ReadonlyUint8Array } from "../types";
 import { WorkingRam, VRam, ZeroPageRam, IOMemory, OamMemory } from "./ram";
 import { Bios } from "../bios";
 import { Cartridge } from "../cartridge";
+import { toWordHexString } from "..";
 
 export const WORKING_RAM_RANGE: Readonly<{
   start: MemoryAddress;

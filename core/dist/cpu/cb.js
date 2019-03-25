@@ -9,9 +9,9 @@ var _instructions = require("./instructions");
 
 var _lodash = require("lodash");
 
-var _types = require("../types");
-
 var _rl = require("./rl");
+
+var _numberUtils = require("../utils/numberUtils");
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
@@ -58,7 +58,7 @@ function () {
       var subInstruction = CB_INSTRUCTIONS[operand];
 
       if (!subInstruction) {
-        throw new Error("No instruction for CB opCode ".concat((0, _types.numberToByteHex)(operand)));
+        throw new Error("No instruction for CB opCode ".concat((0, _numberUtils.toByteHexString)(operand)));
       }
 
       cpu.registers.pc++;

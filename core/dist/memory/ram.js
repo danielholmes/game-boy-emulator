@@ -5,9 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.IOMemory = exports.OamMemory = exports.VRam = exports.V_RAM_SIZE = exports.WorkingRam = exports.WORKING_RAM_SIZE = exports.ZeroPageRam = void 0;
 
-var _types = require("../types");
-
 var _lodash = require("lodash");
+
+var _ = require("..");
+
+var _numberUtils = require("../utils/numberUtils");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -56,22 +58,17 @@ function () {
   }
 
   _createClass(Ram, [{
-    key: "getValues",
-    value: function getValues() {
-      return this.raw.slice();
-    }
-  }, {
     key: "assertValidAddress",
     value: function assertValidAddress(value) {
       if (value < 0x0000 || value >= this.size) {
-        throw new Error("Address ".concat((0, _types.numberToWordHex)(value), " out of range ").concat((0, _types.numberToWordHex)(this.size)));
+        throw new Error("Address ".concat((0, _.toWordHexString)(value), " out of range ").concat((0, _.toWordHexString)(this.size)));
       }
     }
   }, {
     key: "assertByte",
     value: function assertByte(value) {
       if (value < 0x00 || value > 0xff) {
-        throw new Error("Out of bounds byte ".concat((0, _types.numberToHex)(value)));
+        throw new Error("Out of bounds byte ".concat((0, _numberUtils.toHexString)(value)));
       }
     }
   }, {
@@ -85,7 +82,7 @@ function () {
     value: function readBytes(address, length) {
       this.assertValidAddress(address);
       this.assertValidAddress(address + length - 1);
-      return this.raw.slice(address, address + length);
+      return this.raw.subarray(address, address + length);
     }
   }, {
     key: "writeByte",
@@ -93,6 +90,11 @@ function () {
       this.assertValidAddress(address);
       this.assertByte(value);
       this.raw[address] = value;
+    }
+  }, {
+    key: "values",
+    get: function get() {
+      return this.raw;
     }
   }]);
 
@@ -155,10 +157,10 @@ function (_Ram3) {
           startAddress = _ref2[0];
 
       return VRam.BG_MAP_INDICES.map(function (y) {
-        return VRam.BG_MAP_INDICES.map(function (x) {
+        return new Uint8Array(VRam.BG_MAP_INDICES.map(function (x) {
           var address = startAddress + x + y * VRam.BG_MAP_DIMENSION;
           return _this.readByte(address);
-        });
+        }));
       });
     }
   }, {
@@ -247,9 +249,9 @@ _defineProperty(VRam, "TILE_DATA_DIMENSION", 8);
 
 _defineProperty(VRam, "TILE_DATA_INDICES", (0, _lodash.range)(0, VRam.TILE_DATA_DIMENSION));
 
-_defineProperty(VRam, "TILE_DATA_BIT_MASKS", VRam.TILE_DATA_INDICES.map(function (i) {
+_defineProperty(VRam, "TILE_DATA_BIT_MASKS", new Uint8Array(VRam.TILE_DATA_INDICES.map(function (i) {
   return 1 << VRam.TILE_DATA_DIMENSION - i - 1;
-}));
+})));
 
 _defineProperty(VRam, "BG_MAP_1_RANGE", [0x1800, 0x1c00]);
 

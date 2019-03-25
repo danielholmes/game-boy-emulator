@@ -15,7 +15,7 @@
     "clean": "rimraf ./dist/**",
     "compile": "babel src --out-dir ./dist/ --source-maps --extensions '.ts'",
     "compile:defs": "tsc -p tsconfig.json",
-    "build": "concurrently \"yarn ts\" \"yarn lint:check\" \"yarn test\" && yarn compile && yarn compile:defs"
+    "build": "concurrently \"yarn ts\" \"yarn lint:check\" \"yarn test\" && yarn clean && yarn compile && yarn compile:defs"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -33,6 +33,7 @@
     "eslint-plugin-prettier": "^3.0.1",
     "jest": "^24.4.0",
     "prettier": "^1.16.4",
+    "rimraf": "^2.6.3",
     "ts-jest": "^24.0.0",
     "typescript": "^3.3.3333"
   },

@@ -3,6 +3,7 @@ import { OpCode } from "./instructions";
 import { CpuRegisters, CpuRegistersImpl } from "./registers";
 import opCodesMap from "./opCodesMap";
 import { toByteHexString } from "../utils/numberUtils";
+import { WordValue } from "../types";
 
 export type ClockCycles = number;
 
@@ -12,10 +13,18 @@ export class Cpu {
   public readonly registers: CpuRegisters;
   // Temporary variable until refactor done
   private remainingCycles: ClockCycles;
+  private _currentInstructionPc?: WordValue;
 
   public constructor() {
     this.registers = new CpuRegistersImpl();
     this.remainingCycles = 0;
+  }
+
+  public get currentInstructionPc(): WordValue {
+    if (this._currentInstructionPc === undefined) {
+      return this.registers.pc;
+    }
+    return this._currentInstructionPc;
   }
 
   public getInstructionLabel(opCode: OpCode): string {

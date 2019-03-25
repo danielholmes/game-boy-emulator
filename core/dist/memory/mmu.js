@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Mmu = exports.WORKING_RAM_RANGE = void 0;
 
-var _types = require("../types");
+var _ = require("..");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -84,16 +84,18 @@ function () {
       } // Shadow of working ram
 
 
-      if (address >= 0xe000 && address <= 0xfdff) {
+      if (address >= 0xe000 && address < 0xfe00) {
         return this.workingRam.readByte(address - 0xe000);
-      }
-
-      if (address >= 0xff80 && address <= 0xffff) {
-        return this.zeroPage.readByte(address - 0xff80);
       }
 
       if (address >= 0xfe00 && address <= 0xfe9f) {
         return this.oam.readByte(address - 0xfe00);
+      }
+
+      if (address >= 0xfe00 && address < 0xfea0) {
+        // Graphics: sprite information: Data about the sprites rendered by the graphics chip are held here, including the
+        // sprites' positions and attributes.
+        throw new Error("graphics mem not yet implemented");
       }
 
       if (address >= 0xfea0 && address <= 0xfeff) {
@@ -101,14 +103,17 @@ function () {
         return 0;
       }
 
-      if (address >= 0xfe00 && address <= 0xfe9f) {
-        // Graphics: sprite information: Data about the sprites rendered by the graphics chip are held here, including the
-        // sprites' positions and attributes.
-        throw new Error("graphics mem not yet implemented");
+      if (address >= 0xff00 && address < 0xff80) {
+        return this.io.readByte(address - 0xff00);
+      } // TODO: This high ram/zero page
+
+
+      if (address >= 0xff80 && address < 0xffff) {
+        return this.zeroPage.readByte(address - 0xff80);
       }
 
-      if (address >= 0xff00 && address <= 0xff7f) {
-        return this.io.readByte(address - 0xff00);
+      if (address === 0xffff) {
+        throw new Error("Interrupts not implemented yet");
       }
 
       throw new Error("Address not readable");
@@ -116,14 +121,10 @@ function () {
   }, {
     key: "writeByte",
     value: function writeByte(address, value) {
-      if (address === 0xff50) {
-        console.log("Writing bios", value.toString(16));
-      }
-
       if (address >= 0x8000 && address <= 0x9fff) {
         this.vRam.writeByte(address - 0x8000, value);
       } else if (address >= 0xa000 && address <= 0xbfff) {
-        throw new Error("Cannot write to ".concat((0, _types.numberToWordHex)(address), " which is on cartridge"));
+        throw new Error("Cannot write to ".concat((0, _.toWordHexString)(address), " which is on cartridge"));
       } else if (address >= 0xc000 && address <= 0xdfff) {
         this.workingRam.writeByte(address - 0xc000, value);
       } else if (address >= 0xe000 && address <= 0xfdff) {
@@ -136,7 +137,7 @@ function () {
         this.oam.writeByte(address - 0xfe00, value);
       } else if (address >= 0xfea0 && address <= 0xfeff) {// Unused space, do nothing
       } else {
-        throw new Error("Can't write address ".concat((0, _types.numberToWordHex)(address)));
+        throw new Error("Can't write address ".concat((0, _.toWordHexString)(address)));
       }
     }
   }, {
@@ -162,7 +163,7 @@ function () {
   }, {
     key: "workingRamValues",
     get: function get() {
-      return this.workingRam.getValues();
+      return this.workingRam.values;
     }
   }]);
 

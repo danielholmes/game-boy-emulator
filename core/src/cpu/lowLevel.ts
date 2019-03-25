@@ -7,12 +7,7 @@ import {
   Register,
   WordRegister
 } from "./registers";
-import {
-  ByteValue,
-  WordValue,
-  BitValue,
-  ByteBitPosition
-} from "../types";
+import { ByteValue, WordValue, BitValue, ByteBitPosition } from "../types";
 import { Cpu, ClockCycles } from ".";
 import { byteValueToSignedByte } from "../utils/numberUtils";
 

@@ -1,13 +1,13 @@
-import { ByteValue, ColorNumber, MemoryAddress } from "../types";
+import { ByteValue, MemoryAddress, ReadonlyUint8Array, ColorNumber } from "../types";
 declare class Ram {
-    protected readonly raw: Uint8Array;
+    protected readonly raw: ReadonlyUint8Array;
     private readonly size;
     constructor(size: number);
-    getValues(): Uint8Array;
+    readonly values: ReadonlyUint8Array;
     private assertValidAddress;
     private assertByte;
     readByte(address: MemoryAddress): ByteValue;
-    protected readBytes(address: MemoryAddress, length: number): Uint8Array;
+    protected readBytes(address: MemoryAddress, length: number): ReadonlyUint8Array;
     writeByte(address: MemoryAddress, value: ByteValue): void;
 }
 export declare class ZeroPageRam extends Ram {
@@ -20,7 +20,7 @@ export declare class WorkingRam extends Ram {
 export declare const V_RAM_SIZE = 8192;
 export declare type Tile = ReadonlyArray<ReadonlyArray<ColorNumber>>;
 export declare type TileDataIndex = number;
-export declare type BackgroundMap = ReadonlyArray<ReadonlyArray<TileDataIndex>>;
+export declare type BackgroundMap = ReadonlyArray<ReadonlyUint8Array>;
 export declare class VRam extends Ram {
     private static readonly TILE_DATA_TABLE_1_RANGE;
     private static readonly TILE_DATA_TABLE_2_RANGE;

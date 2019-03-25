@@ -9,4 +9,5 @@ export { Mmu } from "./memory/mmu";
 export { Device } from "./device";
 export { Cartridge, isValid as isValidCartridge } from "./cartridge";
 export { PixelColor } from "./types";
+export { toByteHexString, toWordHexString } from "./utils/numberUtils";
 //# sourceMappingURL=index.d.ts.map

@@ -7,9 +7,9 @@ exports.Cpu = void 0;
 
 var _registers = require("./registers");
 
-var _types = require("../types");
-
 var _opCodesMap = _interopRequireDefault(require("./opCodesMap"));
+
+var _numberUtils = require("../utils/numberUtils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33,6 +33,8 @@ function () {
 
     _defineProperty(this, "remainingCycles", void 0);
 
+    _defineProperty(this, "_currentInstructionPc", void 0);
+
     this.registers = new _registers.CpuRegistersImpl();
     this.remainingCycles = 0;
   }
@@ -43,7 +45,7 @@ function () {
       var instruction = _opCodesMap.default[opCode];
 
       if (!instruction) {
-        throw new Error("No instruction with opCode ".concat((0, _types.numberToByteHex)(opCode)));
+        throw new Error("No instruction with opCode ".concat((0, _numberUtils.toByteHexString)(opCode)));
       }
 
       return instruction.label;
@@ -69,7 +71,7 @@ function () {
       var instruction = _opCodesMap.default[opCode];
 
       if (!instruction) {
-        throw new Error("No instruction for opCode ".concat((0, _types.numberToByteHex)(opCode), " reading from pc ").concat((0, _types.numberToByteHex)(this.registers.pc)));
+        throw new Error("No instruction for opCode ".concat((0, _numberUtils.toByteHexString)(opCode), " reading from pc ").concat((0, _numberUtils.toByteHexString)(this.registers.pc)));
       }
 
       this.registers.pc++;
@@ -84,6 +86,15 @@ function () {
       // which allows it to completely deactivate interrupt handling
       // (this is done during e.g. processing an interrupt, because we
       // should not handle two of them at the same time).
+    }
+  }, {
+    key: "currentInstructionPc",
+    get: function get() {
+      if (this._currentInstructionPc === undefined) {
+        return this.registers.pc;
+      }
+
+      return this._currentInstructionPc;
     }
   }]);
 

@@ -1,4 +1,4 @@
-import { ByteValue, MemoryAddress } from "../types";
+import { ByteValue, MemoryAddress, ReadonlyUint8Array } from "../types";
 import { WorkingRam, VRam, ZeroPageRam, IOMemory, OamMemory } from "./ram";
 import { Bios } from "../bios";
 import { Cartridge } from "../cartridge";
@@ -19,7 +19,7 @@ export declare class Mmu {
     readonly bGP: ByteValue;
     readonly scY: ByteValue;
     readonly scX: ByteValue;
-    readonly workingRamValues: Uint8Array;
+    readonly workingRamValues: ReadonlyUint8Array;
     loadCartridge(cartridge: Cartridge): void;
     readByte(address: MemoryAddress): ByteValue;
     writeByte(address: MemoryAddress, value: ByteValue): void;

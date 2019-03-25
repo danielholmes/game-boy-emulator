@@ -113,9 +113,9 @@ function () {
 }();
 
 var isValid = function isValid(cartridge) {
-  return (0, _lodash.isEqual)((0, _lodash.range)(0x0104, 0x0133 + 1).map(function (address) {
+  return (0, _lodash.isEqual)(new Uint8Array((0, _lodash.range)(CARTRIDGE_START_LENGTH, CARTRIDGE_START_LENGTH + _nintendoLogo.default.length).map(function (address) {
     return cartridge.readByte(address);
-  }), _nintendoLogo.default);
+  })), _nintendoLogo.default);
 };
 
 exports.isValid = isValid;

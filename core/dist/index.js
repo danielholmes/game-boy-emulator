@@ -111,6 +111,18 @@ Object.defineProperty(exports, "PixelColor", {
     return _types.PixelColor;
   }
 });
+Object.defineProperty(exports, "toByteHexString", {
+  enumerable: true,
+  get: function get() {
+    return _numberUtils.toByteHexString;
+  }
+});
+Object.defineProperty(exports, "toWordHexString", {
+  enumerable: true,
+  get: function get() {
+    return _numberUtils.toWordHexString;
+  }
+});
 
 var _bios = _interopRequireWildcard(require("./bios"));
 
@@ -129,6 +141,8 @@ var _device = require("./device");
 var _cartridge = require("./cartridge");
 
 var _types = require("./types");
+
+var _numberUtils = require("./utils/numberUtils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

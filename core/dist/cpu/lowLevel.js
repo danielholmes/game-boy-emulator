@@ -7,7 +7,7 @@ exports.DecrementRegister = exports.DecrementByteRegisterWithFlags = exports.XOr
 
 var _registers = require("./registers");
 
-var _types = require("../types");
+var _numberUtils = require("../utils/numberUtils");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -280,7 +280,7 @@ function () {
         throw new Error("value undefined");
       }
 
-      return (0, _types.byteValueToSignedByte)(value);
+      return (0, _numberUtils.byteValueToSignedByte)(value);
     }
   }]);
 
@@ -815,7 +815,7 @@ function () {
 
 exports.XOrRegister = XOrRegister;
 
-_defineProperty(XOrRegister, "F_Z_SET", (0, _types.binaryToNumber)("10000000"));
+_defineProperty(XOrRegister, "F_Z_SET", 128);
 
 var DecrementByteRegisterWithFlags =
 /*#__PURE__*/
