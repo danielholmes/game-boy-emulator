@@ -47,9 +47,26 @@ table {
     border-spacing: 0;
 }
 /* My styles */
-body {
-    font-family: 'Play', sans-serif;
+html, body, #app {
+    height:100%;
+    padding:0;
+    margin:0;
 }
+#app {
+    min-width: 300px;
+    background-color:#cff;
+}
+#app .run {
+    float:left;
+    width: 300px;
+    margin-right: -185px;
+    height:100%;
+}
+#app .dev {
+    margin-left:300px;
+    height:100%;
+}
+
 h3 {
     font-size: 1.5em;
     font-weight: bold;
@@ -59,16 +76,4 @@ h4 {
     font-size: 1.3em;
     font-weight: bold;
     margin-bottom: 4px;
-}
-.tile-map {
-    clear: both;
-    margin-bottom: 20px;
-}
-.tile-map-tile {
-    float: left;
-    margin-right: 5px;
-    margin-bottom: 5px;
-}
-.background-map {
-    clear: both;
 }

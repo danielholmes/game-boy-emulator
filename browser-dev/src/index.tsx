@@ -1,8 +1,15 @@
 /* global document */
-import { render } from 'react-dom';
-import React from 'react';
-import App from './containers/App';
-import "./style.css"
+import { render } from "react-dom";
+import React, { Fragment } from "react";
+import App from "./containers/App";
+import "./style.css";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
-render(<App />, document.getElementById('app'));
+render(
+  <Fragment>
+    <CssBaseline />
+    <App />
+  </Fragment>,
+  document.getElementById("app")
+);
 

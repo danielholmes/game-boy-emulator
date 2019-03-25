@@ -1,4 +1,4 @@
-import React, { Component, ReactElement } from "react";
+import React, { Component, ReactElement, Fragment } from "react";
 import {
   Device,
   Cpu,
@@ -12,9 +12,7 @@ import {
   OamMemory,
   Cartridge
 } from "@gebby/core";
-import { range } from "lodash";
-import TileMap from "../components/TileMap";
-import BackgroundMap from "../components/BackgroundMap";
+import { DevContainer } from "./DevContainer";
 
 export default class App extends Component<{}, { device: Device }> {
   private vRam?: VRam;
@@ -50,7 +48,7 @@ export default class App extends Component<{}, { device: Device }> {
       window.requestAnimationFrame(() => {
         const current = performance.now();
         const passed = current - lastTime;
-        console.log('took', passed);
+        console.log("took", passed);
         lastTime = current;
         device.tick(Math.min(16, passed));
         this.forceUpdate();
@@ -68,14 +66,12 @@ export default class App extends Component<{}, { device: Device }> {
       return null;
     }
     return (
-      <div>
-        <TileMap
-          tiles={range(0, 0x100)
-            .map((i) => this.vRam.getTileDataFromTable1(i))
-            .filter((t) => t.some((r) => r.some((c) => c !== 0)))}
-        />
-        <BackgroundMap vRam={this.vRam} bgMap={this.vRam.bgMap1}/>
-      </div>
-    )
+      <Fragment>
+        <div className="run">
+          TODO: Run
+        </div>
+        <DevContainer vRam={this.vRam} />
+      </Fragment>
+    );
   }
 }
