@@ -9,12 +9,8 @@ import {
   transform,
   fromPairs
 } from "lodash";
-import {
-  ByteValue,
-  MemoryAddress,
-  numberToByteHex,
-  numberToWordHex
-} from "../types";
+import { ByteValue, MemoryAddress } from "../types";
+import { toByteHexString, toWordHexString } from "../utils/numberUtils";
 
 const isBitRegister = (
   name: string
@@ -91,14 +87,14 @@ expect.extend({
         .map<Readonly<[MemoryAddress, ByteValue]>>((v, i) => [i, v])
         .filter(([, value]) => value !== 0x00)
         .map(([address, value]) => [
-          numberToWordHex(address + WORKING_RAM_RANGE.start),
-          numberToByteHex(value)
+          toWordHexString(address + WORKING_RAM_RANGE.start),
+          toByteHexString(value)
         ])
     );
     const expectedInHex = transform<ByteValue, string>(
       expected,
       (result, value, address) => {
-        result[numberToWordHex(parseInt(address))] = numberToByteHex(value);
+        result[toWordHexString(parseInt(address))] = toByteHexString(value);
       }
     );
     if (this.isNot) {

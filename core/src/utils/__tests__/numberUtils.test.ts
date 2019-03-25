@@ -1,8 +1,8 @@
 /* global describe, test, expect */
 
-import { byteValueToSignedByte } from "../types";
+import { byteValueToSignedByte } from "../numberUtils";
 
-describe("types", () => {
+describe("numberUtils", () => {
   describe("byteValueToSignedByte", () => {
     test("one", () => {
       const result = byteValueToSignedByte(0x01);

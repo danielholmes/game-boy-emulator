@@ -1,7 +1,7 @@
 import {
   ByteValue,
   MemoryAddress,
-  numberToWordHex,
+  toWordHexString,
   ReadonlyUint8Array
 } from "../types";
 import { WorkingRam, VRam, ZeroPageRam, IOMemory, OamMemory } from "./ram";
@@ -122,7 +122,7 @@ export class Mmu {
       this.vRam.writeByte(address - 0x8000, value);
     } else if (address >= 0xa000 && address <= 0xbfff) {
       throw new Error(
-        `Cannot write to ${numberToWordHex(address)} which is on cartridge`
+        `Cannot write to ${toWordHexString(address)} which is on cartridge`
       );
     } else if (address >= 0xc000 && address <= 0xdfff) {
       this.workingRam.writeByte(address - 0xc000, value);
@@ -137,7 +137,7 @@ export class Mmu {
     } else if (address >= 0xfea0 && address <= 0xfeff) {
       // Unused space, do nothing
     } else {
-      throw new Error(`Can't write address ${numberToWordHex(address)}`);
+      throw new Error(`Can't write address ${toWordHexString(address)}`);
     }
   }
 }

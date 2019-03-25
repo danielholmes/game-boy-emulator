@@ -1,8 +1,8 @@
 import { Mmu } from "../memory/mmu";
 import { OpCode } from "./instructions";
 import { CpuRegisters, CpuRegistersImpl } from "./registers";
-import { numberToByteHex } from "../types";
 import opCodesMap from "./opCodesMap";
+import { toByteHexString } from "../utils/numberUtils";
 
 export type ClockCycles = number;
 
@@ -21,7 +21,7 @@ export class Cpu {
   public getInstructionLabel(opCode: OpCode): string {
     const instruction = opCodesMap[opCode];
     if (!instruction) {
-      throw new Error(`No instruction with opCode ${numberToByteHex(opCode)}`);
+      throw new Error(`No instruction with opCode ${toByteHexString(opCode)}`);
     }
     return instruction.label;
   }
@@ -46,9 +46,9 @@ export class Cpu {
     const instruction = opCodesMap[opCode];
     if (!instruction) {
       throw new Error(
-        `No instruction for opCode ${numberToByteHex(
+        `No instruction for opCode ${toByteHexString(
           opCode
-        )} reading from pc ${numberToByteHex(this.registers.pc)}`
+        )} reading from pc ${toByteHexString(this.registers.pc)}`
       );
     }
     this.registers.pc++;

@@ -13,7 +13,8 @@
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "alwaysStrict": true
+    "alwaysStrict": true,
+    "downlevelIteration": true
   },
   "exclude": [
     "**/__tests__/**/*",

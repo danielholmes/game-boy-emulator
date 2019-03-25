@@ -5,7 +5,6 @@ import { createMmuSnapshot, createMmu, EMPTY_MEMORY } from "../../test/help";
 import { Cpu } from "..";
 import { ByteRegister, NON_A_BYTE_REGISTERS } from "../registers";
 import { createCpMHl, createCpN, createCpR } from "../cp";
-import { binaryToNumber } from "../../types";
 import { Cartridge } from "../../cartridge";
 
 describe("cp", () => {
@@ -20,7 +19,7 @@ describe("cp", () => {
   describe("createCpR", () => {
     test("CP a", () => {
       cpu.registers.a = 0x99;
-      cpu.registers.f = binaryToNumber("00000000");
+      cpu.registers.f = 0b00000000;
 
       const instruction = createCpR(0x3d, "a");
 
@@ -43,7 +42,7 @@ describe("cp", () => {
         test("no carries", () => {
           cpu.registers.a = 0x99;
           cpu.registers[register] = 0x07;
-          cpu.registers.f = binaryToNumber("10000000");
+          cpu.registers.f = 0b10000000;
 
           const instruction = createCpR(0x3d, register);
 
@@ -64,7 +63,7 @@ describe("cp", () => {
         test("carries", () => {
           cpu.registers.a = 0x16;
           cpu.registers[register] = 0x27;
-          cpu.registers.f = binaryToNumber("10000000");
+          cpu.registers.f = 0b10000000;
 
           const instruction = createCpR(0x3d, register);
 
@@ -89,7 +88,7 @@ describe("cp", () => {
     test("CP (hl)", () => {
       cpu.registers.a = 0x99;
       cpu.registers.hl = 0x9876;
-      cpu.registers.f = binaryToNumber("10000000");
+      cpu.registers.f = 0b10000000;
       mmu.writeByte(0x9876, 0x07);
 
       const instruction = createCpMHl(0x3d);
@@ -114,7 +113,7 @@ describe("cp", () => {
     test("CP n", () => {
       cpu.registers.a = 0x99;
       cpu.registers.pc = 0x0000;
-      cpu.registers.f = binaryToNumber("10000000");
+      cpu.registers.f = 0b10000000;
       mmu.loadCartridge(new Cartridge(new Uint8Array([0x07])));
 
       const instruction = createCpN(0x3d);

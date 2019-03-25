@@ -82,6 +82,11 @@ class CartridgeBuilder {
 
 export const isValid = (cartridge: Cartridge): boolean =>
   isEqual(
-    range(0x0104, 0x0133 + 1).map(address => cartridge.readByte(address)),
+    new Uint8Array(
+      range(
+        CARTRIDGE_START_LENGTH,
+        CARTRIDGE_START_LENGTH + nintendoLogo.length
+      ).map(address => cartridge.readByte(address))
+    ),
     nintendoLogo
   );

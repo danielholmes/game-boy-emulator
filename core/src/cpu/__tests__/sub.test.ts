@@ -5,7 +5,6 @@ import { createMmuSnapshot, createMmu, EMPTY_MEMORY } from "../../test/help";
 import { Cpu } from "..";
 import { ByteRegister, NON_A_BYTE_REGISTERS } from "../registers";
 import { subMHl, subN, subR } from "../sub";
-import { binaryToNumber } from "../../types";
 import { Cartridge, CARTRIDGE_PROGRAM_START } from "../../cartridge";
 
 describe("sub", () => {
@@ -20,7 +19,7 @@ describe("sub", () => {
   describe("subR", () => {
     test("SUB a", () => {
       cpu.registers.a = 0x99;
-      cpu.registers.f = binaryToNumber("00000000");
+      cpu.registers.f = 0b00000000;
 
       const instruction = subR(0x3d, "a");
 
@@ -42,7 +41,7 @@ describe("sub", () => {
       (register: ByteRegister) => {
         cpu.registers.a = 0x99;
         cpu.registers[register] = 0x07;
-        cpu.registers.f = binaryToNumber("10000000");
+        cpu.registers.f = 0b10000000;
 
         const instruction = subR(0x3d, register);
 
@@ -66,7 +65,7 @@ describe("sub", () => {
       (register: ByteRegister) => {
         cpu.registers.a = 0x16;
         cpu.registers[register] = 0x27;
-        cpu.registers.f = binaryToNumber("10000000");
+        cpu.registers.f = 0b10000000;
 
         const instruction = subR(0x3d, register);
 
@@ -90,7 +89,7 @@ describe("sub", () => {
     test("SUB (hl)", () => {
       cpu.registers.a = 0x99;
       cpu.registers.hl = 0x9876;
-      cpu.registers.f = binaryToNumber("10000000");
+      cpu.registers.f = 0b10000000;
       mmu.writeByte(0x9876, 0x07);
 
       const instruction = subMHl(0x3d);
@@ -115,7 +114,7 @@ describe("sub", () => {
     test("SUB n", () => {
       cpu.registers.a = 0x99;
       cpu.registers.pc = CARTRIDGE_PROGRAM_START;
-      cpu.registers.f = binaryToNumber("10000000");
+      cpu.registers.f = 0b10000000;
       mmu.loadCartridge(Cartridge.buildWithProgram([0x07]));
 
       const instruction = subN(0x3d);

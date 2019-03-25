@@ -1,7 +1,6 @@
 /* global describe, test, expect */
 
 import { VRam, WorkingRam } from "../ram";
-import { binaryToNumber } from "../../types";
 
 describe("ram", () => {
   describe("WorkingRam", () => {
@@ -32,25 +31,23 @@ describe("ram", () => {
     describe("getTileDataFromTable1", () => {
       test("mixed data at origin", () => {
         [
-          "00000000",
-          "00000000",
-          "11111111",
-          "11111111",
-          "00000000",
-          "00000000",
-          "10101010",
-          "00000000",
-          "01010101",
-          "00000000",
-          "00000000",
-          "01010101",
-          "00000000",
-          "10101010",
-          "01010101",
-          "00110011"
-        ].forEach((value, address) =>
-          vRam.writeByte(address, binaryToNumber(value))
-        );
+          0b00000000,
+          0b00000000,
+          0b11111111,
+          0b11111111,
+          0b00000000,
+          0b00000000,
+          0b10101010,
+          0b00000000,
+          0b01010101,
+          0b00000000,
+          0b00000000,
+          0b01010101,
+          0b00000000,
+          0b10101010,
+          0b01010101,
+          0b00110011
+        ].forEach((value, address) => vRam.writeByte(address, value));
 
         const tile = vRam.getTileDataFromTable1(0);
 
@@ -78,24 +75,24 @@ describe("ram", () => {
     describe("getTileDataFromTable2", () => {
       test("mixed data in middle", () => {
         [
-          "11111111",
-          "11111111",
-          "00000000",
-          "00000000",
-          "10101010",
-          "00000000",
-          "01010101",
-          "00000000",
-          "00000000",
-          "01010101",
-          "00000000",
-          "10101010",
-          "01010101",
-          "00110011",
-          "00000000",
-          "00000000"
+          0b11111111,
+          0b11111111,
+          0b00000000,
+          0b00000000,
+          0b10101010,
+          0b00000000,
+          0b01010101,
+          0b00000000,
+          0b00000000,
+          0b01010101,
+          0b00000000,
+          0b10101010,
+          0b01010101,
+          0b00110011,
+          0b00000000,
+          0b00000000
         ].forEach((value, address) =>
-          vRam.writeByte(0x0800 + address + 16 * 10, binaryToNumber(value))
+          vRam.writeByte(0x0800 + address + 16 * 10, value)
         );
 
         const tile = vRam.getTileDataFromTable2(10);

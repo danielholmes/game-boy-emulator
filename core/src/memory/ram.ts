@@ -1,10 +1,9 @@
 /* eslint-disable */
 import {
   ByteValue,
-  ColorNumber,
   MemoryAddress,
-  numberToHex,
-  numberToWordHex, ReadonlyUint8Array
+  toHexString,
+  toWordHexString, ReadonlyUint8Array, ColorNumber
 } from "../types";
 import { range, chunk } from "lodash";
 
@@ -24,7 +23,7 @@ class Ram {
   private assertValidAddress(value: MemoryAddress): void {
     if (value < 0x0000 || value >= this.size) {
       throw new Error(
-        `Address ${numberToWordHex(value)} out of range ${numberToWordHex(
+        `Address ${toWordHexString(value)} out of range ${toWordHexString(
           this.size
         )}`
       );
@@ -33,7 +32,7 @@ class Ram {
 
   private assertByte(value: number): void {
     if (value < 0x00 || value > 0xff) {
-      throw new Error(`Out of bounds byte ${numberToHex(value)}`);
+      throw new Error(`Out of bounds byte ${toHexString(value)}`);
     }
   }
 
@@ -71,7 +70,7 @@ export class WorkingRam extends Ram {
 
 export const V_RAM_SIZE = 0x2000;
 
-export type Tile = ReadonlyArray<ReadonlyUint8Array>;
+export type Tile = ReadonlyArray<ReadonlyArray<ColorNumber>>;
 
 type TileTableNumber = 0 | 1;
 
@@ -86,10 +85,13 @@ export class VRam extends Ram {
   private static readonly TILE_DATA_TABLE_2_RANGE: MemoryRange = [0x0800, 0x1800];
   private static readonly TILE_DATA_BYTES: number = 16;
   private static readonly TILE_DATA_DIMENSION: number = 8;
-  private static readonly TILE_DATA_INDICES: ReadonlyUint8Array =
-    new Uint8Array(range(0, VRam.TILE_DATA_DIMENSION));
+  private static readonly TILE_DATA_INDICES: ReadonlyArray<number> =
+    range(0, VRam.TILE_DATA_DIMENSION);
   private static readonly TILE_DATA_BIT_MASKS: ReadonlyUint8Array =
-    VRam.TILE_DATA_INDICES.map((i) => 1 << (VRam.TILE_DATA_DIMENSION - i - 1));
+    new Uint8Array(
+      VRam.TILE_DATA_INDICES
+        .map((i) => 1 << (VRam.TILE_DATA_DIMENSION - i - 1))
+    );
 
   private static readonly BG_MAP_1_RANGE: MemoryRange = [0x1800, 0x1c00];
   private static readonly BG_MAP_2_RANGE: MemoryRange = [0x1c00, 0x2000];
@@ -128,29 +130,30 @@ export class VRam extends Ram {
     return this.getTileData(VRam.TILE_DATA_TABLE_2_RANGE, index);
   }
 
-  private getTileData([startAddress, endAddress]: Readonly<[MemoryAddress, MemoryAddress]>, index: TileDataIndex): Tile {
+  private getTileData(
+    [startAddress, endAddress]: Readonly<[MemoryAddress, MemoryAddress]>,
+    index: TileDataIndex
+  ): Tile {
     const address = startAddress + index * VRam.TILE_DATA_BYTES;
     if (address < startAddress || address >= endAddress) {
       throw new Error(`Tile data index ${index} is invalid`);
     }
     return chunk(this.readBytes(address, VRam.TILE_DATA_BYTES), 2)
       .map(([lowerBits, upperBits]) =>
-        new Uint8Array(
-          VRam.TILE_DATA_INDICES.map((i) => {
-            const lower = (lowerBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
-            const upper = (upperBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
-            if (upper === 1 && lower === 1) {
-              return 3;
-            }
-            if (upper === 1 && lower === 0) {
-              return 2;
-            }
-            if (upper === 0 && lower === 1) {
-              return 1;
-            }
-            return 0;
-          })
-        )
+        VRam.TILE_DATA_INDICES.map((i) => {
+          const lower = (lowerBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
+          const upper = (upperBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
+          if (upper === 1 && lower === 1) {
+            return 3;
+          }
+          if (upper === 1 && lower === 0) {
+            return 2;
+          }
+          if (upper === 0 && lower === 1) {
+            return 1;
+          }
+          return 0;
+        })
       );
   }
 

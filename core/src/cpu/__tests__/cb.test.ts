@@ -6,11 +6,7 @@ import { BYTE_REGISTERS, ByteRegister } from "../registers";
 import { createCbBitBMHl, createCbBitBR } from "../cb";
 import { Cpu } from "../index";
 import { flatMap } from "lodash";
-import {
-  binaryToNumber,
-  BYTE_BIT_POSITIONS,
-  ByteBitPosition
-} from "../../types";
+import { BYTE_BIT_POSITIONS, ByteBitPosition } from "../../types";
 
 describe("cb", () => {
   let cpu: Cpu;
@@ -28,7 +24,7 @@ describe("cb", () => {
       "CB %s, %s",
       (position: ByteBitPosition, register: ByteRegister) => {
         test("true", () => {
-          cpu.registers[register] = binaryToNumber("11111111");
+          cpu.registers[register] = 0b11111111;
           cpu.registers.fC = 1;
 
           const instruction = createCbBitBR(0x3d, position, register);
@@ -37,7 +33,7 @@ describe("cb", () => {
 
           expect(cycles).toBe(0);
           expect(cpu).toEqualCpuWithRegisters({
-            [register]: binaryToNumber("11111111"),
+            [register]: 0b11111111,
             fZ: 0,
             fN: 0,
             fH: 1,
@@ -75,7 +71,7 @@ describe("cb", () => {
         test("true", () => {
           cpu.registers.hl = 0xef37;
           cpu.registers.fC = 1;
-          mmu.writeByte(0xef37, binaryToNumber("11111111"));
+          mmu.writeByte(0xef37, 0b11111111);
 
           const mmuSnapshot = createMmuSnapshot(mmu);
           const instruction = createCbBitBMHl(0x3d, position);
@@ -96,7 +92,7 @@ describe("cb", () => {
         test("false", () => {
           cpu.registers.hl = 0xef37;
           cpu.registers.fC = 0;
-          mmu.writeByte(0xef37, binaryToNumber("00000000"));
+          mmu.writeByte(0xef37, 0b00000000);
 
           const mmuSnapshot = createMmuSnapshot(mmu);
           const instruction = createCbBitBMHl(0x3d, position);

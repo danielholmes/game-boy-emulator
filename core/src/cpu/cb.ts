@@ -1,10 +1,11 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
 import { Mmu } from "../memory/mmu";
 import { fromPairs } from "lodash";
-import { ByteBitPosition, numberToByteHex } from "../types";
+import { ByteBitPosition } from "../types";
 import { ByteRegister } from "./registers";
 import { Cpu, ClockCycles } from "./index";
 import { createRlMHl, createRlR } from "./rl";
+import { toByteHexString } from "../utils/numberUtils";
 
 class CbInstruction implements Instruction {
   public readonly opCode: OpCode;
@@ -20,7 +21,7 @@ class CbInstruction implements Instruction {
     const subInstruction = CB_INSTRUCTIONS[operand];
     if (!subInstruction) {
       throw new Error(
-        `No instruction for CB opCode ${numberToByteHex(operand)}`
+        `No instruction for CB opCode ${toByteHexString(operand)}`
       );
     }
     cpu.registers.pc++;

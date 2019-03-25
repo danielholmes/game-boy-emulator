@@ -10,12 +10,11 @@ import {
 import {
   ByteValue,
   WordValue,
-  byteValueToSignedByte,
   BitValue,
-  ByteBitPosition,
-  binaryToNumber
+  ByteBitPosition
 } from "../types";
 import { Cpu, ClockCycles } from ".";
+import { byteValueToSignedByte } from "../utils/numberUtils";
 
 export type LowLevelState = ByteValue | WordValue | undefined;
 export type LowLevelStateReturn = ByteValue | WordValue | void;
@@ -547,7 +546,7 @@ export class IncrementRegister implements LowLevelOp {
 }
 
 export class XOrRegister implements LowLevelOp {
-  private static readonly F_Z_SET: number = binaryToNumber("10000000");
+  private static readonly F_Z_SET: number = 0b10000000;
   public readonly cycles: ClockCycles = 0;
   private readonly register: ByteRegister;
 

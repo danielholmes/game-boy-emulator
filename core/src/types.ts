@@ -1,5 +1,3 @@
-import { padStart } from "lodash";
-
 export type PixelColor = 0 | 1 | 2 | 3; // off (white) -> on/black
 
 export type ColorNumber = 0 | 1 | 2 | 3;
@@ -24,37 +22,8 @@ export const BYTE_BIT_POSITIONS: ReadonlyArray<ByteBitPosition> = [
 
 export type MemoryAddress = number;
 
-export const byteValueToSignedByte = (value: WordValue): SignedByteValue => {
-  if ((value & 0x80) !== 0) {
-    return -(~value & 0xff) - 1;
-  }
-  return value & 0xff;
-};
-
-export const binaryToNumber = (binary: number | string): WordValue => {
-  return parseInt(binary.toString(), 2);
-};
-
-const toHex = (value: number, length?: number): string => {
-  const sign = value >= 0 ? "" : "-";
-  const start = `${sign}0x`;
-  const end = Math.abs(value)
-    .toString(16)
-    .toLowerCase();
-  if (length === undefined) {
-    return start + end;
-  }
-  return `${start}${padStart(end, length, "0")}`;
-};
-
-export const numberToHex = (value: number): string => toHex(value);
-
-export const numberToByteHex = (value: ByteValue): string => toHex(value, 2);
-
-export const numberToWordHex = (value: WordValue): string => toHex(value, 4);
-
-export const numberToByteBinary = (value: ByteValue | WordValue): string =>
-  value.toString(2).padStart(8, "0");
+/*export const numberToByteBinary = (value: ByteValue | WordValue): string =>
+  value.toString(2).padStart(8, "0");*/
 
 type BaseReadonlyUint8Array = Pick<
   Uint8Array,
@@ -65,17 +34,5 @@ type BaseReadonlyUint8Array = Pick<
 >;
 
 export interface ReadonlyUint8Array extends BaseReadonlyUint8Array {
-  [Symbol.iterator](): IterableIterator<number>;
-}
-
-type BaseReadonlyUint16Array = Pick<
-  Uint16Array,
-  Exclude<
-    keyof Readonly<Uint16Array>,
-    "fill" | "copyWithin" | "reverse" | "set" | "sort"
-  >
->;
-
-export interface ReadonlyUint16Array extends BaseReadonlyUint16Array {
   [Symbol.iterator](): IterableIterator<number>;
 }
