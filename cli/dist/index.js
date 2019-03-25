@@ -12,17 +12,7 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-var cartridge = new _core.Cartridge(new Uint8Array([].concat(_toConsumableArray((0, _lodash.range)(0x0000, 0x0104).map(function () {
-  return 0x00;
-})), _toConsumableArray(_core.nintendoLogo))));
+var cartridge = _core.Cartridge.builder().build();
 
 if (!(0, _core.isValidCartridge)(cartridge)) {
   throw new Error("Invalid cartridge");
@@ -98,7 +88,7 @@ var printEnd = function printEnd() {
             accuRow = _ref2[0],
             newRow = _ref2[1];
 
-        return accuRow + newRow;
+        return (accuRow || "") + newRow;
       }).join("\n");
     }, (0, _lodash.repeat)("\n", 7));
   }).join("\n"));
