@@ -9,7 +9,7 @@ import { range, chunk } from "lodash";
 import { toWordHexString } from "..";
 import { toHexString } from "../utils/numberUtils";
 
-class Ram {
+class ByteRamStorage {
   protected readonly raw: ReadonlyUint8Array;
   private readonly size: number;
 
@@ -32,6 +32,12 @@ class Ram {
     }
   }
 
+  public readBytes(address: MemoryAddress, length: number): ReadonlyUint8Array {
+    this.assertValidAddress(address);
+    this.assertValidAddress(address + length - 1);
+    return this.raw.subarray(address, address + length);
+  }
+
   private assertByte(value: number): void {
     if (value < 0x00 || value > 0xff) {
       throw new Error(`Out of bounds byte ${toHexString(value)}`);
@@ -43,12 +49,6 @@ class Ram {
     return this.raw[address];
   }
 
-  protected readBytes(address: MemoryAddress, length: number): ReadonlyUint8Array {
-    this.assertValidAddress(address);
-    this.assertValidAddress(address + length - 1);
-    return this.raw.subarray(address, address + length);
-  }
-
   public writeByte(address: MemoryAddress, value: ByteValue): void {
     this.assertValidAddress(address);
     this.assertByte(value);
@@ -56,17 +56,41 @@ class Ram {
   }
 }
 
-export class ZeroPageRam extends Ram {
+export class ZeroPageRam {
+  private readonly storage: ByteRamStorage;
+
   public constructor() {
-    super(0xff);
+    this.storage = new ByteRamStorage(0xff);
+  }
+
+  public readByte(address: MemoryAddress): ByteValue {
+    return this.storage.readByte(address);
+  }
+
+  public writeByte(address: MemoryAddress, value: ByteValue): void {
+    this.storage.writeByte(address, value);
   }
 }
 
 export const WORKING_RAM_SIZE = 0x2000;
 
-export class WorkingRam extends Ram {
+export class WorkingRam {
+  private readonly storage: ByteRamStorage;
+
   public constructor() {
-    super(WORKING_RAM_SIZE);
+    this.storage = new ByteRamStorage(WORKING_RAM_SIZE);
+  }
+
+  public get values(): ReadonlyUint8Array {
+    return this.storage.values;
+  }
+
+  public readByte(address: MemoryAddress): ByteValue {
+    return this.storage.readByte(address);
+  }
+
+  public writeByte(address: MemoryAddress, value: ByteValue): void {
+    this.storage.writeByte(address, value);
   }
 }
 
@@ -82,7 +106,7 @@ export type TileDataIndex = number;
 
 export type BackgroundMap = ReadonlyArray<ReadonlyUint8Array>;
 
-export class VRam extends Ram {
+export class VRam {
   private static readonly TILE_DATA_TABLE_1_RANGE: MemoryRange = [0x0000, 0x1000];
   private static readonly TILE_DATA_TABLE_2_RANGE: MemoryRange = [0x0800, 0x1800];
   private static readonly TILE_DATA_BYTES: number = 16;
@@ -101,8 +125,22 @@ export class VRam extends Ram {
   private static readonly BG_MAP_INDICES: ReadonlyArray<number> =
     range(0, VRam.BG_MAP_DIMENSION);
 
+  private readonly storage: ByteRamStorage;
+
   public constructor() {
-    super(V_RAM_SIZE);
+    this.storage = new ByteRamStorage(V_RAM_SIZE);
+  }
+
+  public get values(): ReadonlyUint8Array {
+    return this.storage.values;
+  }
+
+  public readByte(address: MemoryAddress): ByteValue {
+    return this.storage.readByte(address);
+  }
+
+  public writeByte(address: MemoryAddress, value: ByteValue): void {
+    this.storage.writeByte(address, value);
   }
 
   public get bgMap1(): BackgroundMap {
@@ -140,7 +178,7 @@ export class VRam extends Ram {
     if (address < startAddress || address >= endAddress) {
       throw new Error(`Tile data index ${index} is invalid`);
     }
-    return chunk(this.readBytes(address, VRam.TILE_DATA_BYTES), 2)
+    return chunk(this.storage.readBytes(address, VRam.TILE_DATA_BYTES), 2)
       .map(([lowerBits, upperBits]) =>
         VRam.TILE_DATA_INDICES.map((i) => {
           const lower = (lowerBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
@@ -168,27 +206,35 @@ export class VRam extends Ram {
   }
 }
 
-export class OamMemory extends Ram {
+export class OamMemory {
+  private readonly storage: ByteRamStorage;
+
   public constructor() {
-    super(0xa0);
+    this.storage = new ByteRamStorage(0xa0);
+  }
+
+  public readByte(address: MemoryAddress): ByteValue {
+    return this.storage.readByte(address);
+  }
+
+  public writeByte(address: MemoryAddress, value: ByteValue): void {
+    this.storage.writeByte(address, value);
   }
 }
 
 // https://fms.komkon.org/GameBoy/Tech/Software.html
-export class IOMemory extends Ram {
+export class IOMemory {
+  private readonly storage: ByteRamStorage;
+
   public constructor() {
-    super(0x7f);
+    this.storage = new ByteRamStorage(0x7f);
   }
 
   public readByte(address: MemoryAddress): ByteValue {
-    return super.readByte(address);
+    return this.storage.readByte(address);
   }
 
   public writeByte(address: MemoryAddress, value: ByteValue): void {
-    // bios seems to use it
-    // if (address === 0x0044) {
-    //   throw new Error("Current scan line Read-only");
-    // }
-    super.writeByte(address, value);
+    this.storage.writeByte(address, value);
   }
 }

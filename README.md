@@ -24,6 +24,9 @@ yarn
 ## Roadmap
 
  0. Rework mmu a little. Include tests and use explicit ranges. Maybe a cond
+ 0. Generate op codes table report.
+    - Instruction knows size of operands based in low level calls
+    - Also know timing. Might need to better encapsulate low level (e.g. double decrements)
  1. interrupts
  2. complete GPU enough (nintendo logo is a background, not sprite)
  3. Set up cli running and displaying bios

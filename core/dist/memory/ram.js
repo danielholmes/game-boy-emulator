@@ -11,12 +11,6 @@ var _ = require("..");
 
 var _numberUtils = require("../utils/numberUtils");
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
-
-function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -24,16 +18,6 @@ function _nonIterableRest() { throw new TypeError("Invalid attempt to destructur
 function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -43,11 +27,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var Ram =
+var ByteRamStorage =
 /*#__PURE__*/
 function () {
-  function Ram(size) {
-    _classCallCheck(this, Ram);
+  function ByteRamStorage(size) {
+    _classCallCheck(this, ByteRamStorage);
 
     _defineProperty(this, "raw", void 0);
 
@@ -57,12 +41,19 @@ function () {
     this.raw = new Uint8Array(this.size);
   }
 
-  _createClass(Ram, [{
+  _createClass(ByteRamStorage, [{
     key: "assertValidAddress",
     value: function assertValidAddress(value) {
       if (value < 0x0000 || value >= this.size) {
         throw new Error("Address ".concat((0, _.toWordHexString)(value), " out of range ").concat((0, _.toWordHexString)(this.size)));
       }
+    }
+  }, {
+    key: "readBytes",
+    value: function readBytes(address, length) {
+      this.assertValidAddress(address);
+      this.assertValidAddress(address + length - 1);
+      return this.raw.subarray(address, address + length);
     }
   }, {
     key: "assertByte",
@@ -78,13 +69,6 @@ function () {
       return this.raw[address];
     }
   }, {
-    key: "readBytes",
-    value: function readBytes(address, length) {
-      this.assertValidAddress(address);
-      this.assertValidAddress(address + length - 1);
-      return this.raw.subarray(address, address + length);
-    }
-  }, {
     key: "writeByte",
     value: function writeByte(address, value) {
       this.assertValidAddress(address);
@@ -98,22 +82,34 @@ function () {
     }
   }]);
 
-  return Ram;
+  return ByteRamStorage;
 }();
 
 var ZeroPageRam =
 /*#__PURE__*/
-function (_Ram) {
-  _inherits(ZeroPageRam, _Ram);
-
+function () {
   function ZeroPageRam() {
     _classCallCheck(this, ZeroPageRam);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(ZeroPageRam).call(this, 0xff));
+    _defineProperty(this, "storage", void 0);
+
+    this.storage = new ByteRamStorage(0xff);
   }
 
+  _createClass(ZeroPageRam, [{
+    key: "readByte",
+    value: function readByte(address) {
+      return this.storage.readByte(address);
+    }
+  }, {
+    key: "writeByte",
+    value: function writeByte(address, value) {
+      this.storage.writeByte(address, value);
+    }
+  }]);
+
   return ZeroPageRam;
-}(Ram);
+}();
 
 exports.ZeroPageRam = ZeroPageRam;
 var WORKING_RAM_SIZE = 0x2000;
@@ -121,17 +117,34 @@ exports.WORKING_RAM_SIZE = WORKING_RAM_SIZE;
 
 var WorkingRam =
 /*#__PURE__*/
-function (_Ram2) {
-  _inherits(WorkingRam, _Ram2);
-
+function () {
   function WorkingRam() {
     _classCallCheck(this, WorkingRam);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(WorkingRam).call(this, WORKING_RAM_SIZE));
+    _defineProperty(this, "storage", void 0);
+
+    this.storage = new ByteRamStorage(WORKING_RAM_SIZE);
   }
 
+  _createClass(WorkingRam, [{
+    key: "readByte",
+    value: function readByte(address) {
+      return this.storage.readByte(address);
+    }
+  }, {
+    key: "writeByte",
+    value: function writeByte(address, value) {
+      this.storage.writeByte(address, value);
+    }
+  }, {
+    key: "values",
+    get: function get() {
+      return this.storage.values;
+    }
+  }]);
+
   return WorkingRam;
-}(Ram);
+}();
 
 exports.WorkingRam = WorkingRam;
 var V_RAM_SIZE = 0x2000;
@@ -139,16 +152,26 @@ exports.V_RAM_SIZE = V_RAM_SIZE;
 
 var VRam =
 /*#__PURE__*/
-function (_Ram3) {
-  _inherits(VRam, _Ram3);
-
+function () {
   function VRam() {
     _classCallCheck(this, VRam);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(VRam).call(this, V_RAM_SIZE));
+    _defineProperty(this, "storage", void 0);
+
+    this.storage = new ByteRamStorage(V_RAM_SIZE);
   }
 
   _createClass(VRam, [{
+    key: "readByte",
+    value: function readByte(address) {
+      return this.storage.readByte(address);
+    }
+  }, {
+    key: "writeByte",
+    value: function writeByte(address, value) {
+      this.storage.writeByte(address, value);
+    }
+  }, {
     key: "getBackgroundMap",
     value: function getBackgroundMap(_ref) {
       var _this = this;
@@ -186,7 +209,7 @@ function (_Ram3) {
         throw new Error("Tile data index ".concat(index, " is invalid"));
       }
 
-      return (0, _lodash.chunk)(this.readBytes(address, VRam.TILE_DATA_BYTES), 2).map(function (_ref5) {
+      return (0, _lodash.chunk)(this.storage.readBytes(address, VRam.TILE_DATA_BYTES), 2).map(function (_ref5) {
         var _ref6 = _slicedToArray(_ref5, 2),
             lowerBits = _ref6[0],
             upperBits = _ref6[1];
@@ -212,6 +235,11 @@ function (_Ram3) {
       });
     }
   }, {
+    key: "values",
+    get: function get() {
+      return this.storage.values;
+    }
+  }, {
     key: "bgMap1",
     get: function get() {
       return this.getBackgroundMap(VRam.BG_MAP_1_RANGE);
@@ -235,7 +263,7 @@ function (_Ram3) {
   }]);
 
   return VRam;
-}(Ram);
+}();
 
 exports.VRam = VRam;
 
@@ -263,50 +291,58 @@ _defineProperty(VRam, "BG_MAP_INDICES", (0, _lodash.range)(0, VRam.BG_MAP_DIMENS
 
 var OamMemory =
 /*#__PURE__*/
-function (_Ram4) {
-  _inherits(OamMemory, _Ram4);
-
+function () {
   function OamMemory() {
     _classCallCheck(this, OamMemory);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(OamMemory).call(this, 0xa0));
+    _defineProperty(this, "storage", void 0);
+
+    this.storage = new ByteRamStorage(0xa0);
   }
 
+  _createClass(OamMemory, [{
+    key: "readByte",
+    value: function readByte(address) {
+      return this.storage.readByte(address);
+    }
+  }, {
+    key: "writeByte",
+    value: function writeByte(address, value) {
+      this.storage.writeByte(address, value);
+    }
+  }]);
+
   return OamMemory;
-}(Ram); // https://fms.komkon.org/GameBoy/Tech/Software.html
+}(); // https://fms.komkon.org/GameBoy/Tech/Software.html
 
 
 exports.OamMemory = OamMemory;
 
 var IOMemory =
 /*#__PURE__*/
-function (_Ram5) {
-  _inherits(IOMemory, _Ram5);
-
+function () {
   function IOMemory() {
     _classCallCheck(this, IOMemory);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(IOMemory).call(this, 0x7f));
+    _defineProperty(this, "storage", void 0);
+
+    this.storage = new ByteRamStorage(0x7f);
   }
 
   _createClass(IOMemory, [{
     key: "readByte",
     value: function readByte(address) {
-      return _get(_getPrototypeOf(IOMemory.prototype), "readByte", this).call(this, address);
+      return this.storage.readByte(address);
     }
   }, {
     key: "writeByte",
     value: function writeByte(address, value) {
-      // bios seems to use it
-      // if (address === 0x0044) {
-      //   throw new Error("Current scan line Read-only");
-      // }
-      _get(_getPrototypeOf(IOMemory.prototype), "writeByte", this).call(this, address, value);
+      this.storage.writeByte(address, value);
     }
   }]);
 
   return IOMemory;
-}(Ram);
+}();
 
 exports.IOMemory = IOMemory;
 //# sourceMappingURL=ram.js.map
