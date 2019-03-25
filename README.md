@@ -2,7 +2,11 @@
 
 [![Build Status](https://travis-ci.org/danielholmes/functional-game-engine.svg?branch=master)](https://travis-ci.org/danielholmes/functional-game-engine)
 
-Game Boy emulation in JavaScript (browser or nodeJS). 
+Monorepo for a Game Boy emulator and related tools written in Typescript. Goals:
+
+ - Accuracy. I want this to be compatible with as many ROMs as possible. To achieve this I want to make the simulation 
+   and modelling as accurate as possible and keep a high test coverage.
+ - Flexibility. Should be usable in multiple JS environments (e.g. browser, node, react native)
 
 
 ## Requirements
@@ -19,13 +23,14 @@ yarn
 
 ## Roadmap
 
+ 0. Rework mmu a little. Include tests and use explicit ranges. Maybe a cond
  1. interrupts
  2. complete GPU enough (nintendo logo is a background, not sprite)
  3. Set up cli running and displaying bios
  4. Set up browser running and displaying bios
  5. Set up blarg test roms infrastructure
  6. get tetris running
- 7. input, sound, etc
+ 7. input, sound, etc - see https://youtu.be/ecTQVa42sJc?t=374
  8. more complicated carts
 
 
@@ -33,6 +38,7 @@ yarn
 
 ### General
 
+ - http://www.codeslinger.co.uk/pages/projects/gameboy.html
  - https://realboyemulator.wordpress.com/posts/
  - https://cturt.github.io/cinoop.html
  - https://blog.rekawek.eu/2017/02/09/coffee-gb/
@@ -45,14 +51,18 @@ yarn
  - http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf
  - http://problemkaputt.de/pandocs.htm 
  - http://nnarain.github.io/2016/07/21/Gameboy-Specs.html
+ - Op Codes - http://gameboy.mongenel.com/dmg/opcodes.html
+ - Sound - http://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware
+ - Hardware - http://marc.rawer.de/Gameboy/Docs/GBProject.pdf
+ - Op codes table - http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
 
 ### Overviews
 
  - https://www.cl.cam.ac.uk/~pv273/slides/emulation.pdf
+ - Schematics - https://console5.com/wiki/Game_Boy_DMG-01
  - https://www.youtube.com/watch?v=t0V-D2YMhrs&index=2&list=PLu3xpmdUP-GRDp8tknpXC_Y4RUQtMMqEu
  - https://www.youtube.com/watch?v=GBYwjch6oEE
- - https://www.youtube.com/watch?v=RZUDEaLa5Nw
- - https://media.ccc.de/v/33c3-8029-the_ultimate_game_boy_talk
+ - https://www.youtube.com/watch?v=HyzD8pNlpwI
 
 ### GPU
 

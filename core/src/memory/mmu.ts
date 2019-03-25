@@ -83,36 +83,36 @@ export class Mmu {
       return this.workingRam.readByte(address - WORKING_RAM_RANGE.start);
     }
     // Shadow of working ram
-    if (address >= 0xe000 && address <= 0xfdff) {
+    if (address >= 0xe000 && address < 0xfe00) {
       return this.workingRam.readByte(address - 0xe000);
-    }
-    if (address >= 0xff80 && address <= 0xffff) {
-      return this.zeroPage.readByte(address - 0xff80);
     }
     if (address >= 0xfe00 && address <= 0xfe9f) {
       return this.oam.readByte(address - 0xfe00);
+    }
+    if (address >= 0xfe00 && address < 0xfea0) {
+      // Graphics: sprite information: Data about the sprites rendered by the graphics chip are held here, including the
+      // sprites' positions and attributes.
+      throw new Error("graphics mem not yet implemented");
     }
     if (address >= 0xfea0 && address <= 0xfeff) {
       // Unused space
       return 0;
     }
-    if (address >= 0xfe00 && address <= 0xfe9f) {
-      // Graphics: sprite information: Data about the sprites rendered by the graphics chip are held here, including the
-      // sprites' positions and attributes.
-      throw new Error("graphics mem not yet implemented");
-    }
-    if (address >= 0xff00 && address <= 0xff7f) {
+    if (address >= 0xff00 && address < 0xff80) {
       return this.io.readByte(address - 0xff00);
+    }
+    // TODO: This high ram/zero page
+    if (address >= 0xff80 && address < 0xffff) {
+      return this.zeroPage.readByte(address - 0xff80);
+    }
+    if (address === 0xffff) {
+      throw new Error('Interrupts not implemented yet');
     }
 
     throw new Error("Address not readable");
   }
 
   public writeByte(address: MemoryAddress, value: ByteValue): void {
-    if (address === 0xff50) {
-      console.log("Writing bios", value.toString(16));
-    }
-
     if (address >= 0x8000 && address <= 0x9fff) {
       this.vRam.writeByte(address - 0x8000, value);
     } else if (address >= 0xa000 && address <= 0xbfff) {
