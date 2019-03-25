@@ -1,7 +1,7 @@
 import React, { Component, ReactElement } from "react";
 import { Tile } from "@gebby/core";
 import { isEqual } from "lodash";
-import { drawTileToCanvas } from "./renderUtils";
+import { drawTileToCanvas } from "../utils/utils";
 
 interface TileMapTileProps {
   readonly index: number;

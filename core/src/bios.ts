@@ -1,6 +1,6 @@
-import { ByteValue, MemoryAddress } from "./types";
+import { ByteValue, MemoryAddress, ReadonlyUint8Array } from "./types";
 
-const BIOS: Uint8Array = new Uint8Array([
+const BIOS: ReadonlyUint8Array = new Uint8Array([
   0x31,
   0xfe,
   0xff,

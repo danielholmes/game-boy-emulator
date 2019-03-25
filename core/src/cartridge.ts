@@ -1,4 +1,4 @@
-import { ByteValue, MemoryAddress } from "./types";
+import { ByteValue, MemoryAddress, ReadonlyUint8Array } from "./types";
 import { isEqual, range } from "lodash";
 import nintendoLogo from "./nintendoLogo";
 
@@ -11,9 +11,9 @@ const MAX_CARTRIDGE_PROGRAM_LENGTH: number =
 
 // TODO: ROM banks, etc
 export class Cartridge {
-  public readonly bytes: Uint8Array;
+  public readonly bytes: ReadonlyUint8Array;
 
-  public constructor(bytes: Uint8Array) {
+  public constructor(bytes: ReadonlyUint8Array) {
     this.bytes = bytes;
   }
 
@@ -28,7 +28,7 @@ export class Cartridge {
   /* eslint-enable @typescript-eslint/no-use-before-define */
 
   public static buildWithProgram(
-    program: Uint8Array | ReadonlyArray<ByteValue>
+    program: ReadonlyUint8Array | ReadonlyArray<ByteValue>
   ): Cartridge {
     return Cartridge.builder()
       .program(program)
@@ -37,14 +37,14 @@ export class Cartridge {
 }
 
 class CartridgeBuilder {
-  private readonly _program: Uint8Array;
+  private readonly _program: ReadonlyUint8Array;
 
-  public constructor(program?: Uint8Array) {
+  public constructor(program?: ReadonlyUint8Array) {
     this._program = program || new Uint8Array(CARTRIDGE_LENGTH);
   }
 
   public program(
-    program: Uint8Array | ReadonlyArray<ByteValue>
+    program: ReadonlyUint8Array | ReadonlyArray<ByteValue>
   ): CartridgeBuilder {
     if (program.length > MAX_CARTRIDGE_PROGRAM_LENGTH) {
       throw new Error("program too long");
@@ -71,7 +71,11 @@ class CartridgeBuilder {
     );
   }
 
-  private clone({ program }: { program?: Uint8Array }): CartridgeBuilder {
+  private clone({
+    program
+  }: {
+    program?: ReadonlyUint8Array;
+  }): CartridgeBuilder {
     return new CartridgeBuilder(program || this._program);
   }
 }

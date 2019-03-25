@@ -8,7 +8,12 @@ import {
   ZeroPageRam
 } from "../memory/ram";
 import { Cpu } from "../cpu";
-import { ByteValue, MemoryAddress, WordValue } from "../types";
+import {
+  ByteValue,
+  MemoryAddress,
+  ReadonlyUint8Array,
+  WordValue
+} from "../types";
 
 export const createMmu = (): Mmu =>
   new Mmu(
@@ -23,7 +28,7 @@ export const createMmu = (): Mmu =>
 export const EMPTY_MEMORY = createMmu();
 
 export interface MmuSnapshot {
-  readonly workingRamValues: Uint8Array;
+  readonly workingRamValues: ReadonlyUint8Array;
 }
 
 export const createMmuSnapshot = (mmu: Mmu): MmuSnapshot => {

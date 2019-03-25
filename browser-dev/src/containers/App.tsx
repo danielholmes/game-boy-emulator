@@ -10,11 +10,11 @@ import {
   WorkingRam,
   ZeroPageRam,
   OamMemory,
-  CartridgeBuilder
+  Cartridge
 } from "@gebby/core";
 import { range } from "lodash";
-import TileMap from "./TileMap";
-import BackgroundMap from "./BackgroundMap";
+import TileMap from "../components/TileMap";
+import BackgroundMap from "../components/BackgroundMap";
 
 export default class App extends Component<{}, { device: Device }> {
   private vRam?: VRam;

@@ -1,4 +1,9 @@
-import { ByteValue, MemoryAddress, numberToWordHex } from "../types";
+import {
+  ByteValue,
+  MemoryAddress,
+  numberToWordHex,
+  ReadonlyUint8Array
+} from "../types";
 import { WorkingRam, VRam, ZeroPageRam, IOMemory, OamMemory } from "./ram";
 import { Bios } from "../bios";
 import { Cartridge } from "../cartridge";
@@ -51,8 +56,8 @@ export class Mmu {
     return this.readByte(0xff43);
   }
 
-  public get workingRamValues(): Uint8Array {
-    return this.workingRam.getValues();
+  public get workingRamValues(): ReadonlyUint8Array {
+    return this.workingRam.values;
   }
 
   public loadCartridge(cartridge: Cartridge): void {
@@ -106,7 +111,7 @@ export class Mmu {
       return this.zeroPage.readByte(address - 0xff80);
     }
     if (address === 0xffff) {
-      throw new Error('Interrupts not implemented yet');
+      throw new Error("Interrupts not implemented yet");
     }
 
     throw new Error("Address not readable");

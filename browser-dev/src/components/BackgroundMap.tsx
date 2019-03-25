@@ -1,5 +1,5 @@
 import React, { Component, ReactElement } from "react";
-import { drawTileToCanvas } from "./renderUtils";
+import { drawTileToCanvas } from "../utils/utils";
 import { isEqual } from "lodash";
 import { BackgroundMap as CoreBackgroundMap, TileDataIndex, VRam } from "@gebby/core";
 

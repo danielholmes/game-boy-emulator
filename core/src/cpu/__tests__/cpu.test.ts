@@ -88,7 +88,7 @@ describe("cpu", () => {
         sp: 0xfffe
       });
       // Bios clears out vram to all 0
-      expect(vRam.getValues()).toEqual(new Uint8Array(V_RAM_SIZE));
+      expect(vRam.values).toEqual(new Uint8Array(V_RAM_SIZE));
       // A lot of memory, not easy to specify/check it
       // expect(memory).toEqual(createMmuWithValues({ 0x10: 0x06, 0x11: 0x66 }))
     });

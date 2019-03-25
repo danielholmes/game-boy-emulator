@@ -119,7 +119,7 @@ for (let i = 0; i < TOTAL; i++) {
     throw e;
   }
   // if (i % 1000 === 0 || i === (TOTAL - 1)) {
-  //   const values = vRam.getValues();
+  //   const values = vRam.values();
   //   const filled: { [address: number]: number } = {};
   //   for (let j = 0; j < values.length; j++) {
   //     if (values[j] !== 0) {

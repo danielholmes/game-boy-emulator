@@ -1,6 +1,6 @@
 # Game Boy Emulator
 
-[![Build Status](https://travis-ci.org/danielholmes/functional-game-engine.svg?branch=master)](https://travis-ci.org/danielholmes/functional-game-engine)
+[![Build Status](https://travis-ci.org/danielholmes/game-boy-emulator.svg?branch=master)](https://travis-ci.org/danielholmes/game-boy-emulator)
 
 Monorepo for a Game Boy emulator and related tools written in Typescript. Goals:
 

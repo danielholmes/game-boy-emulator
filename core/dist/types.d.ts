@@ -13,4 +13,5 @@ export declare const numberToHex: (value: number) => string;
 export declare const numberToByteHex: (value: number) => string;
 export declare const numberToWordHex: (value: number) => string;
 export declare const numberToByteBinary: (value: number) => string;
+export declare type ReadonlyUint8Array = Exclude<Readonly<Uint8Array>, "fill">;
 //# sourceMappingURL=types.d.ts.map

@@ -306,9 +306,7 @@ describe("ld", () => {
     test("LD (nn),sp", () => {
       cpu.registers.pc = CARTRIDGE_PROGRAM_START;
       cpu.registers.sp = 0xc712;
-      const cart = Cartridge.builder()
-        .program([0x54, 0xd6])
-        .build();
+      const cart = Cartridge.buildWithProgram([0x54, 0xd6]);
       mmu.loadCartridge(cart);
 
       const instruction = ldMNnSp(0x3d);
@@ -357,9 +355,7 @@ describe("ld", () => {
   describe("ldAMFfN", () => {
     test("LD a, (#ff00+n)", () => {
       cpu.registers.pc = CARTRIDGE_PROGRAM_START;
-      const cart = Cartridge.builder()
-        .program([0x72])
-        .build();
+      const cart = Cartridge.buildWithProgram([0x72]);
       mmu.loadCartridge(cart);
       mmu.writeByte(0xff72, 0x62);
 

@@ -1,6 +1,6 @@
-import { ByteValue } from "./types";
+import { ReadonlyUint8Array } from "./types";
 
-const LOGO: ReadonlyArray<ByteValue> = [
+const LOGO: ReadonlyUint8Array = new Uint8Array([
   0xce,
   0xed,
   0x66,
@@ -49,6 +49,6 @@ const LOGO: ReadonlyArray<ByteValue> = [
   0xb9,
   0x33,
   0x3e
-];
+]);
 
 export default LOGO;

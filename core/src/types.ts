@@ -55,3 +55,27 @@ export const numberToWordHex = (value: WordValue): string => toHex(value, 4);
 
 export const numberToByteBinary = (value: ByteValue | WordValue): string =>
   value.toString(2).padStart(8, "0");
+
+type BaseReadonlyUint8Array = Pick<
+  Uint8Array,
+  Exclude<
+    keyof Readonly<Uint8Array>,
+    "fill" | "copyWithin" | "reverse" | "set" | "sort"
+  >
+>;
+
+export interface ReadonlyUint8Array extends BaseReadonlyUint8Array {
+  [Symbol.iterator](): IterableIterator<number>;
+}
+
+type BaseReadonlyUint16Array = Pick<
+  Uint16Array,
+  Exclude<
+    keyof Readonly<Uint16Array>,
+    "fill" | "copyWithin" | "reverse" | "set" | "sort"
+  >
+>;
+
+export interface ReadonlyUint16Array extends BaseReadonlyUint16Array {
+  [Symbol.iterator](): IterableIterator<number>;
+}
