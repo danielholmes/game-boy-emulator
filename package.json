@@ -1,8 +1,8 @@
 {
-  "name": "game-boy-emulator",
+  "name": "gebby",
   "version": "0.0.1",
-  "description": "Game Boy Emulator in JS",
-  "repository": "git@github.com:danielholmes/game-boy-emulator.git",
+  "description": "Game Boy Emulator in TypeScript",
+  "repository": "git@github.com:danielholmes/gebby.git",
   "author": "Daniel Holmes <daniel@danielholmes.org>",
   "license": "MIT",
   "private": true,

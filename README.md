@@ -1,6 +1,6 @@
 # Game Boy Emulator
 
-[![Build Status](https://travis-ci.org/danielholmes/game-boy-emulator.svg?branch=master)](https://travis-ci.org/danielholmes/game-boy-emulator)
+[![Build Status](https://travis-ci.org/danielholmes/gebby.svg?branch=master)](https://travis-ci.org/danielholmes/gebby)
 
 Monorepo for a Game Boy emulator and related tools written in Typescript. Goals:
 
