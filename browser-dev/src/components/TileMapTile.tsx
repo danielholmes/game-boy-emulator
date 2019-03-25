@@ -38,16 +38,15 @@ export default class TileMapTile extends Component<TileMapTileProps> {
   }
 
   public render(): ReactElement<TileMapTileProps> {
+    // TODO: Display hex and decimal number when rollover
+    // <h4>{this.props.index}</h4>
     return (
-      <div className="tile-map-tile">
-        <h4>{this.props.index}</h4>
-        <canvas
-          ref={this.onCanvasRef.bind(this)}
-          style={{ border: "1px solid black", width: 80, height: 80 }}
-          width={8}
-          height={8}
-        />
-      </div>
+      <canvas
+        ref={this.onCanvasRef.bind(this)}
+        style={{ border: "1px solid black", width: 16, height: 16 }}
+        width={8}
+        height={8}
+      />
     );
   }
 }

@@ -12,7 +12,8 @@ import {
   OamMemory,
   Cartridge
 } from "@gebby/core";
-import { DevContainer } from "./DevContainer";
+import DevContainer from "./DevContainer";
+import RunContainer from "./RunContainer";
 
 export default class App extends Component<{}, { device: Device }> {
   private vRam?: VRam;
@@ -67,9 +68,7 @@ export default class App extends Component<{}, { device: Device }> {
     }
     return (
       <Fragment>
-        <div className="run">
-          TODO: Run
-        </div>
+        <RunContainer />
         <DevContainer vRam={this.vRam} />
       </Fragment>
     );

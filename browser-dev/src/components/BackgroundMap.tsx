@@ -1,10 +1,9 @@
 import React, { Component, ReactElement } from "react";
 import { drawTileToCanvas } from "../utils/utils";
-import { isEqual } from "lodash";
-import { BackgroundMap as CoreBackgroundMap, TileDataIndex, VRam } from "@gebby/core";
+import { TileDataIndex, VRam } from "@gebby/core";
+import PanelLayout from "./PanelLayout";
 
 interface BackgroundMapProps {
-  readonly bgMap: CoreBackgroundMap;
   readonly vRam: VRam;
 }
 
@@ -39,7 +38,8 @@ export default class BackgroundMap extends Component<BackgroundMapProps> {
       throw new Error("2d");
     }
     this.props
-      .bgMap
+      .vRam
+      .bgMap1
       .forEach((row: ReadonlyArray<TileDataIndex>, y: number) =>
         row.forEach((c, x: number) => {
           tileContext.clearRect(0, 0, this.tileCanvas.width, this.tileCanvas.height)
@@ -51,22 +51,22 @@ export default class BackgroundMap extends Component<BackgroundMapProps> {
   }
 
   public componentDidUpdate (prevProps: Readonly<BackgroundMapProps>): void {
-    if (!isEqual(prevProps.bgMap, this.props.bgMap)) {
+    // TODO
+    //if (!isEqual(prevProps.bgMap, this.props.bgMap)) {
       this.renderCanvas();
-    }
+    //}
   }
 
   public render(): ReactElement<BackgroundMapProps> {
     return (
-      <div className="background-map">
-        <h3>Background Map</h3>
+      <PanelLayout title='VRam BackgroundMap'>
         <canvas
           ref={this.onCanvasRef.bind(this)}
           style={{ border: "1px solid black", width: 512, height: 512 }}
           width={256}
           height={256}
         />
-      </div>
+      </PanelLayout>
     );
   }
 }

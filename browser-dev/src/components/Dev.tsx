@@ -1,22 +1,34 @@
-import React, { ReactElement } from "react";
+import React, { ComponentType, ReactElement } from "react";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import BackgroundMap from "./BackgroundMap";
-import { range } from "lodash";
 import { VRam } from "@gebby/core";
 import TileMap from "./TileMap";
 
 export type PanelId = 'VRamTileMap1' | 'BackgroundMap1';
 
+interface PanelComponentProps {
+  readonly vRam: VRam;
+}
+
 interface Panel {
   readonly id: PanelId;
   readonly label: string;
+  readonly component: ComponentType<PanelComponentProps>;
 }
 
 const PANELS: ReadonlyArray<Panel> = [
-  { id: 'VRamTileMap1', label: 'VRAM - Tile Map 1' },
-  { id: 'BackgroundMap1', label: 'VRAM - Background Map 1' }
+  {
+    id: 'VRamTileMap1',
+    label: 'VRAM - Tile Map 1',
+    component: TileMap
+  },
+  {
+    id: 'BackgroundMap1',
+    label: 'VRAM - Background Map 1',
+    component: BackgroundMap
+  }
 ];
 
 interface DevProps {
@@ -42,12 +54,11 @@ const Dev = ({ vRam, openPanels, onChangePanelOpen }: DevProps): ReactElement<De
         />
       ))}
     </FormGroup>
-    <TileMap
-      tiles={range(0, 0x100)
-        .map((i) => vRam.getTileDataFromTable1(i))
-        .filter((t) => t.some((r) => r.some((c) => c !== 0)))}
-    />
-    <BackgroundMap vRam={vRam} bgMap={vRam.bgMap1}/>
+    {PANELS
+      .filter(({ id }) => openPanels.has(id))
+      .map(({ id, component: Component }) => (
+        <Component key={id} vRam={vRam} />
+      ))}
   </div>
 );
 

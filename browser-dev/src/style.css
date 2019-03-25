@@ -54,7 +54,6 @@ html, body, #app {
 }
 #app {
     min-width: 300px;
-    background-color:#cff;
 }
 #app .run {
     float:left;

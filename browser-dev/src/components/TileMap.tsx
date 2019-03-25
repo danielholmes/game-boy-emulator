@@ -1,20 +1,22 @@
-import React, { Component, ReactElement } from "react";
-import { Tile } from "@gebby/core";
+import React, { ReactElement } from "react";
+import { VRam } from "@gebby/core";
 import TileMapTile from "./TileMapTile";
+import { range } from "lodash";
+import PanelLayout from "./PanelLayout";
 
 interface TileMapProps {
-  readonly tiles: ReadonlyArray<Tile>;
+  readonly vRam: VRam;
 }
 
-export default class TileMap extends Component<TileMapProps> {
-  public render(): ReactElement<TileMapProps> {
-    return (
-      <div className="tile-map">
-        <h3>Tile Map</h3>
-        {this.props.tiles.map((tile, i) => (
-          <TileMapTile key={i} index={i} tile={tile}/>
-        ))}
-      </div>
-    )
-  }
-}
+const TileMap = ({ vRam }: TileMapProps): ReactElement<TileMapProps> => {
+  const tiles = range(0, 0x100).map((i) => vRam.getTileDataFromTable1(i));
+  return (
+    <PanelLayout title='VRam TileMap'>
+      {tiles.map((tile, i) => (
+        <TileMapTile key={i} index={i} tile={tile}/>
+      ))}
+    </PanelLayout>
+  )
+};
+
+export default TileMap;
