@@ -1,4 +1,4 @@
-# Game Boy Emulator
+# Gebby - Game Boy Emulator
 
 [![Build Status](https://travis-ci.org/danielholmes/gebby.svg?branch=master)](https://travis-ci.org/danielholmes/gebby)
 
