@@ -47,7 +47,15 @@ device.turnOn();
 // process.stdout.write instead of console.log
 // Clear: console.log('\033c')
 // Alt: console.log('\033c\033[3J')
-// Console pixels: console.log('\u2591', '\u2592', '\u2588');
+// Console pixels: console.log('\u2591', '\u2592', '\u2588')
+// light 2591 2592 2593 dark   2588 fully black/solid
+// If running in a black terminal, then that might be reversed i guess?
+
+// See https://nodejs.org/api/stream.html#stream_writable_cork
+// think you can cork then uncork to prevent half scene being rendered
+
+// see also "process.setImmediate" for timer
+// process.stdout.write
 
 const pixelToOutChar = (color: PixelColor): string => {
   switch (color) {
@@ -86,24 +94,24 @@ const printEnd = (): void => {
   });
 
   console.log("Background map 1:");
-  console.log(
-    vRam.bgMap1
-      .map(row =>
-        [...row]
-          .map(i => tileToString(vRam.getTileDataFromTable1(i)))
-          .reduce(
-            (accu: string, tile: string): string =>
-              zip(accu.split("\n"), tile.split("\n"))
-                .map(([accuRow, newRow]) => (accuRow || "") + newRow)
-                .join("\n"),
-            repeat("\n", 7)
-          )
-      )
-      .join("\n")
-  );
+  // console.log(
+  //   vRam.bgMap1
+  //     .map(row =>
+  //       [...row]
+  //         .map(i => tileToString(vRam.getTileDataFromTable1(i)))
+  //         .reduce(
+  //           (accu: string, tile: string): string =>
+  //             zip(accu.split("\n"), tile.split("\n"))
+  //               .map(([accuRow, newRow]) => (accuRow || "") + newRow)
+  //               .join("\n"),
+  //           repeat("\n", 7)
+  //         )
+  //     )
+  //     .join("\n")
+  // );
 };
 
-const TOTAL = 100000;
+const TOTAL = 500000;
 for (let i = 0; i < TOTAL; i++) {
   const opCode = mmu.readByte(cpu.registers.pc);
   console.log(

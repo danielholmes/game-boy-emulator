@@ -4,22 +4,6 @@ var _core = require("@gebby/core");
 
 var _lodash = require("lodash");
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
 var cartridge = _core.Cartridge.builder().build();
 
 if (!(0, _core.isValidCartridge)(cartridge)) {
@@ -39,7 +23,13 @@ device.insertCartridge(cartridge);
 device.turnOn(); // process.stdout.write instead of console.log
 // Clear: console.log('\033c')
 // Alt: console.log('\033c\033[3J')
-// Console pixels: console.log('\u2591', '\u2592', '\u2588');
+// Console pixels: console.log('\u2591', '\u2592', '\u2588')
+// light 2591 2592 2593 dark   2588 fully black/solid
+// If running in a black terminal, then that might be reversed i guess?
+// See https://nodejs.org/api/stream.html#stream_writable_cork
+// think you can cork then uncork to prevent half scene being rendered
+// see also "process.setImmediate" for timer
+// process.stdout.write
 
 var pixelToOutChar = function pixelToOutChar(color) {
   switch (color) {
@@ -86,23 +76,24 @@ var printEnd = function printEnd() {
       console.log(tileToString(tile));
     }
   });
-  console.log("Background map 1:");
-  console.log(vRam.bgMap1.map(function (row) {
-    return _toConsumableArray(row).map(function (i) {
-      return tileToString(vRam.getTileDataFromTable1(i));
-    }).reduce(function (accu, tile) {
-      return (0, _lodash.zip)(accu.split("\n"), tile.split("\n")).map(function (_ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-            accuRow = _ref2[0],
-            newRow = _ref2[1];
-
-        return (accuRow || "") + newRow;
-      }).join("\n");
-    }, (0, _lodash.repeat)("\n", 7));
-  }).join("\n"));
+  console.log("Background map 1:"); // console.log(
+  //   vRam.bgMap1
+  //     .map(row =>
+  //       [...row]
+  //         .map(i => tileToString(vRam.getTileDataFromTable1(i)))
+  //         .reduce(
+  //           (accu: string, tile: string): string =>
+  //             zip(accu.split("\n"), tile.split("\n"))
+  //               .map(([accuRow, newRow]) => (accuRow || "") + newRow)
+  //               .join("\n"),
+  //           repeat("\n", 7)
+  //         )
+  //     )
+  //     .join("\n")
+  // );
 };
 
-var TOTAL = 100000;
+var TOTAL = 500000;
 
 for (var i = 0; i < TOTAL; i++) {
   var opCode = mmu.readByte(cpu.registers.pc);

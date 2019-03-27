@@ -23,18 +23,18 @@ yarn
 
 ## Roadmap
 
- 0. Rework mmu a little. Include tests and use explicit ranges. Maybe a cond
- 0. Generate op codes table report.
+ - Rework mmu a little. Include tests and use explicit ranges. Maybe a cond
+ - Generate op codes table report.
     - Instruction knows size of operands based in low level calls
     - Also know timing. Might need to better encapsulate low level (e.g. double decrements)
- 1. interrupts
- 2. complete GPU enough (nintendo logo is a background, not sprite)
- 3. Set up cli running and displaying bios
- 4. Set up browser running and displaying bios
- 5. Set up blarg test roms infrastructure
- 6. get tetris running
- 7. input, sound, etc - see https://youtu.be/ecTQVa42sJc?t=374
- 8. more complicated carts
+ - interrupts
+ - complete GPU enough (nintendo logo is a background, not sprite)
+ - Set up cli running and displaying bios
+ - Set up browser running and displaying bios
+ - Set up blarg test roms infrastructure
+ - get tetris running
+ - input, sound, etc - see https://youtu.be/ecTQVa42sJc?t=374
+ - more complicated carts
 
 
 ## References
@@ -66,6 +66,11 @@ yarn
  - https://www.youtube.com/watch?v=t0V-D2YMhrs&index=2&list=PLu3xpmdUP-GRDp8tknpXC_Y4RUQtMMqEu
  - https://www.youtube.com/watch?v=GBYwjch6oEE
  - https://www.youtube.com/watch?v=HyzD8pNlpwI
+
+### Input
+
+ - https://stackoverflow.com/questions/5006821/nodejs-how-to-read-keystrokes-from-stdin
+ - http://blog.soulserv.net/terminal-friendly-application-with-node-js-part-iii-user-inputs/
 
 ### GPU
 
