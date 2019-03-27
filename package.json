@@ -22,7 +22,7 @@
     "yarn": ">=1.0.0"
   },
   "scripts": {
-    "build": "concurrently \"cd cli && yarn build\" \"cd core && yarn build\""
+    "build": "concurrently \"yarn --cwd cli build\" \"yarn --cwd core build\" \"yarn --cwd browser-dev build\""
   },
   "devDependencies": {
     "concurrently": "^4.1.0"

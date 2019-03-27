@@ -1,7 +1,31 @@
 import { BitValue, ByteValue, WordValue } from "../types";
 import { flatMap } from "lodash";
 
+// TODO: Should include all byte registers (inc f) or be renamed
 export type ByteRegister = "a" | "b" | "c" | "d" | "e" | "h" | "l";
+
+export const BYTE_REGISTERS: ReadonlyArray<ByteRegister> = [
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "h",
+  "l"
+];
+
+const BYTE_REGISTER_STRINGS: ReadonlySet<string> = new Set([
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "h",
+  "l"
+]);
+
+export const isByteRegister = (name: string): name is ByteRegister =>
+  BYTE_REGISTER_STRINGS.has(name);
 
 export type NonAfGroupedWordRegister = "bc" | "de" | "hl";
 
@@ -10,6 +34,18 @@ export type GroupedWordRegister = "af" | NonAfGroupedWordRegister;
 type NativeWordRegister = "sp" | "pc";
 
 export type WordRegister = GroupedWordRegister | NativeWordRegister;
+
+const WORD_REGISTER_STRINGS: ReadonlySet<string> = new Set([
+  "af",
+  "bc",
+  "de",
+  "hl",
+  "sp",
+  "pc"
+]);
+
+export const isWordRegister = (name: string): name is WordRegister =>
+  WORD_REGISTER_STRINGS.has(name);
 
 export type Register = ByteRegister | "f" | WordRegister;
 
@@ -20,16 +56,6 @@ export const NON_AF_GROUPED_WORD_REGISTERS: ReadonlyArray<
 export const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister> = [
   "af",
   ...NON_AF_GROUPED_WORD_REGISTERS
-];
-
-export const BYTE_REGISTERS: ReadonlyArray<ByteRegister> = [
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "h",
-  "l"
 ];
 
 export const NON_A_BYTE_REGISTERS: ReadonlyArray<

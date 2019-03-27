@@ -69,6 +69,7 @@ yarn
 
 ### GPU
 
+ - https://www.reddit.com/r/EmuDev/comments/4tpmop/the_overlap_in_the_tile_data_region_in_the_game/
  - https://forums.nesdev.com/viewtopic.php?f=20&t=17754
  - http://blog.kevtris.org/blogfiles/Nitty%20Gritty%20Gameboy%20VRAM%20Timing.txt
 
@@ -89,6 +90,13 @@ yarn
  
 ## Making games
 
+ - General z80 coding on gb - https://www.youtube.com/watch?v=LpQCEwk2U9w
+ - General - https://www.youtube.com/watch?v=PMlGQWytWJg
+ - Joypad - https://www.youtube.com/watch?v=vLRTA8j1Qhc
+ - Sound - https://www.youtube.com/watch?v=LCPLGkYJk5M
+ - Bank Switching - https://www.youtube.com/watch?v=ggyIp9CPTi4
+ 
+ 
  - http://www.loirak.com/gameboy/
  - http://www.loirak.com/gameboy/gbprog.php
  - http://gbdev.gg8.se/wiki/articles/GBDK

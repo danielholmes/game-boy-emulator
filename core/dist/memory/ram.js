@@ -149,6 +149,19 @@ function () {
 exports.WorkingRam = WorkingRam;
 var V_RAM_SIZE = 0x2000;
 exports.V_RAM_SIZE = V_RAM_SIZE;
+var TILE_DATA_TABLE_1_RANGE = [0x0000, 0x1000];
+var TILE_DATA_TABLE_2_RANGE = [0x0800, 0x1800];
+var TILE_DATA_BYTES = 16;
+var TILE_DATA_DIMENSION = 8;
+var TILE_DATA_INDICES = (0, _lodash.range)(0, (TILE_DATA_TABLE_1_RANGE[1] - TILE_DATA_TABLE_1_RANGE[0]) / TILE_DATA_BYTES);
+var TILE_DATA_PIXEL_INDICES = (0, _lodash.range)(0, TILE_DATA_DIMENSION);
+var TILE_DATA_BIT_MASKS = new Uint8Array(TILE_DATA_PIXEL_INDICES.map(function (i) {
+  return 1 << TILE_DATA_DIMENSION - i - 1;
+}));
+var BG_MAP_1_RANGE = [0x1800, 0x1c00];
+var BG_MAP_2_RANGE = [0x1c00, 0x2000];
+var BG_MAP_DIMENSION = 32;
+var BG_MAP_INDICES = (0, _lodash.range)(0, BG_MAP_DIMENSION);
 
 var VRam =
 /*#__PURE__*/
@@ -179,9 +192,9 @@ function () {
       var _ref2 = _slicedToArray(_ref, 1),
           startAddress = _ref2[0];
 
-      return VRam.BG_MAP_INDICES.map(function (y) {
-        return new Uint8Array(VRam.BG_MAP_INDICES.map(function (x) {
-          var address = startAddress + x + y * VRam.BG_MAP_DIMENSION;
+      return BG_MAP_INDICES.map(function (y) {
+        return new Uint8Array(BG_MAP_INDICES.map(function (x) {
+          var address = startAddress + x + y * BG_MAP_DIMENSION;
           return _this.readByte(address);
         }));
       });
@@ -189,12 +202,21 @@ function () {
   }, {
     key: "getTileDataFromTable1",
     value: function getTileDataFromTable1(index) {
-      return this.getTileData(VRam.TILE_DATA_TABLE_1_RANGE, index);
+      return this.getTileData(TILE_DATA_TABLE_1_RANGE, index);
     }
   }, {
     key: "getTileDataFromTable2",
     value: function getTileDataFromTable2(index) {
-      return this.getTileData(VRam.TILE_DATA_TABLE_2_RANGE, index);
+      return this.getTileData(TILE_DATA_TABLE_2_RANGE, index);
+    }
+  }, {
+    key: "getTileMap",
+    value: function getTileMap(addressRange) {
+      var _this2 = this;
+
+      return TILE_DATA_INDICES.map(function (i) {
+        return _this2.getTileData(addressRange, i);
+      });
     }
   }, {
     key: "getTileData",
@@ -203,20 +225,20 @@ function () {
           startAddress = _ref4[0],
           endAddress = _ref4[1];
 
-      var address = startAddress + index * VRam.TILE_DATA_BYTES;
+      var address = startAddress + index * TILE_DATA_BYTES;
 
       if (address < startAddress || address >= endAddress) {
         throw new Error("Tile data index ".concat(index, " is invalid"));
       }
 
-      return (0, _lodash.chunk)(this.storage.readBytes(address, VRam.TILE_DATA_BYTES), 2).map(function (_ref5) {
+      return (0, _lodash.chunk)(this.storage.readBytes(address, TILE_DATA_BYTES), 2).map(function (_ref5) {
         var _ref6 = _slicedToArray(_ref5, 2),
             lowerBits = _ref6[0],
             upperBits = _ref6[1];
 
-        return VRam.TILE_DATA_INDICES.map(function (i) {
-          var lower = (lowerBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
-          var upper = (upperBits & VRam.TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
+        return TILE_DATA_PIXEL_INDICES.map(function (i) {
+          var lower = (lowerBits & TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
+          var upper = (upperBits & TILE_DATA_BIT_MASKS[i]) === 0 ? 0 : 1;
 
           if (upper === 1 && lower === 1) {
             return 3;
@@ -242,12 +264,22 @@ function () {
   }, {
     key: "bgMap1",
     get: function get() {
-      return this.getBackgroundMap(VRam.BG_MAP_1_RANGE);
+      return this.getBackgroundMap(BG_MAP_1_RANGE);
     }
   }, {
     key: "bgMap2",
     get: function get() {
-      return this.getBackgroundMap(VRam.BG_MAP_2_RANGE);
+      return this.getBackgroundMap(BG_MAP_2_RANGE);
+    }
+  }, {
+    key: "tileMap1",
+    get: function get() {
+      return this.getTileMap(TILE_DATA_TABLE_1_RANGE);
+    }
+  }, {
+    key: "tileMap2",
+    get: function get() {
+      return this.getTileMap(TILE_DATA_TABLE_2_RANGE);
     }
   }], [{
     key: "initializeRandomly",
@@ -266,28 +298,6 @@ function () {
 }();
 
 exports.VRam = VRam;
-
-_defineProperty(VRam, "TILE_DATA_TABLE_1_RANGE", [0x0000, 0x1000]);
-
-_defineProperty(VRam, "TILE_DATA_TABLE_2_RANGE", [0x0800, 0x1800]);
-
-_defineProperty(VRam, "TILE_DATA_BYTES", 16);
-
-_defineProperty(VRam, "TILE_DATA_DIMENSION", 8);
-
-_defineProperty(VRam, "TILE_DATA_INDICES", (0, _lodash.range)(0, VRam.TILE_DATA_DIMENSION));
-
-_defineProperty(VRam, "TILE_DATA_BIT_MASKS", new Uint8Array(VRam.TILE_DATA_INDICES.map(function (i) {
-  return 1 << VRam.TILE_DATA_DIMENSION - i - 1;
-})));
-
-_defineProperty(VRam, "BG_MAP_1_RANGE", [0x1800, 0x1c00]);
-
-_defineProperty(VRam, "BG_MAP_2_RANGE", [0x1c00, 0x2000]);
-
-_defineProperty(VRam, "BG_MAP_DIMENSION", 32);
-
-_defineProperty(VRam, "BG_MAP_INDICES", (0, _lodash.range)(0, VRam.BG_MAP_DIMENSION));
 
 var OamMemory =
 /*#__PURE__*/

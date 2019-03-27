@@ -31,7 +31,7 @@ function () {
 
     _defineProperty(this, "workingRam", void 0);
 
-    _defineProperty(this, "vRam", void 0);
+    _defineProperty(this, "_vRam", void 0);
 
     _defineProperty(this, "io", void 0);
 
@@ -43,7 +43,7 @@ function () {
 
     this.bios = bios;
     this.workingRam = ram;
-    this.vRam = vRam;
+    this._vRam = vRam;
     this.oam = oam;
     this.io = io;
     this.zeroPage = zeroPage;
@@ -122,7 +122,7 @@ function () {
     key: "writeByte",
     value: function writeByte(address, value) {
       if (address >= 0x8000 && address <= 0x9fff) {
-        this.vRam.writeByte(address - 0x8000, value);
+        this._vRam.writeByte(address - 0x8000, value);
       } else if (address >= 0xa000 && address <= 0xbfff) {
         throw new Error("Cannot write to ".concat((0, _.toWordHexString)(address), " which is on cartridge"));
       } else if (address >= 0xc000 && address <= 0xdfff) {
@@ -139,6 +139,11 @@ function () {
       } else {
         throw new Error("Can't write address ".concat((0, _.toWordHexString)(address)));
       }
+    }
+  }, {
+    key: "vRam",
+    get: function get() {
+      return this._vRam;
     }
   }, {
     key: "isInBios",

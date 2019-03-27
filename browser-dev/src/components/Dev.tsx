@@ -2,14 +2,27 @@ import React, { ComponentType, ReactElement } from "react";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
-import BackgroundMap from "./BackgroundMap";
-import { VRam } from "@gebby/core";
-import TileMap from "./TileMap";
+import { BackgroundMapPanel1, BackgroundMapPanel2 } from "./BackgroundMapPanel";
+import { Device } from "@gebby/core";
+import { TileMapPanel1, TileMapPanel2 } from "./TileMapPanel";
+import CpuRegistersPanel from "./CpuRegistersPanel";
+import ProgramPanel from "./ProgramPanel";
+import {
+  VRamMemoryInspectorPanel,
+  WorkingRamMemoryInspectorPanel
+} from "./MemoryInspectorPanel";
 
-export type PanelId = 'VRamTileMap1' | 'BackgroundMap1';
+export type PanelId = "VRamTileMap1";
+"BackgroundMap1" |
+  "VRamTileMap2" |
+  "BackgroundMap2" |
+  "CpuRegisters" |
+  "Program" |
+  "WorkingRamInspector" |
+  "VRamInspector";
 
 interface PanelComponentProps {
-  readonly vRam: VRam;
+  readonly device: Device;
 }
 
 interface Panel {
@@ -20,24 +33,58 @@ interface Panel {
 
 const PANELS: ReadonlyArray<Panel> = [
   {
-    id: 'VRamTileMap1',
-    label: 'VRAM - Tile Map 1',
-    component: TileMap
+    id: "CpuRegisters",
+    label: "CPU - Registers",
+    component: CpuRegistersPanel
   },
   {
-    id: 'BackgroundMap1',
-    label: 'VRAM - Background Map 1',
-    component: BackgroundMap
+    id: "VRamTileMap1",
+    label: "VRAM - Tile Map 1",
+    component: TileMapPanel1
+  },
+  {
+    id: "VRamTileMap2",
+    label: "VRAM - Tile Map 2",
+    component: TileMapPanel2
+  },
+  {
+    id: "BackgroundMap1",
+    label: "VRAM - Background Map 1",
+    component: BackgroundMapPanel1
+  },
+  {
+    id: "BackgroundMap2",
+    label: "VRAM - Background Map 2",
+    component: BackgroundMapPanel2
+  },
+  {
+    id: "Program",
+    label: "CPU - Program",
+    component: ProgramPanel
+  },
+  {
+    id: "VRamInspector",
+    label: "Ram - VRam Inspector",
+    component: VRamMemoryInspectorPanel
+  },
+  {
+    id: "WorkingRamInspector",
+    label: "Ram - Working Ram Inspector",
+    component: WorkingRamMemoryInspectorPanel
   }
 ];
 
 interface DevProps {
-  readonly vRam: VRam;
+  readonly device: Device;
   readonly openPanels: ReadonlySet<PanelId>;
   readonly onChangePanelOpen: (panelId: PanelId, isOpen: boolean) => void;
 }
 
-const Dev = ({ vRam, openPanels, onChangePanelOpen }: DevProps): ReactElement<DevProps> => (
+const Dev = ({
+  device,
+  openPanels,
+  onChangePanelOpen
+}: DevProps): ReactElement<DevProps> => (
   <div className="dev">
     <FormGroup row>
       {PANELS.map(({ id, label }) => (
@@ -54,11 +101,11 @@ const Dev = ({ vRam, openPanels, onChangePanelOpen }: DevProps): ReactElement<De
         />
       ))}
     </FormGroup>
-    {PANELS
-      .filter(({ id }) => openPanels.has(id))
-      .map(({ id, component: Component }) => (
-        <Component key={id} vRam={vRam} />
-      ))}
+    {PANELS.filter(({ id }) => openPanels.has(id)).map(
+      ({ id, component: Component }) => (
+        <Component key={id} device={device} />
+      )
+    )}
   </div>
 );
 

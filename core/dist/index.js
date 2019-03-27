@@ -57,6 +57,12 @@ Object.defineProperty(exports, "Tile", {
     return _ram.Tile;
   }
 });
+Object.defineProperty(exports, "TileMap", {
+  enumerable: true,
+  get: function get() {
+    return _ram.TileMap;
+  }
+});
 Object.defineProperty(exports, "BackgroundMap", {
   enumerable: true,
   get: function get() {
@@ -73,6 +79,36 @@ Object.defineProperty(exports, "Cpu", {
   enumerable: true,
   get: function get() {
     return _cpu.Cpu;
+  }
+});
+Object.defineProperty(exports, "WordRegister", {
+  enumerable: true,
+  get: function get() {
+    return _registers.WordRegister;
+  }
+});
+Object.defineProperty(exports, "ByteRegister", {
+  enumerable: true,
+  get: function get() {
+    return _registers.ByteRegister;
+  }
+});
+Object.defineProperty(exports, "Register", {
+  enumerable: true,
+  get: function get() {
+    return _registers.Register;
+  }
+});
+Object.defineProperty(exports, "isWordRegister", {
+  enumerable: true,
+  get: function get() {
+    return _registers.isWordRegister;
+  }
+});
+Object.defineProperty(exports, "isByteRegister", {
+  enumerable: true,
+  get: function get() {
+    return _registers.isByteRegister;
   }
 });
 Object.defineProperty(exports, "Gpu", {
@@ -111,6 +147,30 @@ Object.defineProperty(exports, "PixelColor", {
     return _types.PixelColor;
   }
 });
+Object.defineProperty(exports, "ReadonlyUint8Array", {
+  enumerable: true,
+  get: function get() {
+    return _types.ReadonlyUint8Array;
+  }
+});
+Object.defineProperty(exports, "ByteValue", {
+  enumerable: true,
+  get: function get() {
+    return _types.ByteValue;
+  }
+});
+Object.defineProperty(exports, "WordValue", {
+  enumerable: true,
+  get: function get() {
+    return _types.WordValue;
+  }
+});
+Object.defineProperty(exports, "BitValue", {
+  enumerable: true,
+  get: function get() {
+    return _types.BitValue;
+  }
+});
 Object.defineProperty(exports, "toByteHexString", {
   enumerable: true,
   get: function get() {
@@ -131,6 +191,8 @@ var _nintendoLogo = _interopRequireDefault(require("./nintendoLogo"));
 var _ram = require("./memory/ram");
 
 var _cpu = require("./cpu");
+
+var _registers = require("./cpu/registers");
 
 var _gpu = require("./gpu");
 

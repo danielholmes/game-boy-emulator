@@ -5,7 +5,10 @@ interface PanelLayoutProps {
   readonly children: ReactNode;
 }
 
-const PanelLayout = ({ title, children }: PanelLayoutProps): ReactElement<PanelLayoutProps> => (
+const PanelLayout = ({
+  title,
+  children
+}: PanelLayoutProps): ReactElement<PanelLayoutProps> => (
   <div>
     <h4>{title}</h4>
     {children}

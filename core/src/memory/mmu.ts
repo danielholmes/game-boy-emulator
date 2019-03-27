@@ -1,5 +1,12 @@
 import { ByteValue, MemoryAddress, ReadonlyUint8Array } from "../types";
-import { WorkingRam, VRam, ZeroPageRam, IOMemory, OamMemory } from "./ram";
+import {
+  WorkingRam,
+  VRam,
+  ZeroPageRam,
+  IOMemory,
+  OamMemory,
+  ReadonlyVRam
+} from "./ram";
 import { Bios } from "../bios";
 import { Cartridge } from "../cartridge";
 import { toWordHexString } from "..";
@@ -12,7 +19,7 @@ export const WORKING_RAM_RANGE: Readonly<{
 export class Mmu {
   private readonly bios: Bios;
   private readonly workingRam: WorkingRam;
-  private readonly vRam: VRam;
+  private readonly _vRam: VRam;
   private readonly io: IOMemory;
   private readonly oam: OamMemory;
   private readonly zeroPage: ZeroPageRam;
@@ -29,11 +36,15 @@ export class Mmu {
   ) {
     this.bios = bios;
     this.workingRam = ram;
-    this.vRam = vRam;
+    this._vRam = vRam;
     this.oam = oam;
     this.io = io;
     this.zeroPage = zeroPage;
     this.cartridge = cartridge;
+  }
+
+  public get vRam(): ReadonlyVRam {
+    return this._vRam;
   }
 
   public get isInBios(): boolean {
@@ -115,7 +126,7 @@ export class Mmu {
 
   public writeByte(address: MemoryAddress, value: ByteValue): void {
     if (address >= 0x8000 && address <= 0x9fff) {
-      this.vRam.writeByte(address - 0x8000, value);
+      this._vRam.writeByte(address - 0x8000, value);
     } else if (address >= 0xa000 && address <= 0xbfff) {
       throw new Error(
         `Cannot write to ${toWordHexString(address)} which is on cartridge`

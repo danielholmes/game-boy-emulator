@@ -1,0 +1,1 @@
+{"version":3,"file":"TileMap.d.ts","sourceRoot":"","sources":["../../src/components/TileMap.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAuB,MAAM,OAAO,CAAC;AAC5C,OAAO,EAAE,IAAI,EAAE,MAAM,aAAa,CAAC;AAKnC,UAAU,YAAY;IACpB,QAAQ,CAAC,IAAI,EAAE,IAAI,CAAC;CACrB;AAED,QAAA,MAAM,OAAO,qPASZ,CAAC;AAEF,eAAe,OAAO,CAAC"}

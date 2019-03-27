@@ -25,6 +25,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var Cpu =
 /*#__PURE__*/
 function () {
+  // TODO: public should be readonly version
   // Temporary variable until refactor done
   function Cpu() {
     _classCallCheck(this, Cpu);

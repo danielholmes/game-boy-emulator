@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CpuRegistersImpl = exports.calculateFHFromByteAdd = exports.FLAG_C_MASK = exports.FLAG_H_MASK = exports.FLAG_N_MASK = exports.FLAG_Z_MASK = exports.FLAG_Z_BIT = exports.BYTE_REGISTER_PAIR_PERMUTATIONS = exports.NON_A_BYTE_REGISTERS = exports.BYTE_REGISTERS = exports.GROUPED_WORD_REGISTERS = exports.NON_AF_GROUPED_WORD_REGISTERS = void 0;
+exports.CpuRegistersImpl = exports.calculateFHFromByteAdd = exports.FLAG_C_MASK = exports.FLAG_H_MASK = exports.FLAG_N_MASK = exports.FLAG_Z_MASK = exports.FLAG_Z_BIT = exports.BYTE_REGISTER_PAIR_PERMUTATIONS = exports.NON_A_BYTE_REGISTERS = exports.GROUPED_WORD_REGISTERS = exports.NON_AF_GROUPED_WORD_REGISTERS = exports.isWordRegister = exports.isByteRegister = exports.BYTE_REGISTERS = void 0;
 
 var _lodash = require("lodash");
 
@@ -15,12 +15,26 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+var BYTE_REGISTERS = ["a", "b", "c", "d", "e", "h", "l"];
+exports.BYTE_REGISTERS = BYTE_REGISTERS;
+var BYTE_REGISTER_STRINGS = new Set(["a", "b", "c", "d", "e", "h", "l"]);
+
+var isByteRegister = function isByteRegister(name) {
+  return BYTE_REGISTER_STRINGS.has(name);
+};
+
+exports.isByteRegister = isByteRegister;
+var WORD_REGISTER_STRINGS = new Set(["af", "bc", "de", "hl", "sp", "pc"]);
+
+var isWordRegister = function isWordRegister(name) {
+  return WORD_REGISTER_STRINGS.has(name);
+};
+
+exports.isWordRegister = isWordRegister;
 var NON_AF_GROUPED_WORD_REGISTERS = ["bc", "de", "hl"];
 exports.NON_AF_GROUPED_WORD_REGISTERS = NON_AF_GROUPED_WORD_REGISTERS;
 var GROUPED_WORD_REGISTERS = ["af"].concat(NON_AF_GROUPED_WORD_REGISTERS);
 exports.GROUPED_WORD_REGISTERS = GROUPED_WORD_REGISTERS;
-var BYTE_REGISTERS = ["a", "b", "c", "d", "e", "h", "l"];
-exports.BYTE_REGISTERS = BYTE_REGISTERS;
 var NON_A_BYTE_REGISTERS = BYTE_REGISTERS.filter(function (r) {
   return r !== "a";
 });

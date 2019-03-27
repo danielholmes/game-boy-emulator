@@ -132,6 +132,11 @@ function () {
       console.log("TODO: releaseButton", button);
     }
   }, {
+    key: "vRam",
+    get: function get() {
+      return this.mmu.vRam;
+    }
+  }, {
     key: "isOn",
     get: function get() {
       return this._isOn;

@@ -10,6 +10,7 @@ export type ClockCycles = number;
 // const CLOCK_CYCLES_PER_MACHINE_CYCLE = 4;
 
 export class Cpu {
+  // TODO: public should be readonly version
   public readonly registers: CpuRegisters;
   // Temporary variable until refactor done
   private remainingCycles: ClockCycles;

@@ -1,13 +1,15 @@
 import { BitValue, ByteValue, WordValue } from "../types";
 export declare type ByteRegister = "a" | "b" | "c" | "d" | "e" | "h" | "l";
+export declare const BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
+export declare const isByteRegister: (name: string) => name is ByteRegister;
 export declare type NonAfGroupedWordRegister = "bc" | "de" | "hl";
 export declare type GroupedWordRegister = "af" | NonAfGroupedWordRegister;
 declare type NativeWordRegister = "sp" | "pc";
 export declare type WordRegister = GroupedWordRegister | NativeWordRegister;
+export declare const isWordRegister: (name: string) => name is WordRegister;
 export declare type Register = ByteRegister | "f" | WordRegister;
 export declare const NON_AF_GROUPED_WORD_REGISTERS: ReadonlyArray<NonAfGroupedWordRegister>;
 export declare const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister>;
-export declare const BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
 export declare const NON_A_BYTE_REGISTERS: ReadonlyArray<ByteRegister>;
 export declare const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<Readonly<[ByteRegister, ByteRegister]>>;
 export declare const FLAG_Z_BIT = 7;

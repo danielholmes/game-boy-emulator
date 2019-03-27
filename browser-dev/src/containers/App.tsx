@@ -15,18 +15,23 @@ import {
 import DevContainer from "./DevContainer";
 import RunContainer from "./RunContainer";
 
-export default class App extends Component<{}, { device: Device }> {
-  private vRam?: VRam;
+export default class App extends Component<{}> {
+  private device?: Device;
+  private lastTime?: number;
 
-  componentDidMount (): void {
+  public constructor(props: {}) {
+    super(props);
+
+    this.runTick = this.runTick.bind(this);
+  }
+
+  public componentDidMount(): void {
     const cartridge = Cartridge.builder().build();
-
-    this.vRam = VRam.initializeRandomly();
 
     const mmu = new Mmu(
       bios,
       new WorkingRam(),
-      this.vRam,
+      VRam.initializeRandomly(),
       new IOMemory(),
       new OamMemory(),
       new ZeroPageRam()
@@ -40,36 +45,40 @@ export default class App extends Component<{}, { device: Device }> {
 
     const cpu = new Cpu();
 
-    const device = new Device(cpu, new Gpu(mmu, screen), mmu);
-    device.insertCartridge(cartridge);
-    device.turnOn();
+    this.device = new Device(cpu, new Gpu(mmu, screen), mmu);
+    this.device.insertCartridge(cartridge);
+    this.device.turnOn();
 
-    let lastTime: number = performance.now();
-    const requestTick = () => {
-      window.requestAnimationFrame(() => {
-        const current = performance.now();
-        const passed = current - lastTime;
-        console.log("took", passed);
-        lastTime = current;
-        device.tick(Math.min(16, passed));
-        this.forceUpdate();
-        requestTick();
-      });
-    };
+    this.lastTime = performance.now();
+    this.requestTick();
+  }
 
-    requestTick();
+  private requestTick(): void {
+    window.requestAnimationFrame(this.runTick);
+  }
 
-    this.setState({ device });
+  private runTick(): void {
+    if (this.lastTime === undefined || this.device === undefined) {
+      throw new Error("No device or last time");
+    }
+
+    const current = performance.now();
+    const passed = current - this.lastTime;
+    console.log("took", passed);
+    this.lastTime = current;
+    this.device.tick(Math.min(16, passed));
+    this.forceUpdate();
+    this.requestTick();
   }
 
   public render(): ReactElement<{}> | null {
-    if (!this.vRam) {
+    if (!this.device) {
       return null;
     }
     return (
       <Fragment>
         <RunContainer />
-        <DevContainer vRam={this.vRam} />
+        <DevContainer device={this.device} />
       </Fragment>
     );
   }

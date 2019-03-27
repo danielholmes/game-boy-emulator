@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import Dev, { PanelId } from "../components/Dev";
 import { ReactElement } from "react";
-import { VRam } from "@gebby/core";
+import { Device } from "@gebby/core";
 
 interface DevContainerProps {
-  readonly vRam: VRam;
+  readonly device: Device;
 }
 
-const DevContainer = ({ vRam }: DevContainerProps): ReactElement<DevContainerProps> => {
+const DevContainer = ({
+  device
+}: DevContainerProps): ReactElement<DevContainerProps> => {
   const [openPanels, setOpenPanels] = useState<ReadonlySet<PanelId>>(new Set());
 
   return (
     <Dev
-      vRam={vRam}
+      device={device}
       onChangePanelOpen={(id, isOpen) => {
         const updatedOpenPanels = new Set(openPanels);
         if (isOpen) {
@@ -25,7 +27,7 @@ const DevContainer = ({ vRam }: DevContainerProps): ReactElement<DevContainerPro
       }}
       openPanels={openPanels}
     />
-  )
+  );
 };
 
-export default DevContainer
+export default DevContainer;

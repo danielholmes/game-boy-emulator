@@ -2,13 +2,15 @@ import { Gpu } from "./gpu";
 import { Mmu } from "./memory/mmu";
 import { Cpu } from "./cpu";
 import { Cartridge } from "./cartridge";
+import { ReadonlyVRam } from "./memory/ram";
 export declare class Device {
-    private readonly cpu;
+    readonly cpu: Cpu;
     private readonly gpu;
     private readonly mmu;
     private _isOn;
     private nonUsedMs;
     constructor(cpu: Cpu, gpu: Gpu, mmu: Mmu);
+    readonly vRam: ReadonlyVRam;
     readonly isOn: boolean;
     insertCartridge(cartridge: Cartridge): void;
     removeCartridge(): void;

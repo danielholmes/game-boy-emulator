@@ -12,4 +12,3 @@ render(
   </Fragment>,
   document.getElementById("app")
 );
-

@@ -2,6 +2,7 @@ import { Gpu } from "./gpu";
 import { Mmu } from "./memory/mmu";
 import { Cpu } from "./cpu";
 import { Cartridge } from "./cartridge";
+import { ReadonlyVRam } from "./memory/ram";
 
 // clock cycles per second 4.19 MHz
 // approx 69,905 clock cycles per frame (60 fps)
@@ -11,7 +12,7 @@ const CLOCK_SPEED = 4194304;
 const CLOCK_CYCLES_PER_MACHINE_CYCLE = 4;
 
 export class Device {
-  private readonly cpu: Cpu;
+  public readonly cpu: Cpu;
   private readonly gpu: Gpu;
   private readonly mmu: Mmu;
   private _isOn: boolean;
@@ -23,6 +24,10 @@ export class Device {
     this.mmu = mmu;
     this._isOn = false;
     this.nonUsedMs = 0;
+  }
+
+  public get vRam(): ReadonlyVRam {
+    return this.mmu.vRam;
   }
 
   public get isOn(): boolean {

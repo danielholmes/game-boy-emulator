@@ -1,0 +1,1 @@
+{"version":3,"file":"PanelLayout.d.ts","sourceRoot":"","sources":["../../src/components/PanelLayout.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,EAAgB,SAAS,EAAE,MAAM,OAAO,CAAC;AAEvD,UAAU,gBAAgB;IACxB,QAAQ,CAAC,KAAK,EAAE,MAAM,CAAC;IACvB,QAAQ,CAAC,QAAQ,EAAE,SAAS,CAAC;CAC9B;AAED,QAAA,MAAM,WAAW,wQAKhB,CAAC;AAEF,eAAe,WAAW,CAAC"}
