@@ -75,6 +75,20 @@ describe("cpu", () => {
         0xcb,
         0x20
       ]);
+      // See Pan Docs "Power Up Sequence" section for these values
+      // Note: Not working atm
+      /*expect(cpu).toEqualCpuWithRegisters({
+        a: 0x01,
+        b: 0x00,
+        c: 0x13,
+        d: 0x00,
+        e: 0xd8,
+        h: 0x01,
+        l: 0x4d,
+        f: 0xb0,
+        pc: 0x0100,
+        sp: 0xfffe
+      });*/
       expect(cpu).toEqualCpuWithRegisters({
         a: 0x00,
         b: 0x00,
@@ -89,8 +103,7 @@ describe("cpu", () => {
       });
       // Bios clears out vram to all 0
       expect(vRam.values).toEqual(new Uint8Array(V_RAM_SIZE));
-      // A lot of memory, not easy to specify/check it
-      // expect(memory).toEqual(createMmuWithValues({ 0x10: 0x06, 0x11: 0x66 }))
+      // TODO: Check special registers from pandocs
     });
   });
 });

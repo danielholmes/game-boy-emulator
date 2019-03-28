@@ -9,6 +9,12 @@ Monorepo for a Game Boy emulator and related tools written in Typescript. Goals:
  - Flexibility. Should be usable in multiple JS environments (e.g. browser, node, react native)
 
 
+## Current Status
+
+ - Runs bios correctly and you can see the bg and tile maps loaded into VRam correctly. This is visible in the 
+   [`browser-dev` package](./browser-dev)
+
+
 ## Requirements
 
  - [Yarn (tested with 1.13.0)](https://yarnpkg.com/)
@@ -24,6 +30,8 @@ yarn
 ## Roadmap
 
  - Rework mmu a little. Include tests and use explicit ranges. Maybe a cond
+ - implement timers - http://www.codeslinger.co.uk/pages/projects/gameboy/timers.html
+ - See re: initialization of RAM http://bgb.bircd.org/pandocs.htm#powerupsequence
  - Generate op codes table report.
     - Instruction knows size of operands based in low level calls
     - Also know timing. Might need to better encapsulate low level (e.g. double decrements)

@@ -128,6 +128,8 @@ export const calculateFHFromByteAdd = (
 ): BitValue => ((((original & 0xf) + (add & 0xf)) & 0x10) === 0x10 ? 1 : 0);
 
 export class CpuRegistersImpl implements CpuRegisters {
+  // Idea, if store all these in uint8array instead then will do & 0xff
+  // "for free". Do some performance checks on it
   private _a: ByteValue;
   private _b: ByteValue;
   private _c: ByteValue;

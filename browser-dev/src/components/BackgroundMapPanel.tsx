@@ -12,6 +12,8 @@ interface BackgroundMapPanelProps {
   readonly map: 1 | 2;
 }
 
+// TODO: Maybe show viewport https://youtu.be/WbO2FEpNPvQ?list=WL&t=1719
+// Said window has its own map too - include a panel for that
 class BackgroundMapPanel extends Component<BackgroundMapPanelProps> {
   private canvasPackage?: CanvasPackage;
 

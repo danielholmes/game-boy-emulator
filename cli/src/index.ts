@@ -57,6 +57,10 @@ device.turnOn();
 // see also "process.setImmediate" for timer
 // process.stdout.write
 
+// See https://www.npmjs.com/package/terminal-kit
+// See comment here about using the half block and bk and fg colors:
+// https://github.com/cronvel/terminal-kit/blob/HEAD/doc/high-level.md#ref.drawImage
+
 const pixelToOutChar = (color: PixelColor): string => {
   switch (color) {
     case 3:

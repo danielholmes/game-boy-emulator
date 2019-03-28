@@ -17,7 +17,9 @@ export declare class Mmu {
     constructor(bios: Bios, ram: WorkingRam, vRam: VRam, io: IOMemory, oam: OamMemory, zeroPage: ZeroPageRam, cartridge?: Cartridge);
     readonly vRam: ReadonlyVRam;
     readonly isInBios: boolean;
-    readonly bGP: ByteValue;
+    readonly bgP: ByteValue;
+    readonly obP0: ByteValue;
+    readonly obP1: ByteValue;
     readonly scY: ByteValue;
     readonly scX: ByteValue;
     readonly workingRamValues: ReadonlyUint8Array;
@@ -25,4 +27,5 @@ export declare class Mmu {
     readByte(address: MemoryAddress): ByteValue;
     writeByte(address: MemoryAddress, value: ByteValue): void;
 }
+export declare type ReadonlyMmu = Pick<Mmu, "readByte" | "scX" | "scY" | "bgP" | "obP0" | "obP1" | "isInBios">;
 //# sourceMappingURL=mmu.d.ts.map

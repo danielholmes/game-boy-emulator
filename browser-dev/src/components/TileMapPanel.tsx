@@ -71,7 +71,6 @@ class TileMapPanel extends Component<TileMapPanelProps> {
   }
 
   public render(): ReactElement<TileMapPanelProps> {
-    console.log("Tile.render");
     return (
       <PanelLayout title={`VRam Tile Map ${this.props.map}`}>
         <div>
@@ -87,7 +86,7 @@ class TileMapPanel extends Component<TileMapPanelProps> {
             <tbody>
               {DIMENSION_VALUES.map(i => (
                 <tr key={i}>
-                  <th>{toByteHexString(i)}</th>
+                  <td>{toByteHexString(i)}</td>
                   {i === 0x00 && (
                     <td
                       colSpan={DIMENSION_VALUES.length}
@@ -95,11 +94,11 @@ class TileMapPanel extends Component<TileMapPanelProps> {
                     >
                       <canvas
                         ref={this.onCanvasRef.bind(this)}
-                        width={BORDERED_TILE_MAP_SIZE + 200}
-                        height={BORDERED_TILE_MAP_SIZE + 200}
+                        width={BORDERED_TILE_MAP_SIZE}
+                        height={BORDERED_TILE_MAP_SIZE}
                         style={{
-                          width: (BORDERED_TILE_MAP_SIZE + 200) * 2,
-                          height: (BORDERED_TILE_MAP_SIZE + 200) * 2
+                          width: BORDERED_TILE_MAP_SIZE * 2,
+                          height: BORDERED_TILE_MAP_SIZE * 2
                         }}
                       />
                     </td>

@@ -51,8 +51,16 @@ export class Mmu {
     return this.readByte(0xff50) === 0x00;
   }
 
-  public get bGP(): ByteValue {
+  public get bgP(): ByteValue {
     return this.readByte(0xff47);
+  }
+
+  public get obP0(): ByteValue {
+    return this.readByte(0xff48);
+  }
+
+  public get obP1(): ByteValue {
+    return this.readByte(0xff49);
   }
 
   public get scY(): ByteValue {
@@ -148,3 +156,8 @@ export class Mmu {
     }
   }
 }
+
+export type ReadonlyMmu = Pick<
+  Mmu,
+  "readByte" | "scX" | "scY" | "bgP" | "obP0" | "obP1" | "isInBios"
+>;

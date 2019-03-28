@@ -31,7 +31,7 @@ function () {
 
     _defineProperty(this, "gpu", void 0);
 
-    _defineProperty(this, "mmu", void 0);
+    _defineProperty(this, "_mmu", void 0);
 
     _defineProperty(this, "_isOn", void 0);
 
@@ -39,7 +39,7 @@ function () {
 
     this.cpu = cpu;
     this.gpu = gpu;
-    this.mmu = mmu;
+    this._mmu = mmu;
     this._isOn = false;
     this.nonUsedMs = 0;
   }
@@ -51,7 +51,8 @@ function () {
         throw new Error("Can't insert cartridge while on");
       }
 
-      this.mmu.loadCartridge(cartridge);
+      this._mmu.loadCartridge(cartridge);
+
       console.log("TODO: Cart insert if not present", _typeof(cartridge));
     }
   }, {
@@ -110,14 +111,14 @@ function () {
               - when todo stack empty, add fetch instruction low level op
        */
 
-      this.cpu.tick(this.mmu, numClockCycles);
+      this.cpu.tick(this._mmu, numClockCycles);
       this.gpu.tick(numClockCycles); // TODO: Timer
       // TODO: Interrupts
     }
   }, {
     key: "tickCycle",
     value: function tickCycle() {
-      this.cpu.tick(this.mmu, 1);
+      this.cpu.tick(this._mmu, 1);
       this.gpu.tick(1); // TODO: Timer
       // TODO: Interrupts
     }
@@ -134,7 +135,12 @@ function () {
   }, {
     key: "vRam",
     get: function get() {
-      return this.mmu.vRam;
+      return this._mmu.vRam;
+    }
+  }, {
+    key: "mmu",
+    get: function get() {
+      return this._mmu;
     }
   }, {
     key: "isOn",

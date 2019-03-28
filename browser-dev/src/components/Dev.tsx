@@ -1,25 +1,31 @@
 import React, { ComponentType, ReactElement } from "react";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
+import Checkbox from "@material-ui/core/Checkbox";
 import { BackgroundMapPanel1, BackgroundMapPanel2 } from "./BackgroundMapPanel";
 import { Device } from "@gebby/core";
 import { TileMapPanel1, TileMapPanel2 } from "./TileMapPanel";
 import CpuRegistersPanel from "./CpuRegistersPanel";
+import OamSpritesPanel from "./OamSpritesPanel";
 import ProgramPanel from "./ProgramPanel";
+import TimerPanel from "./TimerPanel";
 import {
   VRamMemoryInspectorPanel,
   WorkingRamMemoryInspectorPanel
 } from "./MemoryInspectorPanel";
+import GpuRegistersPanel from "./GpuRegistersPanel";
 
-export type PanelId = "VRamTileMap1";
-"BackgroundMap1" |
+export type PanelId = "VRamTileMap1" |
+  "BackgroundMap1" |
   "VRamTileMap2" |
   "BackgroundMap2" |
   "CpuRegisters" |
+  "GpuRegisters" |
   "Program" |
   "WorkingRamInspector" |
-  "VRamInspector";
+  "VRamInspector" |
+  "Timer" |
+  "OamSprites";
 
 interface PanelComponentProps {
   readonly device: Device;
@@ -36,6 +42,11 @@ const PANELS: ReadonlyArray<Panel> = [
     id: "CpuRegisters",
     label: "CPU - Registers",
     component: CpuRegistersPanel
+  },
+  {
+    id: "GpuRegisters",
+    label: "GPU - Registers",
+    component: GpuRegistersPanel
   },
   {
     id: "VRamTileMap1",
@@ -71,6 +82,16 @@ const PANELS: ReadonlyArray<Panel> = [
     id: "WorkingRamInspector",
     label: "Ram - Working Ram Inspector",
     component: WorkingRamMemoryInspectorPanel
+  },
+  {
+    id: "OamSprites",
+    label: "Oam - Sprites",
+    component: OamSpritesPanel
+  },
+  {
+    id: "Timer",
+    label: "Timer",
+    component: TimerPanel
   }
 ];
 
@@ -91,7 +112,7 @@ const Dev = ({
         <FormControlLabel
           key={id}
           control={
-            <Switch
+            <Checkbox
               checked={openPanels.has(id)}
               onChange={() => onChangePanelOpen(id, !openPanels.has(id))}
               value="checkedA"

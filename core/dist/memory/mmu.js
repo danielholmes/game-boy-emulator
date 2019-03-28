@@ -151,9 +151,19 @@ function () {
       return this.readByte(0xff50) === 0x00;
     }
   }, {
-    key: "bGP",
+    key: "bgP",
     get: function get() {
       return this.readByte(0xff47);
+    }
+  }, {
+    key: "obP0",
+    get: function get() {
+      return this.readByte(0xff48);
+    }
+  }, {
+    key: "obP1",
+    get: function get() {
+      return this.readByte(0xff49);
     }
   }, {
     key: "scY",

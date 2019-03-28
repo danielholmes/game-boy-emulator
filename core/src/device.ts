@@ -1,5 +1,5 @@
 import { Gpu } from "./gpu";
-import { Mmu } from "./memory/mmu";
+import { Mmu, ReadonlyMmu } from "./memory/mmu";
 import { Cpu } from "./cpu";
 import { Cartridge } from "./cartridge";
 import { ReadonlyVRam } from "./memory/ram";
@@ -14,20 +14,24 @@ const CLOCK_CYCLES_PER_MACHINE_CYCLE = 4;
 export class Device {
   public readonly cpu: Cpu;
   private readonly gpu: Gpu;
-  private readonly mmu: Mmu;
+  private readonly _mmu: Mmu;
   private _isOn: boolean;
   private nonUsedMs: number;
 
   public constructor(cpu: Cpu, gpu: Gpu, mmu: Mmu) {
     this.cpu = cpu;
     this.gpu = gpu;
-    this.mmu = mmu;
+    this._mmu = mmu;
     this._isOn = false;
     this.nonUsedMs = 0;
   }
 
   public get vRam(): ReadonlyVRam {
-    return this.mmu.vRam;
+    return this._mmu.vRam;
+  }
+
+  public get mmu(): ReadonlyMmu {
+    return this._mmu;
   }
 
   public get isOn(): boolean {
@@ -38,7 +42,7 @@ export class Device {
     if (this.isOn) {
       throw new Error(`Can't insert cartridge while on`);
     }
-    this.mmu.loadCartridge(cartridge);
+    this._mmu.loadCartridge(cartridge);
     console.log("TODO: Cart insert if not present", typeof cartridge);
   }
 
@@ -90,14 +94,14 @@ export class Device {
             - low level op can be 4 clock cycles, or 0
             - when todo stack empty, add fetch instruction low level op
      */
-    this.cpu.tick(this.mmu, numClockCycles);
+    this.cpu.tick(this._mmu, numClockCycles);
     this.gpu.tick(numClockCycles);
     // TODO: Timer
     // TODO: Interrupts
   }
 
   public tickCycle(): void {
-    this.cpu.tick(this.mmu, 1);
+    this.cpu.tick(this._mmu, 1);
     this.gpu.tick(1);
     // TODO: Timer
     // TODO: Interrupts
