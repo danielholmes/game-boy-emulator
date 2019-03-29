@@ -10,9 +10,7 @@ const OamSpritesPanel = ({
 
 }: OamSpritesPanelProps): ReactElement<OamSpritesPanelProps> => (
   <PanelLayout title="Oam - Sprites">
-    <div>
-      TODO: Oam sprites
-    </div>
+    <div>TODO: Oam sprites</div>
   </PanelLayout>
 );
 

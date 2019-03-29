@@ -72,6 +72,9 @@ export class ZeroPageRam {
   }
 }
 
+// In actual game boy, Working Ram and VRam are both the same component type:
+// LH5164LN-10
+
 export const WORKING_RAM_SIZE = 0x2000;
 
 export class WorkingRam {

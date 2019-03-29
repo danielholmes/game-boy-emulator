@@ -69,6 +69,8 @@ exports.calculateFHFromByteAdd = calculateFHFromByteAdd;
 var CpuRegistersImpl =
 /*#__PURE__*/
 function () {
+  // Idea, if store all these in uint8array instead then will do & 0xff
+  // "for free". Do some performance checks on it
   function CpuRegistersImpl() {
     _classCallCheck(this, CpuRegistersImpl);
 

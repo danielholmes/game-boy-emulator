@@ -14,6 +14,7 @@ interface BackgroundMapPanelProps {
 
 // TODO: Maybe show viewport https://youtu.be/WbO2FEpNPvQ?list=WL&t=1719
 // Said window has its own map too - include a panel for that
+// TODO: Have a viewport toggle checkbox, and maybe tilemap grid
 class BackgroundMapPanel extends Component<BackgroundMapPanelProps> {
   private canvasPackage?: CanvasPackage;
 

@@ -10,10 +10,14 @@ const GpuRegistersPanel = ({
   device: { mmu }
 }: GpuRegistersPanelProps): ReactElement<GpuRegistersPanelProps> => (
   <PanelLayout title="GPU - Registers">
-    SCX: {mmu.scX}<br />
-    SCY: {mmu.scY}<br />
-    BGP: {mmu.bgP}<br />
-    OBP0: {mmu.obP0}<br />
+    SCX: {mmu.scX}
+    <br />
+    SCY: {mmu.scY}
+    <br />
+    BGP: {mmu.bgP}
+    <br />
+    OBP0: {mmu.obP0}
+    <br />
     OBP1: {mmu.obP1}
   </PanelLayout>
 );

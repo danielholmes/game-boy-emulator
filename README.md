@@ -72,8 +72,10 @@ yarn
  - https://www.cl.cam.ac.uk/~pv273/slides/emulation.pdf
  - Schematics - https://console5.com/wiki/Game_Boy_DMG-01
  - https://www.youtube.com/watch?v=t0V-D2YMhrs&index=2&list=PLu3xpmdUP-GRDp8tknpXC_Y4RUQtMMqEu
- - https://www.youtube.com/watch?v=GBYwjch6oEE
+ - Mooneye-gb author - https://www.youtube.com/watch?v=GBYwjch6oEE
  - https://www.youtube.com/watch?v=HyzD8pNlpwI
+ - http://www.diva-portal.org/smash/get/diva2:433485/FULLTEXT01.pdf
+ - http://www.romhacking.net/documents/%5b544%5dGameBoyProgrammingManual.pdf
 
 ### Input
 
@@ -89,6 +91,9 @@ yarn
 ### Testing
 
  - See blarg's test ROM https://github.com/taisel/GameBoy-Online
+ - https://www.reddit.com/r/emulation/comments/2nmslr/android_gbgbc_emulator_accuracy_testing_results/
+ - https://gekkio.fi/blog/2016-10-10-game-boy-test-rom-dos-and-donts.html
+ - http://gbdev.gg8.se/wiki/articles/Test_ROMs
  - https://github.com/Gekkio/mooneye-gb/blob/master/docs/accuracy.markdown
  - https://realboyemulator.wordpress.com/2013/01/03/a-look-at-the-game-boy-bootstrap-let-the-fun-begin/ 
  
@@ -118,3 +123,9 @@ yarn
  - For the C side of things:
    - https://www.youtube.com/watch?v=hE7l6Adoiiw&list=PL6B940F08B9773B9F
    - https://www.youtube.com/watch?v=ktfIkfNz99Y - might be newer version of the above
+
+
+Window
+When the window is displayed, the window x-coordinate register (register WX, address 0xFF4B) must be set in the
+range 7-165. A setting of 0-6 or 166 is prohibited. Specifying a value of 167 or greater causes the window not to be
+displayed.

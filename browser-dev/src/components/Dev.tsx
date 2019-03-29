@@ -15,9 +15,8 @@ import {
 } from "./MemoryInspectorPanel";
 import GpuRegistersPanel from "./GpuRegistersPanel";
 
-export type PanelId = "VRamTileMap1" |
-  "BackgroundMap1" |
-  "VRamTileMap2" |
+export type PanelId = "VRamTileMap1" | "BackgroundMap1";
+"VRamTileMap2" |
   "BackgroundMap2" |
   "CpuRegisters" |
   "GpuRegisters" |

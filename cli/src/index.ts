@@ -11,15 +11,11 @@ import {
   OamMemory,
   PixelColor,
   Tile,
-  Cartridge,
-  isValidCartridge
+  Cartridge
 } from "@gebby/core";
-import { range, flatMap, repeat, zip } from "lodash";
+import { range, flatMap } from "lodash";
 
 const cartridge = Cartridge.builder().build();
-if (!isValidCartridge(cartridge)) {
-  throw new Error("Invalid cartridge");
-}
 
 const vRam = VRam.initializeRandomly();
 
@@ -77,7 +73,7 @@ const tileToString = (tile: Tile): string =>
   tile.map(r => r.map(pixelToOutChar).join("")).join("\n");
 
 const printEnd = (): void => {
-  console.log("BG & window palette", mmu.bGP.toString(2));
+  console.log("BG & window palette", mmu.bgP.toString(2));
 
   console.log("Table 1 tiles:");
   range(0, 255).forEach(i => {

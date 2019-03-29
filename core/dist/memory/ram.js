@@ -109,7 +109,9 @@ function () {
   }]);
 
   return ZeroPageRam;
-}();
+}(); // In actual game boy, Working Ram and VRam are both the same component type:
+// LH5164LN-10
+
 
 exports.ZeroPageRam = ZeroPageRam;
 var WORKING_RAM_SIZE = 0x2000;

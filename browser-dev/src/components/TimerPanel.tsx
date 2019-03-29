@@ -6,14 +6,8 @@ interface TimerPanelProps {
   readonly device: Device;
 }
 
-const TimerPanel = ({
-  device: {
-    cpu: { registers }
-  }
-}: TimerPanelProps): ReactElement<TimerPanelProps> => (
-  <PanelLayout title="Timers">
-    TODO: Timers
-  </PanelLayout>
+const TimerPanel = ({  }: TimerPanelProps): ReactElement<TimerPanelProps> => (
+  <PanelLayout title="Timers">TODO: Timers</PanelLayout>
 );
 
 export default TimerPanel;
