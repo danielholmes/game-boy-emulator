@@ -6,10 +6,6 @@ var _lodash = require("lodash");
 
 var cartridge = _core.Cartridge.builder().build();
 
-if (!(0, _core.isValidCartridge)(cartridge)) {
-  throw new Error("Invalid cartridge");
-}
-
 var vRam = _core.VRam.initializeRandomly();
 
 var mmu = new _core.Mmu(_core.bios, new _core.WorkingRam(), vRam, new _core.IOMemory(), new _core.OamMemory(), new _core.ZeroPageRam());
@@ -30,6 +26,9 @@ device.turnOn(); // process.stdout.write instead of console.log
 // think you can cork then uncork to prevent half scene being rendered
 // see also "process.setImmediate" for timer
 // process.stdout.write
+// See https://www.npmjs.com/package/terminal-kit
+// See comment here about using the half block and bk and fg colors:
+// https://github.com/cronvel/terminal-kit/blob/HEAD/doc/high-level.md#ref.drawImage
 
 var pixelToOutChar = function pixelToOutChar(color) {
   switch (color) {
@@ -53,7 +52,7 @@ var tileToString = function tileToString(tile) {
 };
 
 var printEnd = function printEnd() {
-  console.log("BG & window palette", mmu.bGP.toString(2));
+  console.log("BG & window palette", mmu.bgP.toString(2));
   console.log("Table 1 tiles:");
   (0, _lodash.range)(0, 255).forEach(function (i) {
     var tile = vRam.getTileDataFromTable1(i);

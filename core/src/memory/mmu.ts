@@ -47,6 +47,13 @@ export class Mmu {
     return this._vRam;
   }
 
+  /*
+    TODO: Write tests for this:
+    bit 7-1 Unimplemented: Read as 1
+    bit 0 BOOT_OFF: Boot ROM lock bit
+    0b1= Boot ROM is disabled and 0x0000-0x00FF works normally.
+    0b0= Boot ROM is active and intercepts accesses to 0x0000-0x00FF.
+   */
   public get isInBios(): boolean {
     return this.readByte(0xff50) === 0x00;
   }

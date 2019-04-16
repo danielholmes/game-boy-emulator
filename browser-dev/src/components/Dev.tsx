@@ -14,17 +14,9 @@ import {
   WorkingRamMemoryInspectorPanel
 } from "./MemoryInspectorPanel";
 import GpuRegistersPanel from "./GpuRegistersPanel";
+import CartridgePanel from "./CartridgePanel";
 
-export type PanelId = "VRamTileMap1" | "BackgroundMap1";
-"VRamTileMap2" |
-  "BackgroundMap2" |
-  "CpuRegisters" |
-  "GpuRegisters" |
-  "Program" |
-  "WorkingRamInspector" |
-  "VRamInspector" |
-  "Timer" |
-  "OamSprites";
+export type PanelId = "VRamTileMap1" | "BackgroundMap1" | "VRamTileMap2" | "BackgroundMap2" | "CpuRegisters" | "GpuRegisters" | "Program" | "WorkingRamInspector" | "VRamInspector" | "Timer" | "OamSprites" | "Cartridge";
 
 interface PanelComponentProps {
   readonly device: Device;
@@ -91,6 +83,11 @@ const PANELS: ReadonlyArray<Panel> = [
     id: "Timer",
     label: "Timer",
     component: TimerPanel
+  },
+  {
+    id: "Cartridge",
+    label: "Cartridge",
+    component: CartridgePanel
   }
 ];
 

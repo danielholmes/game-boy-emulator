@@ -29,13 +29,23 @@ yarn
 
 ## Roadmap
 
- - Rework mmu a little. Include tests and use explicit ranges. Maybe a cond
+ - Rework mmu a little. Include tests and use explicit ranges
+   - IO should not be a block of memory. MMU should defer to registers on individual io 
+     devices
+   - VRam and working ram are memory blocks
+   - not sure about oam, zero page
+   - BIOS has a register on itself to indicate state
+   - see https://github.com/Gekkio/mooneye-gb/blob/master/core/src/hardware/mod.rs
  - implement timers - http://www.codeslinger.co.uk/pages/projects/gameboy/timers.html
  - See re: initialization of RAM http://bgb.bircd.org/pandocs.htm#powerupsequence
  - Generate op codes table report.
     - Instruction knows size of operands based in low level calls
     - Also know timing. Might need to better encapsulate low level (e.g. double decrements)
  - interrupts
+   - see: https://youtu.be/GBYwjch6oEE?list=WL&t=2239
+     checked only between instructions
+     handling takes 5 machine cycles (20 clock)
+     if 2 happen then only highest priority handled
  - complete GPU enough (nintendo logo is a background, not sprite)
  - Set up cli running and displaying bios
  - Set up browser running and displaying bios
@@ -55,6 +65,9 @@ yarn
  - https://blog.rekawek.eu/2017/02/09/coffee-gb/
  - https://robdor.com/2016/08/10/gameboy-emulator-half-carry-flag/
  - http://imrannazar.com/GameBoy-Emulation-in-JavaScript
+ - mooneye gb author - https://gekkio.fi/blog/
+ - hardware basics (covers CPU instruction sets, memory mapping, devices, interrupts)
+   https://www.youtube.com/watch?v=9-KUm9YpPm0
 
 ### Manuals/Comprehensive Reference
 
@@ -66,13 +79,15 @@ yarn
  - Sound - http://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware
  - Hardware - http://marc.rawer.de/Gameboy/Docs/GBProject.pdf
  - Op codes table - http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
+ - Mooneye mentions this is more accurate for cartridge handling than pandocs
+   https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
 
 ### Overviews
 
  - https://www.cl.cam.ac.uk/~pv273/slides/emulation.pdf
  - Schematics - https://console5.com/wiki/Game_Boy_DMG-01
  - https://www.youtube.com/watch?v=t0V-D2YMhrs&index=2&list=PLu3xpmdUP-GRDp8tknpXC_Y4RUQtMMqEu
- - Mooneye-gb author - https://www.youtube.com/watch?v=GBYwjch6oEE
+ - Mooneye-gb author on accuracy - https://www.youtube.com/watch?v=GBYwjch6oEE
  - https://www.youtube.com/watch?v=HyzD8pNlpwI
  - http://www.diva-portal.org/smash/get/diva2:433485/FULLTEXT01.pdf
  - http://www.romhacking.net/documents/%5b544%5dGameBoyProgrammingManual.pdf
@@ -96,6 +111,8 @@ yarn
  - http://gbdev.gg8.se/wiki/articles/Test_ROMs
  - https://github.com/Gekkio/mooneye-gb/blob/master/docs/accuracy.markdown
  - https://realboyemulator.wordpress.com/2013/01/03/a-look-at-the-game-boy-bootstrap-let-the-fun-begin/ 
+ - https://mgba.io/2017/05/29/holy-grail-bugs/
+ - https://mgba.io/2018/03/09/holy-grail-bugs-revisited/
  
 ### Implementations
 
