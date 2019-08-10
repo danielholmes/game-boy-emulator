@@ -28,7 +28,7 @@ export class Cartridge {
   /* eslint-enable @typescript-eslint/no-use-before-define */
 
   public static buildWithProgram(
-    program: ReadonlyUint8Array | ReadonlyArray<ByteValue>
+    program: ReadonlyUint8Array | readonly ByteValue[]
   ): Cartridge {
     return Cartridge.builder()
       .program(program)
@@ -44,7 +44,7 @@ class CartridgeBuilder {
   }
 
   public program(
-    program: ReadonlyUint8Array | ReadonlyArray<ByteValue>
+    program: ReadonlyUint8Array | readonly ByteValue[]
   ): CartridgeBuilder {
     if (program.length > MAX_CARTRIDGE_PROGRAM_LENGTH) {
       throw new Error("program too long");

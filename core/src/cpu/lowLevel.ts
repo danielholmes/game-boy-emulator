@@ -147,7 +147,7 @@ export class BitFlags implements LowLevelOp {
 }
 
 export type CheckFlag = "fNz" | "fZ" | "fC" | "fNc";
-export const CHECK_FLAGS: ReadonlyArray<CheckFlag> = ["fNz", "fZ", "fC", "fNc"];
+export const CHECK_FLAGS: readonly CheckFlag[] = ["fNz", "fZ", "fC", "fNc"];
 
 export class SetToPcIfFlag implements LowLevelOp {
   public readonly cycles: ClockCycles = 0;

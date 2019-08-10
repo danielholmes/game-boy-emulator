@@ -6,8 +6,8 @@ import { Cpu } from "../cpu";
 import { CpuRegisters, Register } from "../cpu/registers";
 import {
   toPairs,
-  transform,
-  fromPairs
+  fromPairs,
+  reduce
 } from "lodash";
 import { ByteValue, MemoryAddress } from "../types";
 import { toByteHexString, toWordHexString } from "../utils/numberUtils";
@@ -91,11 +91,13 @@ expect.extend({
           toByteHexString(value)
         ])
     );
-    const expectedInHex = transform<ByteValue, string>(
+    const expectedInHex = reduce(
       expected,
-      (result, value, address) => {
-        result[toWordHexString(parseInt(address))] = toByteHexString(value);
-      }
+      (result, value, address) => ({
+        ...result,
+        [toWordHexString(parseInt(address))]: toByteHexString(value)
+      }),
+      {}
     );
     if (this.isNot) {
       expect(receivedInHex).not.toEqual(expectedInHex);

@@ -9,7 +9,7 @@ export type BitValue = 1 | 0;
 
 export type ByteBitPosition = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
-export const BYTE_BIT_POSITIONS: ReadonlyArray<ByteBitPosition> = [
+export const BYTE_BIT_POSITIONS: readonly ByteBitPosition[] = [
   0,
   1,
   2,

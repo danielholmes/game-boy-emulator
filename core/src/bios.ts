@@ -1,6 +1,5 @@
 import { ByteValue, MemoryAddress, ReadonlyUint8Array } from "./types";
 
-
 // This is just one version of the bios, there are more than one that people
 // have extracted from the hardware
 const BIOS: ReadonlyUint8Array = new Uint8Array([

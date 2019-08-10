@@ -4,7 +4,7 @@ import { flatMap } from "lodash";
 // TODO: Should include all byte registers (inc f) or be renamed
 export type ByteRegister = "a" | "b" | "c" | "d" | "e" | "h" | "l";
 
-export const BYTE_REGISTERS: ReadonlyArray<ByteRegister> = [
+export const BYTE_REGISTERS: readonly ByteRegister[] = [
   "a",
   "b",
   "c",
@@ -49,22 +49,24 @@ export const isWordRegister = (name: string): name is WordRegister =>
 
 export type Register = ByteRegister | "f" | WordRegister;
 
-export const NON_AF_GROUPED_WORD_REGISTERS: ReadonlyArray<
-  NonAfGroupedWordRegister
-> = ["bc", "de", "hl"];
+export const NON_AF_GROUPED_WORD_REGISTERS: readonly NonAfGroupedWordRegister[] = [
+  "bc",
+  "de",
+  "hl"
+];
 
-export const GROUPED_WORD_REGISTERS: ReadonlyArray<GroupedWordRegister> = [
+export const GROUPED_WORD_REGISTERS: readonly GroupedWordRegister[] = [
   "af",
   ...NON_AF_GROUPED_WORD_REGISTERS
 ];
 
-export const NON_A_BYTE_REGISTERS: ReadonlyArray<
-  ByteRegister
-> = BYTE_REGISTERS.filter(r => r !== "a");
+export const NON_A_BYTE_REGISTERS: readonly ByteRegister[] = BYTE_REGISTERS.filter(
+  r => r !== "a"
+);
 
-export const BYTE_REGISTER_PAIR_PERMUTATIONS: ReadonlyArray<
-  Readonly<[ByteRegister, ByteRegister]>
-> = flatMap(
+export const BYTE_REGISTER_PAIR_PERMUTATIONS: readonly Readonly<
+  [ByteRegister, ByteRegister]
+>[] = flatMap(
   BYTE_REGISTERS.map(r1 =>
     BYTE_REGISTERS.map(r2 => [r1, r2] as Readonly<[ByteRegister, ByteRegister]>)
   )

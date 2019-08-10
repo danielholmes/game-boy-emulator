@@ -117,7 +117,7 @@ const CB_INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x7c, 7, "h"],
       [0x7d, 7, "l"],
       [0x7f, 7, "a"]
-    ] as ReadonlyArray<[OpCode, ByteBitPosition, ByteRegister]>).map(
+    ] as readonly [OpCode, ByteBitPosition, ByteRegister][]).map(
       ([opCode, position, register]) =>
         createCbBitBR(opCode, position, register)
     ),
@@ -131,7 +131,7 @@ const CB_INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x6e, 5],
       [0x76, 6],
       [0x7e, 7]
-    ] as ReadonlyArray<[OpCode, ByteBitPosition]>).map(([opCode, position]) =>
+    ] as readonly [OpCode, ByteBitPosition][]).map(([opCode, position]) =>
       createCbBitBMHl(opCode, position)
     ),
 
@@ -143,7 +143,7 @@ const CB_INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x13, "e"],
       [0x14, "h"],
       [0x15, "l"]
-    ] as ReadonlyArray<[OpCode, ByteRegister]>).map(([opCode, register]) =>
+    ] as readonly [OpCode, ByteRegister][]).map(([opCode, register]) =>
       createRlR(opCode, register)
     ),
 

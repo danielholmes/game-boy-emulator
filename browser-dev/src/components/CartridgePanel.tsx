@@ -6,7 +6,9 @@ interface CartridgePanelProps {
   readonly device: Device;
 }
 
-const CartridgePanel = ({  }: CartridgePanelProps): ReactElement<CartridgePanelProps> => (
+const CartridgePanel = ({
+
+}: CartridgePanelProps): ReactElement<CartridgePanelProps> => (
   <PanelLayout title="Cartridge">TODO: Cartridge</PanelLayout>
 );
 

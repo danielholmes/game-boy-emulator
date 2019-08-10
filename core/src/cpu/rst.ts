@@ -10,7 +10,7 @@ export type RstAddress =
   | 0x0030
   | 0x0038;
 
-export const RST_ADDRESSES: ReadonlyArray<RstAddress> = [
+export const RST_ADDRESSES: readonly RstAddress[] = [
   0x0000,
   0x0008,
   0x0010,

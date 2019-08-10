@@ -16,7 +16,19 @@ import {
 import GpuRegistersPanel from "./GpuRegistersPanel";
 import CartridgePanel from "./CartridgePanel";
 
-export type PanelId = "VRamTileMap1" | "BackgroundMap1" | "VRamTileMap2" | "BackgroundMap2" | "CpuRegisters" | "GpuRegisters" | "Program" | "WorkingRamInspector" | "VRamInspector" | "Timer" | "OamSprites" | "Cartridge";
+export type PanelId =
+  | "VRamTileMap1"
+  | "BackgroundMap1"
+  | "VRamTileMap2"
+  | "BackgroundMap2"
+  | "CpuRegisters"
+  | "GpuRegisters"
+  | "Program"
+  | "WorkingRamInspector"
+  | "VRamInspector"
+  | "Timer"
+  | "OamSprites"
+  | "Cartridge";
 
 interface PanelComponentProps {
   readonly device: Device;
@@ -28,7 +40,7 @@ interface Panel {
   readonly component: ComponentType<PanelComponentProps>;
 }
 
-const PANELS: ReadonlyArray<Panel> = [
+const PANELS: readonly Panel[] = [
   {
     id: "CpuRegisters",
     label: "CPU - Registers",

@@ -55,12 +55,12 @@ export interface Instruction {
 export class InstructionDefinition implements Instruction {
   public readonly opCode: OpCode;
   public readonly label: string;
-  private readonly operations: ReadonlyArray<LowLevelOp>;
+  private readonly operations: readonly LowLevelOp[];
 
   public constructor(
     opCode: OpCode,
     label: string,
-    operations: ReadonlyArray<LowLevelOp> = []
+    operations: readonly LowLevelOp[] = []
   ) {
     this.opCode = opCode;
     this.label = label;

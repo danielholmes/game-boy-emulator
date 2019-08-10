@@ -13,9 +13,9 @@ interface TileMapPanelProps {
   readonly map: 1 | 2;
 }
 
-const DIMENSION_VALUES: ReadonlyArray<ByteValue> = range(0x00, 0xff + 1, 0x10);
+const DIMENSION_VALUES: readonly ByteValue[] = range(0x00, 0xff + 1, 0x10);
 const BORDER_SIZE = 1;
-const BORDER_POSITIONS: ReadonlyArray<number> = range(
+const BORDER_POSITIONS: readonly number[] = range(
   0x08,
   16 * (0x08 + BORDER_SIZE) + 1,
   0x08 + BORDER_SIZE
