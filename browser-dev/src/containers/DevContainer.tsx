@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 import Dev, { PanelId } from "../components/Dev";
 import { ReactElement } from "react";
 import { Device } from "@gebby/core";
@@ -7,27 +7,27 @@ interface DevContainerProps {
   readonly device: Device;
 }
 
-const DevContainer = ({
-  device
-}: DevContainerProps): ReactElement<DevContainerProps> => {
-  const [openPanels, setOpenPanels] = useState<ReadonlySet<PanelId>>(new Set());
+function DevContainer({ device }: DevContainerProps): ReactElement<DevContainerProps> {
+  const [openPanels, onChangePanelOpen] = useReducer(
+    (previous: ReadonlySet<PanelId>, {id, isOpen}: {id: PanelId, isOpen: boolean}) => {
+      const updatedOpenPanels: Set<PanelId> = new Set(previous);
+      if (isOpen) {
+        return updatedOpenPanels.add(id);
+      }
+
+      updatedOpenPanels.delete(id);
+      return updatedOpenPanels;
+    },
+    new Set()
+  );
 
   return (
     <Dev
       device={device}
-      onChangePanelOpen={(id, isOpen) => {
-        const updatedOpenPanels = new Set(openPanels);
-        if (isOpen) {
-          setOpenPanels(updatedOpenPanels.add(id));
-          return;
-        }
-
-        updatedOpenPanels.delete(id);
-        setOpenPanels(updatedOpenPanels);
-      }}
+      onChangePanelOpen={onChangePanelOpen}
       openPanels={openPanels}
     />
   );
-};
+}
 
 export default DevContainer;

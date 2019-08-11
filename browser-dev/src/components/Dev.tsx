@@ -40,7 +40,7 @@ interface Panel {
   readonly component: ComponentType<PanelComponentProps>;
 }
 
-const PANELS: readonly Panel[] = [
+const panels: readonly Panel[] = [
   {
     id: "CpuRegisters",
     label: "CPU - Registers",
@@ -106,36 +106,38 @@ const PANELS: readonly Panel[] = [
 interface DevProps {
   readonly device: Device;
   readonly openPanels: ReadonlySet<PanelId>;
-  readonly onChangePanelOpen: (panelId: PanelId, isOpen: boolean) => void;
+  readonly onChangePanelOpen: (action: { id: PanelId, isOpen: boolean }) => void;
 }
 
-const Dev = ({
+function Dev({
   device,
   openPanels,
   onChangePanelOpen
-}: DevProps): ReactElement<DevProps> => (
-  <div className="dev">
-    <FormGroup row>
-      {PANELS.map(({ id, label }) => (
-        <FormControlLabel
-          key={id}
-          control={
-            <Checkbox
-              checked={openPanels.has(id)}
-              onChange={() => onChangePanelOpen(id, !openPanels.has(id))}
-              value="checkedA"
-            />
-          }
-          label={label}
-        />
-      ))}
-    </FormGroup>
-    {PANELS.filter(({ id }) => openPanels.has(id)).map(
-      ({ id, component: Component }) => (
-        <Component key={id} device={device} />
-      )
-    )}
-  </div>
-);
+}: DevProps): ReactElement<DevProps> {
+  return (
+    <div className="dev">
+      <FormGroup row>
+        {panels.map(({ id, label }) => (
+          <FormControlLabel
+            key={id}
+            control={
+              <Checkbox
+                checked={openPanels.has(id)}
+                onChange={() => onChangePanelOpen({ id, isOpen: !openPanels.has(id) })}
+              />
+            }
+            value="checkedA"
+            label={label}
+          />
+        ))}
+      </FormGroup>
+      {panels.filter(({ id }) => openPanels.has(id)).map(
+        ({ id, component: Component }) => (
+          <Component key={id} device={device}/>
+        )
+      )}
+    </div>
+  );
+}
 
 export default Dev;

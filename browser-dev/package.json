@@ -26,7 +26,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "@gebby/core": "^0.0.1",
-    "@material-ui/core": "^3.9.2",
+    "@material-ui/core": "^4.3.2",
     "lodash": "^4.17.11"
   },
   "eslintConfig": {

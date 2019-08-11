@@ -1,6 +1,8 @@
 import React, { ReactElement } from "react";
 import Run from "../components/Run";
 
-const RunContainer = (): ReactElement<{}> => <Run />;
+function RunContainer (): ReactElement<{}> {
+  return <Run />;
+}
 
 export default RunContainer;
