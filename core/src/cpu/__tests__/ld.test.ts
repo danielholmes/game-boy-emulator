@@ -50,7 +50,7 @@ describe("ld", () => {
   describe("createLdRR", () => {
     test.each(BYTE_REGISTER_PAIR_PERMUTATIONS)(
       "LD %s,%s",
-      (register1: ByteRegister, register2: ByteRegister) => {
+      ([register1, register2]: Readonly<[ByteRegister, ByteRegister]>) => {
         cpu.registers[register2] = 0x72;
 
         const instruction = createLdRR(0x3d, register1, register2);
