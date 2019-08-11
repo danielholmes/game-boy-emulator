@@ -7,59 +7,43 @@
     "ts": "tsc -p tsconfig.json",
     "lint": "eslint --fix ./src --ext .ts,.tsx",
     "lint:check": "eslint ./src  --ext .ts,.tsx",
-    "test": "echo 'TODO: Test'",
-    "build": "concurrently \"yarn lint:check\" \"yarn test\" && webpack --config webpack.config.js",
-    "start": "webpack-dev-server --config ./webpack.config.js -w --port 3000"
+    "start": "react-scripts start",
+    "build": "concurrently \"yarn lint:check\" \"yarn test\" && react-scripts build",
+    "test": "react-scripts test"
   },
   "devDependencies": {
-    "@babel/core": "^7.3.4",
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
-    "@babel/polyfill": "^7.4.0",
-    "@babel/preset-env": "^7.3.4",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-typescript": "^7.3.3",
-    "@types/jest": "^24.0.11",
     "@types/lodash": "^4.14.123",
-    "@types/react": "^16.8.8",
-    "@types/react-dom": "^16.8.3",
-    "@typescript-eslint/eslint-plugin": "^1.4.2",
-    "@typescript-eslint/parser": "^1.4.2",
-    "babel-loader": "^8.0.5",
-    "clean-webpack-plugin": "^2.0.1",
     "concurrently": "^4.1.0",
-    "css-loader": "^2.1.1",
     "eslint": "^6.1.0",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.12.4",
-    "html-webpack-plugin": "^3.2.0",
-    "jest": "^24.4.0",
-    "prettier": "^1.16.4",
-    "style-loader": "^0.23.1",
-    "ts-jest": "^24.0.0",
-    "typescript": "^3.3.3333",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.2.1"
-  },
-  "jest": {
-    "roots": [
-      "<rootDir>/src"
-    ],
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ]
+    "@types/jest": "^24.0.17",
+    "@types/node": "^12.7.1",
+    "@types/react": "^16.9.1",
+    "@types/react-dom": "^16.8.5",
+    "react-scripts": "^3.1.0",
+    "typescript": "^3.5.3"
   },
   "dependencies": {
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "@gebby/core": "^0.0.1",
     "@material-ui/core": "^3.9.2",
-    "lodash": "^4.17.11",
-    "react": "^16.8.5",
-    "react-dom": "^16.8.5"
+    "lodash": "^4.17.11"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

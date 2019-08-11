@@ -1,14 +1,12 @@
 import React, { ReactElement } from "react";
-import { Device } from "@gebby/core";
 import PanelLayout from "./PanelLayout";
 
+/*import { Device } from "@gebby/core";
 interface OamSpritesPanelProps {
   readonly device: Device;
-}
+}*/
 
-const OamSpritesPanel = ({
-
-}: OamSpritesPanelProps): ReactElement<OamSpritesPanelProps> => (
+const OamSpritesPanel = (): ReactElement<{}> => (
   <PanelLayout title="Oam - Sprites">
     <div>TODO: Oam sprites</div>
   </PanelLayout>

@@ -1,14 +1,12 @@
 import React, { ReactElement } from "react";
-import { Device } from "@gebby/core";
 import PanelLayout from "./PanelLayout";
 
+/*import { Device } from "@gebby/core";
 interface ProgramPanelProps {
   readonly device: Device;
-}
+}*/
 
-const ProgramPanel = ({
-
-}: ProgramPanelProps): ReactElement<ProgramPanelProps> => (
+const ProgramPanel = (): ReactElement<{}> => (
   <PanelLayout title="CPU - Instructions">
     <div>
       TODO: Display a list of 20 or so bytes. including approx 3 before PC and 7

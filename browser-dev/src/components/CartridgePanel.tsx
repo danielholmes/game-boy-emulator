@@ -1,14 +1,12 @@
 import React, { ReactElement } from "react";
 import PanelLayout from "./PanelLayout";
-import { Device } from "@gebby/core";
 
+/*import { Device } from "@gebby/core";
 interface CartridgePanelProps {
   readonly device: Device;
-}
+}*/
 
-const CartridgePanel = ({
-
-}: CartridgePanelProps): ReactElement<CartridgePanelProps> => (
+const CartridgePanel = (): ReactElement<{}> => (
   <PanelLayout title="Cartridge">TODO: Cartridge</PanelLayout>
 );
 

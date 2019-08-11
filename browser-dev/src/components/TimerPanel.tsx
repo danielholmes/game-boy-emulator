@@ -1,12 +1,12 @@
 import React, { ReactElement } from "react";
 import PanelLayout from "./PanelLayout";
-import { Device } from "@gebby/core";
+/*import { Device } from "@gebby/core";
 
 interface TimerPanelProps {
   readonly device: Device;
-}
+}*/
 
-const TimerPanel = ({  }: TimerPanelProps): ReactElement<TimerPanelProps> => (
+const TimerPanel = (): ReactElement<{}> => (
   <PanelLayout title="Timers">TODO: Timers</PanelLayout>
 );
 
