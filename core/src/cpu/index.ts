@@ -15,10 +15,18 @@ export class Cpu {
   // Temporary variable until refactor done
   private remainingCycles: ClockCycles;
   private _currentInstructionPc?: WordValue;
+  /*
+     Enable/Disable all interrupts. Only accessible directly on the CPU with op
+     codes EI and DI
+   */
+  public ime: boolean;
 
   public constructor() {
     this.registers = new CpuRegistersImpl();
     this.remainingCycles = 0;
+    // TODO: Verify the correct default value. Also might need to be reset when
+    // switched on and off
+    this.ime = false;
   }
 
   public get currentInstructionPc(): WordValue {

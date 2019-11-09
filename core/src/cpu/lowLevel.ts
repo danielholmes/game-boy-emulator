@@ -593,3 +593,21 @@ export class DecrementRegister implements LowLevelOp {
     return value;
   }
 }
+
+export class SetIme implements LowLevelOp {
+  public readonly cycles: ClockCycles = 0;
+  private readonly newIme: boolean;
+
+  public constructor(newIme: boolean) {
+    this.newIme = newIme;
+  }
+
+  public execute(
+    cpu: Cpu,
+    mmu: Mmu,
+    value: LowLevelState
+  ): LowLevelStateReturn {
+    cpu.ime = this.newIme;
+    return value;
+  }
+}

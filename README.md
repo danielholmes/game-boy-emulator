@@ -32,6 +32,7 @@ yarn
  - Rework mmu a little. Include tests and use explicit ranges
    - IO should not be a block of memory. MMU should defer to registers on individual io 
      devices
+     
    - VRam and working ram are memory blocks
    - not sure about oam, zero page
    - BIOS has a register on itself to indicate state

@@ -1,4 +1,13 @@
 import { Instruction, InstructionDefinition, OpCode } from "./instructions";
 
-export const createNop = (opCode: OpCode): Instruction =>
-  new InstructionDefinition(opCode, "NOP");
+export function createNop(opCode: OpCode): Instruction {
+  return new InstructionDefinition(opCode, "NOP");
+}
+
+export function ei(opCode: OpCode): Instruction {
+  return new InstructionDefinition(opCode, "EI").setIme(true);
+}
+
+export function di(opCode: OpCode): Instruction {
+  return new InstructionDefinition(opCode, "EI").setIme(false);
+}

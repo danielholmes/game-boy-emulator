@@ -4,7 +4,6 @@ import nintendoLogo from "./nintendoLogo";
 export { bios, nintendoLogo };
 export { Bios } from "./bios";
 export {
-  IOMemory,
   VRam,
   WorkingRam,
   ZeroPageRam,

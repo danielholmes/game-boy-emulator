@@ -9,26 +9,25 @@
     "lint:check": "eslint ./src  --ext .ts,.tsx",
     "start": "react-scripts start",
     "build": "concurrently \"yarn lint:check\" \"yarn test\" && react-scripts build",
-    "_test": "react-scripts test",
-    "test": "echo 'disabled'"
+    "test": "echo 'disabled, use react-scripts test'"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.123",
-    "concurrently": "^5.0.0",
-    "eslint": "^6.1.0",
     "@types/jest": "^24.0.17",
+    "@types/lodash": "^4.14.123",
     "@types/node": "^12.7.1",
     "@types/react": "^16.9.1",
     "@types/react-dom": "^16.8.5",
+    "concurrently": "^5.0.0",
+    "eslint": "^6.1.0",
     "react-scripts": "^3.1.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
     "@gebby/core": "^0.0.1",
     "@material-ui/core": "^4.3.2",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   },
   "eslintConfig": {
     "extends": [

@@ -254,20 +254,3 @@ export class OamMemory {
     this.storage.writeByte(address, value);
   }
 }
-
-// https://fms.komkon.org/GameBoy/Tech/Software.html
-export class IOMemory {
-  private readonly storage: ByteRamStorage;
-
-  public constructor() {
-    this.storage = new ByteRamStorage(0x7f);
-  }
-
-  public readByte(address: MemoryAddress): ByteValue {
-    return this.storage.readByte(address);
-  }
-
-  public writeByte(address: MemoryAddress, value: ByteValue): void {
-    this.storage.writeByte(address, value);
-  }
-}

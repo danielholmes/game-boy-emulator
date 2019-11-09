@@ -100,6 +100,16 @@ export class Device {
     // TODO: Interrupts - should be done after each low level op, I think. Or
     //  maybe after each instruction? see:
     // https://realboyemulator.wordpress.com/2013/01/18/emulating-the-core-2/
+    // Any set bits in the IF register are only <requesting> an interrupt to be
+    // executed. The actual <execution> happens only if both the IME flag, and
+    // the corresponding bit in the IE register are set, otherwise the interrupt
+    // 'waits' until both IME and IE allow its execution.
+
+    // If multiple interrupts then priority is bit order:
+    // V-Blank, LCD STAT, Timer, Serial, Joypad
+    if (this.cpu.ime) {
+      //console.log(this.mmu.readByte(0x))
+    }
   }
 
   public tickCycle(): void {

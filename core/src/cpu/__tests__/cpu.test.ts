@@ -1,12 +1,10 @@
-/* global describe, test, expect */
-
 import { Mmu } from "../../memory/mmu";
 import { Cpu } from "../";
 import { createMmu, createMmuSnapshot } from "../../test/help";
 import { OpCode } from "../instructions";
 import { Cartridge, CARTRIDGE_PROGRAM_START } from "../../cartridge";
 import bios from "../../bios";
-import { IOMemory, OamMemory, VRam, WorkingRam, ZeroPageRam } from "../..";
+import { OamMemory, VRam, WorkingRam, ZeroPageRam } from "../..";
 import { V_RAM_SIZE } from "../../memory/ram";
 
 describe("cpu", () => {
@@ -50,7 +48,6 @@ describe("cpu", () => {
         bios,
         new WorkingRam(),
         vRam,
-        new IOMemory(),
         new OamMemory(),
         new ZeroPageRam()
       );

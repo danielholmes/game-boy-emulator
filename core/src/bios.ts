@@ -263,15 +263,33 @@ const BIOS: ReadonlyUint8Array = new Uint8Array([
 
 export interface Bios {
   readByte(address: MemoryAddress): ByteValue;
+  readonly isActive: boolean;
+  deactivate(): void;
 }
 
-const bios: Bios = {
+class BiosImpl implements Bios {
+  private _isActive: boolean;
+
+  public constructor() {
+    this._isActive = true;
+  }
+
+  public deactivate(): void {
+    this._isActive = false;
+  }
+
+  public get isActive(): boolean {
+    return this._isActive;
+  }
+
   readByte(address: MemoryAddress): ByteValue {
     if (address < 0x0000 || address >= BIOS.length) {
       throw new Error("Accessing bios out of bounds");
     }
     return BIOS[address];
   }
-};
+}
+
+const bios = new BiosImpl();
 
 export default bios;

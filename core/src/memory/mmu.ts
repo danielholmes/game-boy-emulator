@@ -1,12 +1,5 @@
 import { ByteValue, MemoryAddress, ReadonlyUint8Array } from "../types";
-import {
-  WorkingRam,
-  VRam,
-  ZeroPageRam,
-  IOMemory,
-  OamMemory,
-  ReadonlyVRam
-} from "./ram";
+import { WorkingRam, VRam, ZeroPageRam, OamMemory, ReadonlyVRam } from "./ram";
 import { Bios } from "../bios";
 import { Cartridge } from "../cartridge";
 import { toWordHexString } from "..";
@@ -20,7 +13,6 @@ export class Mmu {
   private readonly bios: Bios;
   private readonly workingRam: WorkingRam;
   private readonly _vRam: VRam;
-  private readonly io: IOMemory;
   private readonly oam: OamMemory;
   private readonly zeroPage: ZeroPageRam;
   private cartridge?: Cartridge;
@@ -29,7 +21,6 @@ export class Mmu {
     bios: Bios,
     ram: WorkingRam,
     vRam: VRam,
-    io: IOMemory,
     oam: OamMemory,
     zeroPage: ZeroPageRam,
     cartridge?: Cartridge
@@ -38,24 +29,12 @@ export class Mmu {
     this.workingRam = ram;
     this._vRam = vRam;
     this.oam = oam;
-    this.io = io;
     this.zeroPage = zeroPage;
     this.cartridge = cartridge;
   }
 
   public get vRam(): ReadonlyVRam {
     return this._vRam;
-  }
-
-  /*
-    TODO: Write tests for this:
-    bit 7-1 Unimplemented: Read as 1
-    bit 0 BOOT_OFF: Boot ROM lock bit
-    0b1= Boot ROM is disabled and 0x0000-0x00FF works normally.
-    0b0= Boot ROM is active and intercepts accesses to 0x0000-0x00FF.
-   */
-  public get isInBios(): boolean {
-    return this.readByte(0xff50) === 0x00;
   }
 
   public get bgP(): ByteValue {
@@ -88,7 +67,7 @@ export class Mmu {
 
   // TODO: Test access and shadowing
   public readByte(address: MemoryAddress): ByteValue {
-    if (address >= 0x0000 && address <= 0x00ff && this.isInBios) {
+    if (address >= 0x0000 && address <= 0x00ff && this.bios.isActive) {
       return this.bios.readByte(address);
     }
     if (address >= 0x0000 && address <= 0x7fff) {
@@ -123,17 +102,36 @@ export class Mmu {
     }
     if (address >= 0xfea0 && address <= 0xfeff) {
       // Unused space
-      return 0;
+      return 0x00;
+    }
+    if (address === 0xff40) {
+      throw new Error("TODO: gpu control register");
+      // return this.gpu.control.value;
+    }
+    /*
+      TODO: Write tests for this:
+      bit 7-1 Unimplemented: Read as 1
+      bit 0 BOOT_OFF: Boot ROM lock bit
+      0b1= Boot ROM is disabled and 0x0000-0x00FF works normally.
+      0b0= Boot ROM is active and intercepts accesses to 0x0000-0x00FF.
+     */
+    if (address === 0xff50) {
+      return this.bios.isActive ? 0x10000000 : 0x00000000;
     }
     if (address >= 0xff00 && address < 0xff80) {
-      return this.io.readByte(address - 0xff00);
+      throw new Error("TODO: Read from io properly");
     }
     // TODO: This high ram/zero page
     if (address >= 0xff80 && address < 0xffff) {
       return this.zeroPage.readByte(address - 0xff80);
     }
+    // Interrupt flags
+    if (address === 0xff0f) {
+      throw new Error("Interrupt flags not implemented yet");
+    }
+    // Interrupt enable/disable
     if (address === 0xffff) {
-      throw new Error("Interrupts not implemented yet");
+      throw new Error("Interrupt enable not implemented yet");
     }
 
     throw new Error("Address not readable");
@@ -141,22 +139,37 @@ export class Mmu {
 
   public writeByte(address: MemoryAddress, value: ByteValue): void {
     if (address >= 0x8000 && address <= 0x9fff) {
-      this._vRam.writeByte(address - 0x8000, value);
-    } else if (address >= 0xa000 && address <= 0xbfff) {
+      return this._vRam.writeByte(address - 0x8000, value);
+    }
+    if (address >= 0xa000 && address <= 0xbfff) {
       throw new Error(
         `Cannot write to ${toWordHexString(address)} which is on cartridge`
       );
-    } else if (address >= 0xc000 && address <= 0xdfff) {
-      this.workingRam.writeByte(address - 0xc000, value);
-    } else if (address >= 0xe000 && address <= 0xfdff) {
-      this.workingRam.writeByte(address - 0xe000, value);
-    } else if (address >= 0xff80 && address <= 0xffff) {
-      this.zeroPage.writeByte(address - 0xff80, value);
-    } else if (address >= 0xff00 && address <= 0xff7f) {
-      this.io.writeByte(address - 0xff00, value);
-    } else if (address >= 0xfe00 && address <= 0xfe9f) {
-      this.oam.writeByte(address - 0xfe00, value);
-    } else if (address >= 0xfea0 && address <= 0xfeff) {
+    }
+    if (address >= 0xc000 && address <= 0xdfff) {
+      return this.workingRam.writeByte(address - 0xc000, value);
+    }
+    if (address >= 0xe000 && address <= 0xfdff) {
+      return this.workingRam.writeByte(address - 0xe000, value);
+    }
+    if (address >= 0xfe00 && address <= 0xfe9f) {
+      return this.oam.writeByte(address - 0xfe00, value);
+    }
+    if (address >= 0xff80 && address <= 0xffff) {
+      return this.zeroPage.writeByte(address - 0xff80, value);
+    }
+    if (address >= 0xff00 && address <= 0xff7f) {
+      throw new Error("TODO: Write io properly (if allowed)");
+    }
+    // Interrupt flags
+    if (address === 0xff0f) {
+      throw new Error("Interrupt flags not implemented yet");
+    }
+    // Interrupt enable/disable
+    if (address === 0xffff) {
+      throw new Error("Interrupt enable not implemented yet");
+    }
+    if (address >= 0xfea0 && address <= 0xfeff) {
       // Unused space, do nothing
     } else {
       throw new Error(`Can't write address ${toWordHexString(address)}`);
@@ -166,5 +179,5 @@ export class Mmu {
 
 export type ReadonlyMmu = Pick<
   Mmu,
-  "readByte" | "scX" | "scY" | "bgP" | "obP0" | "obP1" | "isInBios"
+  "readByte" | "scX" | "scY" | "bgP" | "obP0" | "obP1"
 >;

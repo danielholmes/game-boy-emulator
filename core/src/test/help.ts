@@ -1,12 +1,6 @@
 import { Mmu } from "../memory/mmu";
 import bios from "../bios";
-import {
-  IOMemory,
-  OamMemory,
-  VRam,
-  WorkingRam,
-  ZeroPageRam
-} from "../memory/ram";
+import { OamMemory, VRam, WorkingRam, ZeroPageRam } from "../memory/ram";
 import { Cpu } from "../cpu";
 import {
   ByteValue,
@@ -20,7 +14,6 @@ export const createMmu = (): Mmu =>
     bios,
     new WorkingRam(),
     new VRam(),
-    new IOMemory(),
     new OamMemory(),
     new ZeroPageRam()
   );

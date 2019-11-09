@@ -1,5 +1,5 @@
 import { Instruction, OpCode } from "./instructions";
-import { createNop } from "./special";
+import { createNop, di, ei } from "./special";
 import {
   ByteRegister,
   GroupedWordRegister,
@@ -327,7 +327,10 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x9d, "l"]
     ] as readonly [OpCode, ByteRegister][]).map(([opCode, register]) =>
       sbcAR(opCode, register)
-    )
+    ),
+
+    ei(0xfb),
+    di(0xf3)
   ].map((i: Instruction) => [i.opCode, i])
 );
 

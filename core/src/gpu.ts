@@ -1,6 +1,7 @@
 import { Mmu } from "./memory/mmu";
 import { Screen } from "./screen";
 import { ClockCycles } from "./cpu";
+import { ByteValue } from "./types";
 
 enum GpuMode {
   HBlank = 0,
@@ -9,17 +10,35 @@ enum GpuMode {
   ScanlineVRam = 3
 }
 
+class LcdControl {
+  private _value: ByteValue;
+
+  public constructor() {
+    this._value = 0x91;
+  }
+
+  public get value(): ByteValue {
+    return this._value;
+  }
+}
+
 export class Gpu {
   private readonly mmu: Mmu;
   private readonly screen: Screen;
   private modeCycles: ClockCycles;
   private mode: GpuMode;
+  private _control: LcdControl;
 
   public constructor(mmu: Mmu, screen: Screen) {
     this.mmu = mmu;
     this.screen = screen;
     this.modeCycles = 0;
     this.mode = GpuMode.ScanlineOam;
+    this._control = new LcdControl();
+  }
+
+  public get control(): LcdControl {
+    return this._control;
   }
 
   public tick(cycles: ClockCycles): void {

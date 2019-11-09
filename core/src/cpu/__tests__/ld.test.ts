@@ -50,7 +50,7 @@ describe("ld", () => {
   describe("createLdRR", () => {
     test.each(BYTE_REGISTER_PAIR_PERMUTATIONS)(
       "LD %s,%s",
-      ([register1, register2]: Readonly<[ByteRegister, ByteRegister]>) => {
+      (register1: ByteRegister, register2: ByteRegister) => {
         cpu.registers[register2] = 0x72;
 
         const instruction = createLdRR(0x3d, register1, register2);
@@ -169,7 +169,7 @@ describe("ld", () => {
     test("LD (0xff00+n),a", () => {
       cpu.registers.pc = CARTRIDGE_PROGRAM_START;
       cpu.registers.a = 0x12;
-      mmu.loadCartridge(Cartridge.buildWithProgram([0x76]));
+      mmu.loadCartridge(Cartridge.buildWithProgram([0x90]));
 
       const instruction = ldMFfNA(0x3d);
 
@@ -181,14 +181,14 @@ describe("ld", () => {
         pc: CARTRIDGE_PROGRAM_START + 1
       });
       // TODO: Some sort of assert for special registers
-      expect(mmu.readByte(0xff76)).toEqual(0x12);
+      expect(mmu.readByte(0xff90)).toEqual(0x12);
     });
   });
 
   describe("ldMFfCA", () => {
     test("LD (0xff00+c),a", () => {
       cpu.registers.a = 0x12;
-      cpu.registers.c = 0x77;
+      cpu.registers.c = 0x81;
 
       const cpuSnapshot = createCpuSnapshot(cpu);
       const instruction = ldMFfCA(0x3d);
@@ -198,7 +198,7 @@ describe("ld", () => {
       expect(cycles).toBe(4);
       expect(createCpuSnapshot(cpu)).toEqual(cpuSnapshot);
       // TODO: Some sort of assert for special registers
-      expect(mmu.readByte(0xff77)).toEqual(0x12);
+      expect(mmu.readByte(0xff81)).toEqual(0x12);
     });
   });
 
@@ -362,9 +362,9 @@ describe("ld", () => {
   describe("ldAMFfN", () => {
     test("LD a, (#ff00+n)", () => {
       cpu.registers.pc = CARTRIDGE_PROGRAM_START;
-      const cart = Cartridge.buildWithProgram([0x72]);
+      const cart = Cartridge.buildWithProgram([0x84]);
       mmu.loadCartridge(cart);
-      mmu.writeByte(0xff72, 0x62);
+      mmu.writeByte(0xff84, 0x62);
 
       const mmuSnapshot = createMmuSnapshot(mmu);
       const instruction = ldAMFfN(0x3d);

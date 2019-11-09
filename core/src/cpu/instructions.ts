@@ -32,7 +32,8 @@ import {
   AddToValue,
   AddWithCarryToA,
   AddToRegister,
-  SetToPcIfFlag
+  SetToPcIfFlag,
+  SetIme
 } from "./lowLevel";
 import { ByteRegister, Register, WordRegister } from "./registers";
 import { sum } from "lodash";
@@ -116,6 +117,10 @@ export class InstructionDefinition implements Instruction {
 
   public loadProgramCounter(): InstructionDefinition {
     return this.loadRegister("pc");
+  }
+
+  public setIme(ime: boolean): InstructionDefinition {
+    return this.withOperation(new SetIme(ime));
   }
 
   public writeMemoryFromOperandAddress(): InstructionDefinition {
