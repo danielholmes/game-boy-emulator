@@ -243,7 +243,8 @@ describe("ld", () => {
   describe("ldRrNn", () => {
     test.each([["bc"], ["de"], ["hl"], ["sp"]] as (
       | NonAfGroupedWordRegister
-      | "sp")[][])("LD %s,nn", (register: NonAfGroupedWordRegister | "sp") => {
+      | "sp"
+    )[][])("LD %s,nn", (register: NonAfGroupedWordRegister | "sp") => {
       cpu.registers.pc = CARTRIDGE_PROGRAM_START;
       mmu.loadCartridge(Cartridge.buildWithProgram([0xfa, 0xce]));
 
@@ -262,9 +263,15 @@ describe("ld", () => {
   });
 
   describe("createLdRMRr", () => {
-    test.each(flatMap(
-      BYTE_REGISTERS.map(r => [[r, "bc"], [r, "de"], [r, "hl"]])
-    ) as [ByteRegister, NonAfGroupedWordRegister][])(
+    test.each(
+      flatMap(
+        BYTE_REGISTERS.map(r => [
+          [r, "bc"],
+          [r, "de"],
+          [r, "hl"]
+        ])
+      ) as [ByteRegister, NonAfGroupedWordRegister][]
+    )(
       "LD %s,(%s)",
       (register1: ByteRegister, register2: NonAfGroupedWordRegister) => {
         cpu.registers[register2] = 0xf108;

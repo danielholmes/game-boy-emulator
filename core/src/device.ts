@@ -97,7 +97,9 @@ export class Device {
     this.cpu.tick(this._mmu, numClockCycles);
     this.gpu.tick(numClockCycles);
     // TODO: Timer
-    // TODO: Interrupts
+    // TODO: Interrupts - should be done after each low level op, I think. Or
+    //  maybe after each instruction? see:
+    // https://realboyemulator.wordpress.com/2013/01/18/emulating-the-core-2/
   }
 
   public tickCycle(): void {

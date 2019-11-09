@@ -18,50 +18,50 @@ describe("cb", () => {
   });
 
   describe("createCbBitBR", () => {
-    describe.each(flatMap(
-      BYTE_BIT_POSITIONS.map(p => BYTE_REGISTERS.map(r => [p, r]))
-    ) as [ByteBitPosition, ByteRegister][])(
-      "CB %s, %s",
-      (position: ByteBitPosition, register: ByteRegister) => {
-        test("true", () => {
-          cpu.registers[register] = 0b11111111;
-          cpu.registers.fC = 1;
+    describe.each(
+      flatMap(BYTE_BIT_POSITIONS.map(p => BYTE_REGISTERS.map(r => [p, r]))) as [
+        ByteBitPosition,
+        ByteRegister
+      ][]
+    )("CB %s, %s", (position: ByteBitPosition, register: ByteRegister) => {
+      test("true", () => {
+        cpu.registers[register] = 0b11111111;
+        cpu.registers.fC = 1;
 
-          const instruction = createCbBitBR(0x3d, position, register);
+        const instruction = createCbBitBR(0x3d, position, register);
 
-          const cycles = instruction.execute(cpu, mmu);
+        const cycles = instruction.execute(cpu, mmu);
 
-          expect(cycles).toBe(0);
-          expect(cpu).toEqualCpuWithRegisters({
-            [register]: 0b11111111,
-            fZ: 0,
-            fN: 0,
-            fH: 1,
-            fC: 1
-          });
-          expect(mmu).toEqual(EMPTY_MEMORY);
+        expect(cycles).toBe(0);
+        expect(cpu).toEqualCpuWithRegisters({
+          [register]: 0b11111111,
+          fZ: 0,
+          fN: 0,
+          fH: 1,
+          fC: 1
         });
+        expect(mmu).toEqual(EMPTY_MEMORY);
+      });
 
-        test("false", () => {
-          cpu.registers[register] = 0x00;
-          cpu.registers.fC = 0;
+      test("false", () => {
+        cpu.registers[register] = 0x00;
+        cpu.registers.fC = 0;
 
-          const instruction = createCbBitBR(0x3d, position, register);
+        const instruction = createCbBitBR(0x3d, position, register);
 
-          const cycles = instruction.execute(cpu, mmu);
+        const cycles = instruction.execute(cpu, mmu);
 
-          expect(cycles).toBe(0);
-          expect(cpu).toEqualCpuWithRegisters({
-            [register]: 0x00,
-            fZ: 1,
-            fN: 0,
-            fH: 1,
-            fC: 0
-          });
-          expect(mmu).toEqual(EMPTY_MEMORY);
+        expect(cycles).toBe(0);
+        expect(cpu).toEqualCpuWithRegisters({
+          [register]: 0x00,
+          fZ: 1,
+          fN: 0,
+          fH: 1,
+          fC: 0
         });
-      }
-    );
+        expect(mmu).toEqual(EMPTY_MEMORY);
+      });
+    });
   });
 
   describe("createCbBitBMHl", () => {

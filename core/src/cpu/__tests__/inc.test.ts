@@ -24,7 +24,8 @@ describe("inc", () => {
     describe.each(
       ([...NON_AF_GROUPED_WORD_REGISTERS, "sp"] as (
         | NonAfGroupedWordRegister
-        | "sp")[]).map(r => [r])
+        | "sp"
+      )[]).map(r => [r])
     )("INC %s", (register: NonAfGroupedWordRegister | "sp") => {
       test("normal", () => {
         cpu.registers[register] = 0x0001;

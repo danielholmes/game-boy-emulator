@@ -7,7 +7,8 @@ import { CpuRegisters, Register } from "../cpu/registers";
 import {
   toPairs,
   fromPairs,
-  reduce
+  reduce,
+  constant
 } from "lodash";
 import { ByteValue, MemoryAddress } from "../types";
 import { toByteHexString, toWordHexString } from "../utils/numberUtils";
@@ -52,7 +53,7 @@ function toEqualCpuRegisters(
   utils: { isNot: boolean },
   received: CpuRegisters,
   withRegisters: WithRegisters
-): { pass: boolean; message: string | (() => string) } {
+): { pass: boolean; message: () => string } {
   if (received === null) {
     return {
       pass: true,
@@ -70,7 +71,7 @@ function toEqualCpuRegisters(
   // This point is reached when the above assertion was successful.
   // The test should therefore always pass, that means it needs to be
   // `true` when used normally, and `false` when `.not` was used.
-  return { pass: !utils.isNot, message: "" };
+  return { pass: !utils.isNot, message: constant("") };
 }
 
 expect.extend({
@@ -105,7 +106,7 @@ expect.extend({
       expect(receivedInHex).toEqual(expectedInHex);
     }
 
-    return { pass: !this.isNot, message: "" };
+    return { pass: !this.isNot, message: constant("") };
   },
 
   toMatchSnapshotWorkingRam(received: Mmu, snapshot: MmuSnapshot) {
@@ -127,7 +128,7 @@ expect.extend({
       );
     }
 
-    return { pass: !this.isNot, message: "" };
+    return { pass: !this.isNot, message: constant("") };
   },
 
   toEqualCpuWithRegisters(received: Cpu, withRegisters: WithRegisters) {

@@ -93,23 +93,34 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x6b, "l", "e"],
       [0x6c, "l", "h"],
       [0x6d, "l", "l"]
-    ] as readonly [OpCode, ByteRegister, ByteRegister][]).map(
-      ([opCode, register1, register2]) =>
-        createLdRR(opCode, register1, register2)
+    ] as readonly [
+      OpCode,
+      ByteRegister,
+      ByteRegister
+    ][]).map(([opCode, register1, register2]) =>
+      createLdRR(opCode, register1, register2)
     ),
 
     ldMNnA(0xea),
 
     createCallNn(0xcd),
-    ...([[0xc4, "fNz"], [0xcc, "fZ"], [0xd4, "fNc"], [0xdc, "fC"]] as readonly [
-      OpCode,
-      CheckFlag
-    ][]).map(([opCode, flag]) => createCallFNn(opCode, flag)),
+    ...([
+      [0xc4, "fNz"],
+      [0xcc, "fZ"],
+      [0xd4, "fNc"],
+      [0xdc, "fC"]
+    ] as readonly [OpCode, CheckFlag][]).map(([opCode, flag]) =>
+      createCallFNn(opCode, flag)
+    ),
 
-    ...([[0xf5, "af"], [0xc5, "bc"], [0xd5, "de"], [0xe5, "hl"]] as readonly [
-      OpCode,
-      GroupedWordRegister
-    ][]).map(([opCode, register]) => push(opCode, register)),
+    ...([
+      [0xf5, "af"],
+      [0xc5, "bc"],
+      [0xd5, "de"],
+      [0xe5, "hl"]
+    ] as readonly [OpCode, GroupedWordRegister][]).map(([opCode, register]) =>
+      push(opCode, register)
+    ),
 
     ...([
       [0x70, "b"],
@@ -133,12 +144,19 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x6e, "l", "hl"],
       [0x0a, "a", "bc"],
       [0x1a, "a", "de"]
-    ] as readonly [OpCode, ByteRegister, NonAfGroupedWordRegister][]).map(
-      ([opCode, register1, register2]) =>
-        createLdRMRr(opCode, register1, register2)
+    ] as readonly [
+      OpCode,
+      ByteRegister,
+      NonAfGroupedWordRegister
+    ][]).map(([opCode, register1, register2]) =>
+      createLdRMRr(opCode, register1, register2)
     ),
 
-    ...([[0x02, "bc"], [0x12, "de"], [0x77, "hl"]] as readonly [
+    ...([
+      [0x02, "bc"],
+      [0x12, "de"],
+      [0x77, "hl"]
+    ] as readonly [
       OpCode,
       NonAfGroupedWordRegister
     ][]).map(([opCode, register]) => ldMRA(opCode, register)),
@@ -157,7 +175,12 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       ldRN(opCode, register)
     ),
 
-    ...([[0x01, "bc"], [0x11, "de"], [0x21, "hl"], [0x31, "sp"]] as readonly [
+    ...([
+      [0x01, "bc"],
+      [0x11, "de"],
+      [0x21, "hl"],
+      [0x31, "sp"]
+    ] as readonly [
       OpCode,
       NonAfGroupedWordRegister | "sp"
     ][]).map(([opCode, register]) => ldRrNn(opCode, register)),
@@ -179,10 +202,14 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
 
     ldMNnSp(0x08),
 
-    ...([[0xf1, "af"], [0xc1, "bc"], [0xd1, "de"], [0xe1, "hl"]] as readonly [
-      OpCode,
-      GroupedWordRegister
-    ][]).map(([opCode, register]) => createPopRr(opCode, register)),
+    ...([
+      [0xf1, "af"],
+      [0xc1, "bc"],
+      [0xd1, "de"],
+      [0xe1, "hl"]
+    ] as readonly [OpCode, GroupedWordRegister][]).map(([opCode, register]) =>
+      createPopRr(opCode, register)
+    ),
 
     ...([
       [0x3d, "a"],
@@ -196,12 +223,21 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       createDecR(opCode, register)
     ),
 
-    ...([[0x0b, "bc"], [0x1b, "de"], [0x2b, "hl"], [0x3b, "sp"]] as readonly [
-      OpCode,
-      DecRrRegister
-    ][]).map(([opCode, register]) => createDecRr(opCode, register)),
+    ...([
+      [0x0b, "bc"],
+      [0x1b, "de"],
+      [0x2b, "hl"],
+      [0x3b, "sp"]
+    ] as readonly [OpCode, DecRrRegister][]).map(([opCode, register]) =>
+      createDecRr(opCode, register)
+    ),
 
-    ...([[0x03, "bc"], [0x13, "de"], [0x23, "hl"], [0x33, "sp"]] as readonly [
+    ...([
+      [0x03, "bc"],
+      [0x13, "de"],
+      [0x23, "hl"],
+      [0x33, "sp"]
+    ] as readonly [
       OpCode,
       NonAfGroupedWordRegister
     ][]).map(([opCode, register]) => createIncRr(opCode, register)),
@@ -271,10 +307,14 @@ const INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
 
     ret(0xc9),
 
-    ...([[0x20, "fNz"], [0x28, "fZ"], [0x30, "fNc"], [0x38, "fC"]] as readonly [
-      OpCode,
-      CheckFlag
-    ][]).map(([opCode, flag]) => createJrCcN(opCode, flag)),
+    ...([
+      [0x20, "fNz"],
+      [0x28, "fZ"],
+      [0x30, "fNc"],
+      [0x38, "fC"]
+    ] as readonly [OpCode, CheckFlag][]).map(([opCode, flag]) =>
+      createJrCcN(opCode, flag)
+    ),
     createJrN(0x18),
 
     ...([

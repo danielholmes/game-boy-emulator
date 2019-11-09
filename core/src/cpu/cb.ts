@@ -117,9 +117,12 @@ const CB_INSTRUCTIONS: { [opCode: number]: Instruction } = fromPairs(
       [0x7c, 7, "h"],
       [0x7d, 7, "l"],
       [0x7f, 7, "a"]
-    ] as readonly [OpCode, ByteBitPosition, ByteRegister][]).map(
-      ([opCode, position, register]) =>
-        createCbBitBR(opCode, position, register)
+    ] as readonly [
+      OpCode,
+      ByteBitPosition,
+      ByteRegister
+    ][]).map(([opCode, position, register]) =>
+      createCbBitBR(opCode, position, register)
     ),
 
     ...([
