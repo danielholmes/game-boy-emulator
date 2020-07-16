@@ -48,6 +48,6 @@
   },
   "dependencies": {
     "@gebby/core": "^0.0.1",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.19"
   }
 }
