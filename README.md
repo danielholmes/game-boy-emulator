@@ -29,6 +29,7 @@ yarn
 
 ## Roadmap
 
+ - Generate operation based on op codes table (see references). typescript includes a way to generate TS code.
  - Rework mmu a little. Include tests and use explicit ranges
    - IO should not be a block of memory. MMU should defer to registers on individual io 
      devices
