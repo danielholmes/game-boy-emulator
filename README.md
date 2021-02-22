@@ -79,7 +79,7 @@ yarn
  - Op Codes - http://gameboy.mongenel.com/dmg/opcodes.html
  - Sound - http://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware
  - Hardware - http://marc.rawer.de/Gameboy/Docs/GBProject.pdf
- - Op codes table - http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
+ - Op codes table - https://github.com/tdrmk/gameboy_opcodes
  - Mooneye mentions this is more accurate for cartridge handling than pandocs
    https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
 
